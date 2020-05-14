@@ -1,0 +1,122 @@
+.search-broken {
+  margin-top: 0.25em;
+  width: 30px !important;
+  border-radius: 50% !important;
+  .ant-input-prefix {
+    margin-left: -5px;
+  }
+ 
+}
+.ant-layout{
+  min-height: 100vh !important;
+}
+.content{
+  overflow: hidden;
+  line-height: 1.5em;
+  height: 4.5em;
+}
+// .ant-card{
+//   background-color: initial !important;
+// }
+
+.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused{
+  width: 100% !important;
+  border-radius: 20px !important;
+  
+}
+.ant-input-affix-wrapper:focus .ant-menu {
+  width: 20% !important;
+}
+.ant-menu-submenu-title{
+  top: 0.5em
+}
+  .ant-btn-circle{
+      background-color:#f0f8ffc7 !important;
+      border: 'none'
+   }
+   .ant-input-affix-wrapper {
+    background-color:#f0f8ffc7 !important;
+   }
+   .ant-input-affix-wrapper > input.ant-input {
+    background-color: initial;
+   }
+  .ant-layout-header{
+    padding-left: 0px !important;
+  }
+
+  ul{
+    list-style: none;
+    padding: 0;
+  }
+  .ant-menu-horizontal {
+    border: none !important;
+    .ant-menu-item{
+    top: 0.5em !important;
+    padding-left: 0px;
+   }
+
+  }
+  .ant-menu-item .anticon{
+    margin-right: 0 !important;
+  }
+  .ant-carousel .slick-slide {
+    text-align: center;
+    height: 160px;
+    line-height: 160px;
+    background: initial;
+    overflow: hidden;
+  }
+  .myLogo{
+    width: 'auto';
+  }
+  // .ant-card-actions{
+  //   display: flex;
+  //   flex-direction: column;
+  // }
+  .ant-card-actions {
+    // padding-left: 16px !important;
+    > li:not(:last-child){
+      width: 20% !important;
+      border: none;
+      
+    }
+    > li:last-child{
+      padding-left: 24px !important;
+      display: flex;
+      flex-direction: column;
+      width: 95% !important;
+      border: none;
+      // height: 50px;
+    }
+  }
+  .site-description-item-profile-wrapper {
+    margin-bottom: 7px;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    line-height: 1.5715;
+  }
+  
+  [data-theme='compact'] .site-description-item-profile-wrapper {
+    font-size: 12px;
+    line-height: 1.66667;
+  }
+  
+  .ant-drawer-body p.site-description-item-profile-p {
+    display: block;
+    margin-bottom: 16px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 16px;
+    line-height: 1.5715;
+  }
+  
+  [data-theme='compact'] .ant-drawer-body p.site-description-item-profile-p {
+    font-size: 14px;
+    line-height: 1.66667;
+  }
+  
+  .site-description-item-profile-p-label {
+    display: inline-block;
+    margin-right: 8px;
+    color: rgba(0, 0, 0, 0.85);
+  }
+

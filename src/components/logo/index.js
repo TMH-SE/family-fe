@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import logoImgSrc from '../../assets/images/logo.png'
 
-const Logo = ({ size, onClick }) => {
+const Logo = ({ size, onClick, isBroken }) => {
   const style = {
     small: {
       height: 30,
@@ -23,11 +24,11 @@ const Logo = ({ size, onClick }) => {
   }
   return (
     <h1
-      style={{ color: '#0098da', ...style[size] }}
+      style={{ width: isBroken ? 'auto' : '70%', color: '#0098da', ...style[size] }}
       onClick={onClick}
       className='myLogo'>
       <img height='100%' src={logoImgSrc} />
-      <span style={{ marginLeft: space[size] }}>Family</span>
+      {!isBroken && <span style={{ marginLeft: space[size] }}>Family</span>}
     </h1>
   )
 }

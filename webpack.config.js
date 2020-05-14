@@ -2,8 +2,8 @@ const webpack = require('webpack')
 
 const path = require('path')
 const process = require('process')
-// const readline = require('readline')
-// const chalk = require('chalk')
+const readline = require('readline')
+const chalk = require('chalk')
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -17,27 +17,27 @@ const safePostCssParser = require('postcss-safe-parser')
 const Dotenv = require('dotenv-webpack')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 
-// const handler = (percentage, message, moduleProgress, activeModule) => {
-//   if (percentage !== 1) {
-//     process.stdout.clearScreenDown()
-//     readline.cursorTo(process.stdout, 0)
-//     process.stdout.write(
-//       `${chalk.bgGreenBright(
-//         ' '.repeat(Math.round(percentage * 50))
-//       )}${chalk.bgWhite(
-//         ' '.repeat(50 - Math.round(percentage * 50))
-//       )} ${chalk.bold.green(message)} (${chalk.greenBright(
-//         `${Math.round(percentage * 100)}%`
-//       )}) ${chalk.dim.grey(moduleProgress || '')} ${chalk.dim.grey(
-//         activeModule || ''
-//       )}`
-//     )
-//   } else {
-//     process.stdout.clearLine()
-//     readline.cursorTo(process.stdout, 0)
-//     process.stdout.write(`${chalk.bold.green('✔ Compile successfully')}\n\n`)
-//   }
-// }
+const handler = (percentage, message, moduleProgress, activeModule) => {
+  if (percentage !== 1) {
+    process.stdout.clearScreenDown()
+    readline.cursorTo(process.stdout, 0)
+    process.stdout.write(
+      `${chalk.bgGreenBright(
+        ' '.repeat(Math.round(percentage * 50))
+      )}${chalk.bgWhite(
+        ' '.repeat(50 - Math.round(percentage * 50))
+      )} ${chalk.bold.green(message)} (${chalk.greenBright(
+        `${Math.round(percentage * 100)}%`
+      )}) ${chalk.dim.grey(moduleProgress || '')} ${chalk.dim.grey(
+        activeModule || ''
+      )}`
+    )
+  } else {
+    process.stdout.clearLine()
+    readline.cursorTo(process.stdout, 0)
+    process.stdout.write(`${chalk.bold.green('✔ Compile successfully')}\n\n`)
+  }
+}
 
 module.exports = (env) => {
   const devMode = env.NODE_ENV === 'development'
@@ -216,6 +216,7 @@ module.exports = (env) => {
     },
     devtool: 'cheap-module-eval-source-map',
     devServer: {
+      // historyApiFallback: true,
       contentBase: './dist',
       host: '0.0.0.0',
       port: process.env.PORT || 8000,
@@ -272,7 +273,7 @@ module.exports = (env) => {
               maximumFileSizeToCacheInBytes: 50000000,
             }),
           ]),
-      // new webpack.ProgressPlugin(handler),
+      new webpack.ProgressPlugin(handler),
       ...(devMode
         ? [
             new BundleAnalyzerPlugin({

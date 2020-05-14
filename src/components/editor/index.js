@@ -11,7 +11,7 @@ const index = () => {
         console.log(editor)
       }}
       config={{
-        extraPlugins: [CustomUploadAdapterPlugin],
+        extraPlugins: [CustomUploadAdapterPlugin]
       }}
     />
   )

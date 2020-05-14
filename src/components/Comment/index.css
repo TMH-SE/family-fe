@@ -1,0 +1,14 @@
+.ant-comment-content-detail p{
+    text-align: left;
+}
+
+.ant-form-item-control-input-content{
+    display: flex;
+}
+.ant-comment-content{
+    text-align: left;
+}
+.ant-form-item textarea.ant-input{
+    overflow: hidden;
+    border-radius: 20px
+}

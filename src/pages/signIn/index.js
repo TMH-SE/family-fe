@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react'
 import { Row, Col, Form, Input, Button, Divider } from 'antd'
 import {
@@ -7,7 +8,7 @@ import {
   LockOutlined
 } from '@ant-design/icons'
 
-function SignIn() {
+function SignIn () {
   const loginFB = () => {
     FB.init({
       appId: '2569214810002562',

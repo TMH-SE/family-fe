@@ -12,7 +12,8 @@ const components = [
   'card',
   'avatar',
   'typography',
-  'popover'
+  'popover',
+  'carousel'
 ]
 
 const styles = components.map((component) =>

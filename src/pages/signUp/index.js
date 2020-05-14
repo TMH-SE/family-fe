@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col, Input } from 'antd'
 import Form from 'antd/lib/form/Form'
 
-function index() {
+function index () {
   return (
     <Row>
       <Col
