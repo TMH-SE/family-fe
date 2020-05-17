@@ -12,7 +12,6 @@ import {
 import {
   CommentOutlined,
   FlagOutlined,
-  LikeTwoTone,
   BookOutlined,
   EllipsisOutlined
 } from '@ant-design/icons'
@@ -23,6 +22,7 @@ import {
   ModalReport
   // ModalCreatePost
 } from '../../components'
+import Reaction from '../../components/reaction'
 
 const { Meta } = Card
 // var moment = require('moment')
@@ -151,9 +151,8 @@ function PageGroup (props) {
           }
           style={{ maxWidth: '100%', marginTop: 16 }}
           actions={[
-            <div key='like'>
-              <LikeTwoTone />
-              <span style={{ fontWeight: 'bold' }}> 19 </span>
+            <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
+              <Reaction />
             </div>,
             <div key='comment'>
               <CommentOutlined />

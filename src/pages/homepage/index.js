@@ -13,8 +13,6 @@ import {
 import {
   CommentOutlined,
   FlagOutlined,
-  //  LikeOutlined,
-  LikeTwoTone,
   BookOutlined,
   EllipsisOutlined
 } from '@ant-design/icons'
@@ -27,6 +25,8 @@ import {
   ModalCreatePost
 } from '../../components'
 import { brokenContext } from '../../layouts/MainLayout'
+// import { Emoji } from 'emoji-mart'
+import Reaction from '../../components/reaction'
 // import { ThemeContext } from '../../router'
 // import ModalReport from '../../components/ModalReport'
 // import HighLightPost from '../../components/HighlightPost'
@@ -134,10 +134,8 @@ const HomePage = (props) => {
           }
           style={{ maxWidth: '100%', marginTop: 16 }}
           actions={[
-            <div key='like'>
-              <LikeTwoTone />
-              <span style={{ fontWeight: 'bold' }}> 19 </span>
-            </div>,
+            <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
+              <Reaction /></div>,
             <div key='comment'>
               <CommentOutlined />
               <span style={{ fontWeight: 'bold' }}> 8 </span>
@@ -151,7 +149,7 @@ const HomePage = (props) => {
             >
               <EllipsisOutlined />
             </Dropdown>,
-            <CommentPost key='commet'></CommentPost>
+            <CommentPost idPost={item.postId} key='commet'></CommentPost>
           ]}
         >
           <Meta
@@ -189,6 +187,7 @@ const HomePage = (props) => {
                   await setShowText(false)
                 }
                 }>See more </a>
+                <div></div>
               </div>
             }
           />

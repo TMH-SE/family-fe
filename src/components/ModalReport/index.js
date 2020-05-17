@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
-import {  Modal, Button, Radio} from 'antd'
-import "antd/dist/antd.css";
-import Editor from '../editor'
+import { Modal, Button, Radio } from 'antd'
+// import 'antd/dist/antd.css'
+// import Editor from '../editor'
 // import './index.css'
 
 const data = [
@@ -32,46 +33,46 @@ const data = [
   {
     reason: 'Lý do khác'
   }
-  
 ]
-function ModalReport(props){
-  
-    const [value, setValue] = useState('')
-    const radioStyle = {
-        display: 'block',
-        height: '30px',
-        lineHeight: '30px',
-      };
-    const onChange = e => {
-        console.log('radio checked', e.target.value);
-       setValue(e.target.value)
-      };
-    return (
-        <Modal
-        centered
-        width='50%'  
-        className='modal'
-        visible={props.visible}
-        title="Lý do báo cáo bài viết này là: "
-        onOk={props.handleOk}
-        onCancel={props.handleCancel}
-        footer={[
-          <Button key="back" onClick={props.handleCancel}>
-            Return
-          </Button>,
-          <Button key="submit" type="primary" onClick={props.handleOk}>
-            Submit
-          </Button>,
-        ]}
-      >
-           <Radio.Group onChange={onChange} value={value}>
-          {data.map((item, idx) => {
-            return <Radio style={radioStyle} value={idx}>
+function ModalReport (props) {
+  const [value, setValue] = useState('')
+  const radioStyle = {
+    display: 'block',
+    height: '30px',
+    lineHeight: '30px'
+  }
+  const onChange = (e) => {
+    console.log('radio checked', e.target.value)
+    setValue(e.target.value)
+  }
+  return (
+    <Modal
+      centered
+      width='50%'
+      className='modal'
+      visible={props.visible}
+      title='Lý do báo cáo bài viết này là: '
+      onOk={props.handleOk}
+      onCancel={props.handleCancel}
+      footer={[
+        <Button key='back' onClick={props.handleCancel}>
+          Return
+        </Button>,
+        <Button key='submit' type='primary' onClick={props.handleOk}>
+          Submit
+        </Button>
+      ]}
+    >
+      <Radio.Group onChange={onChange} value={value}>
+        {data.map((item, idx) => {
+          return (
+            <Radio key ={idx} style={radioStyle} value={idx}>
               {item.reason}
-          </Radio>
-          })}
+            </Radio>
+          )
+        })}
       </Radio.Group>
-        </Modal>
-    )}
+    </Modal>
+  )
+}
 export default ModalReport
- 

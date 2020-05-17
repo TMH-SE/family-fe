@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { createElement, useState } from 'react'
-import { Comment, Avatar, Form, List, Input, Tooltip } from 'antd'
+import { Comment, Avatar, Form, List, Tooltip, Modal } from 'antd'
 import moment from 'moment'
 import {
   DislikeOutlined,
@@ -9,7 +9,7 @@ import {
   LikeFilled
 } from '@ant-design/icons'
 import './index.css'
-const { TextArea } = Input
+import InputCustome from '../inputCustome'
 
 const CommentList = ({ comments }) => {
   const [likes, setLikes] = useState(0)
@@ -60,52 +60,69 @@ const CommentList = ({ comments }) => {
   )
 }
 
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
+const Editor = ({ onChange, onSubmit, idElement, value }) => (
   <div>
     <Form.Item>
-      <TextArea
+      {/* <TextArea
         placeholder='Nhap binh luan'
         autoSize={{ minRows: 1, maxRows: 3 }}
         onChange={onChange}
         value={value}
         onKeyUp={(event) => onSubmit(event)}
-      />
+      /> */}
+      <InputCustome
+        idElement={idElement}
+        placeholder='Nhap binh luan'
+        onChange={onChange}
+        onSubmit={onSubmit}
+      >
+      </InputCustome>
     </Form.Item>
   </div>
 )
 
-function CommentPost () {
+function CommentPost (props) {
   const [comments, setComments] = useState([])
-  const [value, setValue] = useState('')
-
-  const handleSubmit = (event) => {
-    if (event.shiftKey && event.keyCode === 13) {
-      event.stopPropagation()
-    } else if (event.keyCode === 13) {
-      if (!value.trim()) {
-        setValue('')
-        return
-      }
-      setValue('')
-      setComments(
-        comments.concat([
-          {
-            author: 'Han Solo',
-            avatar:
+  // const [value, setValue] = useState('')
+  const [previewImg, setPreviewImg] = useState(false)
+  const handleSubmit = (value, imgList) => {
+    setComments(
+      comments.concat([
+        {
+          author: 'Han Solo',
+          avatar:
                 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-            content: <p>{value.trim()}</p>,
-            datetime: moment().fromNow()
-          }
-        ])
-      )
-      // console.log(comments, 'cmt')
-      //   }, 500)
-    }
+          content: <>
+            <div style={{ display: 'flex', overflowX: 'auto' }}>
+              {imgList.map((srcImg, idx) => {
+                return <div className='img-cmt' key={idx} style={{ display: 'flex', height: 65, width: 65, margin: '5px 0 0 5px' }}>
+                  <img
+                    style={{ height: 60, width: 60, objectFit: 'cover' }}
+                    src={srcImg}
+                    onClick={() => setPreviewImg(true)}
+                  />
+                  <Modal
+                    visible={previewImg}
+                    footer={null}
+                    onCancel={() => setPreviewImg(false)}
+                  >
+                    <img alt="example" style={{ width: '100%' }} src={srcImg} />
+                  </Modal>
+                </div>
+              })}
+            </div>
+            <p>{value.trim()}</p>
+          </>,
+          datetime: moment().fromNow()
+        }
+      ])
+    )
   }
 
-  const handleChange = (e) => {
-    setValue(e.target.value)
-  }
+  // const handleChange = (text) => {
+  //   console.log(text, 'custom')
+  //   // setValue(text.target)
+  // }
   // console.log(comments, 'comme')
 
   return (
@@ -120,10 +137,10 @@ function CommentPost () {
         }
         content={
           <Editor
-            onChange={handleChange}
+            idElement={props.idPost}
             onSubmit={handleSubmit}
             //   submitting={submitting}
-            value={value}
+            // value={value}
           />
         }
       />

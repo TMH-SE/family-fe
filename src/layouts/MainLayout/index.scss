@@ -10,14 +10,27 @@
 .ant-layout{
   min-height: 100vh !important;
 }
+.ant-upload-list{
+  display: none;
+}
 .content{
   overflow: hidden;
   line-height: 1.5em;
   height: 4.5em;
 }
-// .ant-card{
-//   background-color: initial !important;
-// }
+.ant-upload.ant-upload-select-picture-card{
+  width: 20% !important;
+  border-radius: 50%;
+  background-color: initial;
+  border: none;
+  width: 126px;
+  height: 126px;
+  padding: 0;
+  margin-right: 0;
+}
+.ant-upload-picture-card-wrapper{
+  width: auto;
+}
 
 .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused{
   width: 100% !important;

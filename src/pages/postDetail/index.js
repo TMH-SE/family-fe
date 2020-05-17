@@ -13,7 +13,6 @@ import {
 import {
   CommentOutlined,
   FlagOutlined,
-  LikeTwoTone,
   BookOutlined,
   EllipsisOutlined,
   LeftOutlined
@@ -21,6 +20,7 @@ import {
 import { withRouter } from 'react-router-dom'
 import { SharePost, CommentPost, ModalReport, ModalCreatePost } from '../../components'
 import { brokenContext } from '../../layouts/MainLayout'
+import Reaction from '../../components/reaction'
 const { Meta } = Card
 // var moment = require('moment')
 
@@ -81,9 +81,8 @@ function PostDetail (props) {
         }
         style={{ maxWidth: '100%', marginTop: 16 }}
         actions={[
-          <div key='like'>
-            <LikeTwoTone />
-            <span style={{ fontWeight: 'bold' }}> 19 </span>
+          <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
+            <Reaction />
           </div>,
           <div key='comment'>
             <CommentOutlined />

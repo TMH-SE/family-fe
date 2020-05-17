@@ -12,7 +12,6 @@ import {
 import {
   CommentOutlined,
   FlagOutlined,
-  LikeTwoTone,
   EllipsisOutlined,
   BookOutlined
 } from '@ant-design/icons'
@@ -22,6 +21,7 @@ import {
   ModalReport
   // ModalCreatePost
 } from '../../../components'
+import Reaction from '../../../components/reaction'
 
 const { Meta } = Card
 // var moment = require('moment')
@@ -155,9 +155,8 @@ function MyPosts (props) {
           }
           style={{ maxWidth: '100%', marginTop: 16 }}
           actions={[
-            <div key='like'>
-              <LikeTwoTone />
-              <span style={{ fontWeight: 'bold' }}> 19 </span>
+            <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
+              <Reaction />
             </div>,
             <div key='comment'>
               <CommentOutlined />
@@ -187,7 +186,7 @@ function MyPosts (props) {
               <div>
                 <p
                   // id={showText ? `expand${idx}` : 'collapse'}
-                  className={`content ${nameEl}${idx}`}
+                  className={`contentPost ${nameEl}${idx}`}
                 >
                   Một trong những ngộ nhận sai lầm về giữ ấm bé yêu là ủ ấm bé.
                   Bằng cách mặc thật nhiều quần áo thật dày, thật kín. Đây là
@@ -206,12 +205,12 @@ function MyPosts (props) {
                   id={`${nameEl}${idx}`}
                   onClick={async () => {
                     setShowText(!showText)
-                    const content = await document.getElementsByClassName(
+                    const contentPost = await document.getElementsByClassName(
                       `expand${idx}`
                     )
                     const a = await document.getElementById(`expand${idx}`)
                     // console.log(a, content)
-                    content[0].setAttribute('style', 'height: auto !important')
+                    contentPost[0].setAttribute('style', 'height: auto !important')
                     a.setAttribute('style', 'visibility: hidden')
                     await setShowText(false)
                   }}

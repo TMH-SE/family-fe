@@ -53,7 +53,7 @@ const index = ({ children }) => {
       <Menu.Item key='0'onClick={() => history.push('/tuinhune/info')}>
         <InfoCircleTwoTone /> Thông tin cá nhân{' '}
       </Menu.Item>
-      <Menu.Item key='1' onClick={() => history.push('/tuinhune/messages')}>
+      <Menu.Item key='1' onClick={() => history.push('/tuinhune/messenger')}>
         <MessageTwoTone /> Tin nhắn{' '}
       </Menu.Item>
       <Menu.Item key='2' onClick={() => history.push('/tuinhune/myposts')} >
@@ -160,7 +160,7 @@ const index = ({ children }) => {
                     <span>Thêm bài viết</span>
                   </>
                 ) : (
-                  <Tooltip title='Thêm bài viết'><Button
+                  <Tooltip title='Thêm bài viết' placement='bottomRight'><Button
                     className='btn-round'
                     shape='circle'
                     icon={
@@ -178,7 +178,7 @@ const index = ({ children }) => {
                     <span>Thông báo</span>
                   </>
                 ) : (
-                  <Tooltip title='Thông báo'>
+                  <Tooltip title='Thông báo' placement='bottomRight'>
                     <Button
                       className='btn-round'
                       shape='circle'
