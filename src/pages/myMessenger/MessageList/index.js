@@ -5,6 +5,7 @@ import Message from '../Message'
 import moment from 'moment'
 
 import './MessageList.css'
+import { CloseCircleFilled } from '@ant-design/icons'
 
 const MY_USER_ID = 'apple'
 
@@ -154,18 +155,22 @@ export default function MessageList (props) {
 
   return (
     <div className='message-list'>
-      <Toolbar
-        title='Conversation Title'
-        rightItems={[
-          <ToolbarButton
-            key='info'
-            icon='ion-ios-information-circle-outline'
-          />,
-          <ToolbarButton key='video' icon='ion-ios-videocam' />,
-          <ToolbarButton key='phone' icon='ion-ios-call' />
-        ]}
-      />
-
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Toolbar
+          title='Conversation Title'
+          rightItems={[
+            <ToolbarButton
+              key='info'
+              icon='ion-ios-information-circle-outline'
+            />,
+            <ToolbarButton key='video' icon='ion-ios-videocam' />,
+            <ToolbarButton key='phone' icon='ion-ios-call' />
+          ]}
+        />
+        <div className='delete-messbox'>
+          <CloseCircleFilled />
+        </div>
+      </div>
       <div className='message-list-container'>{renderMessages()}</div>
       {/* <Compose
         // rightItems={[

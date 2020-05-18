@@ -132,4 +132,33 @@
     margin-right: 8px;
     color: rgba(0, 0, 0, 0.85);
   }
+.messenger-main{
+  .contentMess-mainLayout{
+    display: flex;
+    // width: 70%;
+    // background-color: #e6f6ff;
+    position: fixed;
+    right: 250px;
+    bottom: 0;
+    .contentMess-box{
+      
+      width: 20em;
+      margin-right: 10px;
+      border: #e6f4ff solid 5px;
+      background-color: #fff;
+      .message-list-container{
+        height: 20em;
+        background-color: initial;
+      }
+      border-radius: 10px;
+    }
+  }
+  .sidebarMess-mainLayout{
+    background-color: #e6f4ff;
+    position: fixed;
+    right: 0;
+    top: 35px;
+  }
+}
+
 

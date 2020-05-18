@@ -35,7 +35,9 @@ import './index.scss'
 // import { ThemeContext } from '../../router'
 // import HomePage from '../MainLayout/HomePage'
 // import HighLightPost from '../MainLayout/HighlightPost'
-// import ModalCreatePost from '../MainLayout/ModalCreatePost'
+import MessageList from '../../pages/myMessenger/MessageList'
+import InputCustome from '../../components/inputCustome'
+import ConversationList from '../../pages/myMessenger/ConversationList'
 const { Header, Content, Sider } = Layout
 // const { SubMenu } = Menu
 
@@ -304,7 +306,7 @@ const index = ({ children }) => {
           // style={{ backgroundColor: myTheme.isDark ? '#51565A' : 'aliceblue' }}
           breakpoint='lg'
           collapsedWidth={0}
-          width={isBroken ? 0 : '25%'}
+          width={isBroken ? 0 : '20%'}
           onBreakpoint={(broken) => setIsBroken(broken)}
           onCollapse={(collapsed) => {
             setVisible(!collapsed)
@@ -319,13 +321,29 @@ const index = ({ children }) => {
         <Content
           style={{
             padding: isBroken ? '0 5px' : '0 24px',
-            marginTop: isBroken ? 100 : 0
+            marginTop: isBroken ? 100 : 0,
+            width: '90%'
           }}
         >
           <brokenContext.Provider value={isBroken}>
             {children}
           </brokenContext.Provider>
         </Content>
+        <div className='messenger-main'>
+          <div className='sidebarMess-mainLayout'>
+            <ConversationList />
+          </div>
+          <div className='contentMess-mainLayout'>
+            <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
+              <MessageList />
+              <InputCustome></InputCustome>
+            </div>
+            <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
+              <MessageList />
+              <InputCustome></InputCustome>
+            </div>
+          </div>
+        </div>
         {isBroken && (
           <Drawer
             drawerStyle={{ transition: 'all 0.2s' }}
