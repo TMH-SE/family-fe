@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import Messenger from './Messenger'
+// import Messenger from './Messenger'
+import ConversationList from './ConversationList'
 
 const MyMessenger = (props) => {
   return (
     <>
-      <Messenger></Messenger>
+      <ConversationList></ConversationList>
+      {/* <Messenger></Messenger> */}
     </>
   )
 }

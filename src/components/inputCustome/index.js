@@ -1,3 +1,5 @@
+/* eslint-disable quote-props */
+/* eslint-disable indent */
 /* eslint-disable handle-callback-err */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
@@ -9,6 +11,9 @@ import './index.css'
 import TextArea from 'antd/lib/input/TextArea'
 
 function InputCustome (props) {
+  const CLOUDINARY_UPLOAD_PRESET = 'graduation-pj'
+const CLOUDINARY_UPLOAD_URL =
+  'https://api.cloudinary.com/v1_1/nhuht/image/upload'
   const [emoji, setEmoji] = useState({
     showEmoji: false,
     chosenEmoji: null
@@ -24,29 +29,13 @@ function InputCustome (props) {
     listType: 'picture-cards'
     // defaultFileList: [...fileList]
   }
+
   function getBase64 (img, callback) {
     const reader = new FileReader()
     reader.addEventListener('load', () => callback(reader.result))
     reader.readAsDataURL(img)
   }
-  const handleChange = info => {
-    if (info.file.status === 'uploading') {
-      setImage({ ...image, loading: true })
-      console.log(image.loading)
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        setImage({
-          srcImg: imageUrl,
-          listSrcImage: [...image.listSrcImage, imageUrl],
-          loading: false
-        })
-      )
-    }
-    document.getElementById(`input-custom-${props.idElement}`).focus()
-  }
+
   const deleteImg = (idx) => {
     var array = [...image.listSrcImage] // make a separate copy of the array nhớ nha nha
     array.splice(idx, 1)
@@ -60,8 +49,42 @@ function InputCustome (props) {
     const emoji = String.fromCodePoint(...codesArray)
     setText(text + emoji)
   }
+  const handleChange = async info => {
+    console.log(info, 'info')
+    if (info.file.status === 'uploading') {
+      setImage({ ...image, loading: true })
+      console.log(image.loading)
+      return
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, async imageUrl => {
+        const url = await uploadMessage(imageUrl)
+        console.log(url, 'url')
+        setImage({
+          srcImg: url,
+          listSrcImage: [...image.listSrcImage, url],
+          loading: false
+        })
+      })
+      document.getElementById(`input-custom-${props.idElement}`).focus()
+  }
+}
+const uploadMessage = async (file) => {
+  const data = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    file: file,
+    upload_preset: CLOUDINARY_UPLOAD_PRESET
+  })
+}
+  const upload = await fetch(CLOUDINARY_UPLOAD_URL, data).then(res => res.json())
+ return upload.secure_url
+}
   const handleSubmit = (event) => {
-    console.log(image.listSrcImage.length)
     if (event.shiftKey && event.keyCode === 13) {
       event.stopPropagation()
     } else if (event.keyCode === 13) {
@@ -70,12 +93,10 @@ function InputCustome (props) {
         setText('')
         setImage({ ...image, listSrcImage: [] })
       }
-      // setText('')
-      // return
     }
   }
   return (
-    <div className='input-custome' style={{ borderTop: 'solid #A0A5AF 1px', width: '100%' }}>
+    <div className='input-custome' style={{ borderTop: 'solid #A0A5AF 1px', width: '100%', marginTop: 10 }}>
       {/* <div> */}
       <div style={{ display: 'flex', overflowX: 'auto' }}>
         {image.listSrcImage.map((srcImg, idx) => {
@@ -107,22 +128,23 @@ function InputCustome (props) {
             setText(e.target.value)
             console.log(text, 'ẻt')
           }} style={{ border: 'none' }}></Input> */}
-        <Menu mode="horizontal" style={{ lineHeight: 0 }}>
-          <Menu.Item key="mail">
+        <Menu mode='horizontal' style={{ lineHeight: 0 }}>
+          <Menu.Item key='mail'>
             <Popover
               placement='bottomRight'
               // content={<a onClick>Close</a>}
               title={<Picker onSelect={e => addEmoji(e)} />}
-              trigger="click"
+              trigger='click'
               visible={emoji.showEmoji}
               onVisibleChange={() => setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })}
             >
               <SmileTwoTone style={{ marginBottom: 3 }} onClick={() => setEmoji({ ...setEmoji, showEmoji: true })} />
             </Popover>
           </Menu.Item>
-          <Menu.Item key="app" >
-            <Upload {...propsUpload} onChange={(info) => handleChange(info)
-            }>
+          <Menu.Item key='app' >
+            <Upload
+              {...propsUpload} onChange={(info) => handleChange(info)
+              }>
               <FileImageTwoTone />
             </Upload>
           </Menu.Item>

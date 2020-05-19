@@ -8,3 +8,6 @@
   .img-upload:hover > .delete-img{
     opacity: 1;
   }
+  textarea.ant-input {
+    resize: none;
+  }

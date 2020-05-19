@@ -84,7 +84,10 @@ const Editor = ({ onChange, onSubmit, idElement, value }) => (
 function CommentPost (props) {
   const [comments, setComments] = useState([])
   // const [value, setValue] = useState('')
-  const [previewImg, setPreviewImg] = useState(false)
+  const [previewImg, setPreviewImg] = useState({
+    isShow: false,
+    imgSrc: ''
+  })
   const handleSubmit = (value, imgList) => {
     setComments(
       comments.concat([
@@ -99,15 +102,13 @@ function CommentPost (props) {
                   <img
                     style={{ height: 60, width: 60, objectFit: 'cover' }}
                     src={srcImg}
-                    onClick={() => setPreviewImg(true)}
+                    onClick={() => {
+                      setPreviewImg({
+                        isShow: true,
+                        imgSrc: srcImg
+                      })
+                    }}
                   />
-                  <Modal
-                    visible={previewImg}
-                    footer={null}
-                    onCancel={() => setPreviewImg(false)}
-                  >
-                    <img alt="example" style={{ width: '100%' }} src={srcImg} />
-                  </Modal>
                 </div>
               })}
             </div>
@@ -144,6 +145,13 @@ function CommentPost (props) {
           />
         }
       />
+      <Modal
+        visible={previewImg.isShow}
+        footer={null}
+        onCancel={() => setPreviewImg(false)}
+      >
+        <img alt="example" style={{ width: '100%' }} src={previewImg.imgSrc} />
+      </Modal>
     </div>
   )
 }

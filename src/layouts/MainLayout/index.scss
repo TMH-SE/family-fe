@@ -18,6 +18,9 @@
   line-height: 1.5em;
   height: 4.5em;
 }
+.ant-carousel .slick-dots{
+  z-index: 1;
+}
 .ant-upload.ant-upload-select-picture-card{
   width: 20% !important;
   border-radius: 50%;
@@ -138,10 +141,9 @@
     // width: 70%;
     // background-color: #e6f6ff;
     position: fixed;
-    right: 250px;
+    right: 17%;
     bottom: 0;
-    .contentMess-box{
-      
+    .contentMess-box{ 
       width: 20em;
       margin-right: 10px;
       border: #e6f4ff solid 5px;
@@ -153,12 +155,21 @@
       border-radius: 10px;
     }
   }
-  .sidebarMess-mainLayout{
-    background-color: #e6f4ff;
-    position: fixed;
-    right: 0;
-    top: 35px;
+}
+.sidebarMess-mainLayout{
+  border:#d5edf9 solid 2px !important;
+  background-color: #e6f4ff;
+  position: fixed;
+  // right: 0;
+  bottom: 0;
+  width: 22%;
+  overflow-x: hidden;
+}
+.message-list {
+  .ant-card-bordered{
+    // background-color: #e6f4ff;
   }
+
 }
 
 

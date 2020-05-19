@@ -24,9 +24,15 @@ export const routersAuth = [
     name: 'Chi tiết bài viết'
   },
   {
-    exact: false,
+    exact: true,
     path: '/:userId/:type',
     component: 'profile',
+    name: 'Trang cá nhân'
+  },
+  {
+    exact: true,
+    path: '/:userId/messenger/:id',
+    component: 'messageDetail',
     name: 'Trang cá nhân'
   }
 

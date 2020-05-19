@@ -1,9 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import {
   Layout,
   Menu,
-  Drawer,
   Input,
   Avatar,
   Dropdown,
@@ -15,8 +15,6 @@ import {
 } from 'antd'
 import {
   UnorderedListOutlined,
-  CloseOutlined,
-  MenuOutlined,
   FormOutlined,
   BellOutlined,
   CaretDownOutlined,
@@ -32,11 +30,8 @@ import { useHistory } from 'react-router-dom'
 
 import { Logo, HighLightGroup } from '../../components'
 import './index.scss'
-// import { ThemeContext } from '../../router'
-// import HomePage from '../MainLayout/HomePage'
-// import HighLightPost from '../MainLayout/HighlightPost'
-import MessageList from '../../pages/myMessenger/MessageList'
-import InputCustome from '../../components/inputCustome'
+import MessageList from '../../pages/messageDetail/MessageList'
+// import InputCustome from '../../components/inputCustome'
 import ConversationList from '../../pages/myMessenger/ConversationList'
 const { Header, Content, Sider } = Layout
 // const { SubMenu } = Menu
@@ -55,9 +50,9 @@ const index = ({ children }) => {
       <Menu.Item key='0'onClick={() => history.push('/tuinhune/info')}>
         <InfoCircleTwoTone /> Thông tin cá nhân{' '}
       </Menu.Item>
-      <Menu.Item key='1' onClick={() => history.push('/tuinhune/messenger')}>
+      { isBroken && <Menu.Item key='1' onClick={() => history.push('/tuinhune/messenger')}>
         <MessageTwoTone /> Tin nhắn{' '}
-      </Menu.Item>
+      </Menu.Item>}
       <Menu.Item key='2' onClick={() => history.push('/tuinhune/myposts')} >
         <FileTextTwoTone /> Bài viết của tôi{' '}
       </Menu.Item>
@@ -269,17 +264,18 @@ const index = ({ children }) => {
 
       <Layout
         style={{
-          paddingTop: isBroken ? 15 : 100,
-          width: isBroken ? '100%' : '65%',
+          paddingTop: 100,
+          width: isBroken ? '100%' : '100%',
+          paddingLeft: 100,
           margin: '0 auto'
           // backgroundColor: 'aliceblue'
         }}
       >
-        {isBroken ? (
+        {/* {isBroken ? (
           <div
             id='btn-trigger'
             style={{
-              left: visible ? '40%' : 0,
+              left: visible ? '80%' : 0,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -301,27 +297,28 @@ const index = ({ children }) => {
           >
             {visible ? <CloseOutlined /> : <MenuOutlined />}
           </div>
-        ) : null}
+        ) : null} */}
         <Sider
           // style={{ backgroundColor: myTheme.isDark ? '#51565A' : 'aliceblue' }}
           breakpoint='lg'
           collapsedWidth={0}
-          width={isBroken ? 0 : '20%'}
+          width={isBroken ? 0 : '18%'}
           onBreakpoint={(broken) => setIsBroken(broken)}
           onCollapse={(collapsed) => {
             setVisible(!collapsed)
           }}
           trigger={null}
         >
-          <div style={{ position: 'fixed' }}>
-            <Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
-            {isBroken ? null : <HighLightGroup></HighLightGroup>}
-          </div>
+          {/* { !isBroken && <div style={{ position: 'fixed' }}> */}
+          {isBroken ? null : <><Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
+             : <HighLightGroup></HighLightGroup></>}
+          {/* </div>} */}
         </Sider>
         <Content
           style={{
             padding: isBroken ? '0 5px' : '0 24px',
-            marginTop: isBroken ? 100 : 0,
+            paddingRight: 76,
+            marginTop: 0,
             width: '90%'
           }}
         >
@@ -329,25 +326,27 @@ const index = ({ children }) => {
             {children}
           </brokenContext.Provider>
         </Content>
-        <div className='messenger-main'>
+        <Sider width='18%' >
           <div className='sidebarMess-mainLayout'>
             <ConversationList />
           </div>
+        </Sider>
+        { !isBroken && <div className='messenger-main'>
           <div className='contentMess-mainLayout'>
             <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
               <MessageList />
-              <InputCustome></InputCustome>
+              {/* <InputCustome></InputCustome> */}
             </div>
             <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
               <MessageList />
-              <InputCustome></InputCustome>
+              {/* <InputCustome></InputCustome> */}
             </div>
           </div>
-        </div>
-        {isBroken && (
+        </div>}
+        {/* {isBroken && (
           <Drawer
             drawerStyle={{ transition: 'all 0.2s' }}
-            width='40%'
+            width='80%'
             placement='left'
             closable={false}
             bodyStyle={{ padding: 0 }}
@@ -356,7 +355,7 @@ const index = ({ children }) => {
           >
             <HighLightGroup></HighLightGroup>
           </Drawer>
-        )}
+        )} */}
       </Layout>
     </Layout>
   )

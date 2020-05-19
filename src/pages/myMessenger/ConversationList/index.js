@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import ConversationSearch from '../ConversationSearch'
 import ConversationListItem from '../ConversationListItem'
-import Toolbar from '../Toolbar'
-import ToolbarButton from '../ToolbarButton'
+import Toolbar from '../../messageDetail/Toolbar'
+import ToolbarButton from '../../messageDetail/ToolbarButton'
+import './index.scss'
 import axios from 'axios'
+import { Skeleton, Avatar, List } from 'antd'
 
 export default function ConversationList (props) {
   const [conversations, setConversations] = useState([])
@@ -35,8 +37,33 @@ export default function ConversationList (props) {
         ]}
       />
       <ConversationSearch />
+      <List
+        className="demo-loadmore-list"
+        // loading={initLoading}
+        itemLayout="horizontal"
+        // loadMore={loadMore}
+        dataSource={conversations}
+        renderItem={conversation => (
+          <List.Item>
+            <Skeleton avatar title={false} loading={conversation.loading} active>
+              <List.Item.Meta
+                avatar={
+                  <Avatar src={conversation.photo} />
+                }
+                title={<a href="https://ant.design">{conversation.name}</a>}
+                description={conversation.text}
+              />
+            </Skeleton>
+            {/* <ConversationListItem
+              key={conversation.name}
+              data={conversation} /> */}
+          </List.Item>
+        )}
+      />
       {conversations.map((conversation) => (
-        <ConversationListItem key={conversation.name} data={conversation} />
+        <ConversationListItem
+          key={conversation.name}
+          data={conversation} />
       ))}
     </div>
   )

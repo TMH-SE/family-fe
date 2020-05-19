@@ -1,0 +1,19 @@
+.message-list-container {
+  height: 50vh;
+  width: 100%;
+  padding: 0 10px;
+  overflow-y: auto;
+  // padding-bottom: 10px;
+  
+}
+.message-list{
+  .ant-card-body{
+  padding: 0 !important;
+  // background-color: #e6f4ff
+}
+.ant-card-head{
+  padding-left: 5px !important;
+  // background-color: #e6f4ff
+}
+
+}
