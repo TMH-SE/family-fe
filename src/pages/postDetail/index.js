@@ -19,7 +19,7 @@ import {
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
 import { SharePost, CommentPost, ModalReport, ModalCreatePost } from '../../components'
-import { brokenContext } from '../../layouts/MainLayout'
+import { brokenContext } from '../../layouts/mainLayout'
 import Reaction from '../../components/reaction'
 const { Meta } = Card
 // var moment = require('moment')

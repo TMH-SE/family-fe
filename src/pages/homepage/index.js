@@ -24,7 +24,7 @@ import {
   HighLightPost,
   ModalCreatePost
 } from '../../components'
-import { brokenContext } from '../../layouts/MainLayout'
+import { brokenContext } from '../../layouts/mainLayout'
 // import { Emoji } from 'emoji-mart'
 import Reaction from '../../components/reaction'
 // import { ThemeContext } from '../../router'

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import logoImgSrc from '../../assets/images/logo.png'
+import logoImgSrc from '@assets/images/logo.png'
 
 const Logo = ({ size, onClick, isBroken }) => {
   const style = {
@@ -24,7 +24,7 @@ const Logo = ({ size, onClick, isBroken }) => {
   }
   return (
     <h1
-      style={{ width: isBroken ? 'auto' : '70%', color: '#0098da', ...style[size] }}
+      style={{ width: '90%', color: '#0098da', ...style[size] }}
       onClick={onClick}
       className='myLogo'>
       <img height='100%' src={logoImgSrc} />

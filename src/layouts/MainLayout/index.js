@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   Layout,
   Menu,
@@ -32,18 +32,18 @@ import { useHistory } from 'react-router-dom'
 
 import { Logo, HighLightGroup } from '../../components'
 import './index.scss'
+import { IContext } from '@tools'
 // import { ThemeContext } from '../../router'
 // import HomePage from '../MainLayout/HomePage'
 // import HighLightPost from '../MainLayout/HighlightPost'
 // import ModalCreatePost from '../MainLayout/ModalCreatePost'
 const { Header, Content, Sider } = Layout
-// const { SubMenu } = Menu
 
 export const brokenContext = React.createContext(null)
 
 const index = ({ children }) => {
-  // const myTheme = useContext(ThemeContext)
-  // console.log(myTheme, 'dấdsadsad:')
+  const { logout, me } = useContext(IContext)
+  console.log(me)
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
 
@@ -66,7 +66,7 @@ const index = ({ children }) => {
         <HeartTwoTone /> Cộng đồng đã tham gia{' '}
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key='5'>
+      <Menu.Item key='5' onClick={logout}>
         <LogoutOutlined /> Đăng xuất
       </Menu.Item>
     </Menu>
