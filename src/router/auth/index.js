@@ -31,7 +31,7 @@ export const routersAuth = [
   },
   {
     exact: true,
-    path: '/:userId/messenger/:id',
+    path: '/:userId/messenger/:idChat',
     component: 'messageDetail',
     name: 'Trang cá nhân'
   }

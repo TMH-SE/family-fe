@@ -1,0 +1,60 @@
+.delete-img{
+    transition: .5s ease;
+    opacity: 0;
+    position: relative;
+    top: -10%;
+    left: -10%;
+  }
+  .img-upload:hover > .delete-img{
+    opacity: 1;
+  }
+  .textMention__input {
+  //   padding-left: 5px;
+  //   background-color:  rgb(251, 251, 251);
+  //   resize: none;
+  //   height: 40px;
+  //   border-radius: 10px;
+  //   border: rgba(199, 224, 240, 0.828) solid 1px;
+  //   box-shadow: 
+  //  inset 3px 3px 5px #9ac3e644;
+  // inset -5px -5px 10px rgba(251, 251, 251, 0.055);
+  &:focus,&:active{
+    outline: none;
+    border: 1px solid #3facded0;
+  }
+  &::placeholder {
+    color: #a4b0be;
+    font-size: 14px;
+  }
+  }
+  .textMention--multiLine{
+    line-height: 30px !important;
+  }
+  .textMention__suggestions__list {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    max-height: 200px;
+    overflow: auto;
+  }
+  .textMention__suggestions__item {
+    padding: 5px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  }
+  .textMention__suggestions__item--focused {
+    background-color: #daf4fa;
+  }
+  textarea.ant-input:focus {
+    /* border: none !important; */
+  }
+  .input-menu{
+    display: flex;
+    background-color: initial;
+    /* border: black solid 1px; */
+    /* border-top: none; */
+    border-radius: 20px;
+    .ant-menu-horizontal > .ant-menu-item{
+      padding-left: 5px;
+      padding-right: 0;
+    }
+  }

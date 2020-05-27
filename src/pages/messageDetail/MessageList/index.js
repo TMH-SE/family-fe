@@ -1,114 +1,31 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
-// import Toolbar from '../Toolbar'
-// import ToolbarButton from '../ToolbarButton'
+import firebase from 'firebase/app'
 import Message from '../Message'
 import moment from 'moment'
-
 import './MessageList.scss'
-import { CloseOutlined } from '@ant-design/icons'
-import * as firebase from 'firebase'
-import { Card } from 'antd'
+import { CloseCircleFilled } from '@ant-design/icons'
+import { Card, Avatar } from 'antd'
 import InputCustome from '../../../components/inputCustome'
 import * as uuid from 'uuid'
-const firebaseConfig = {
-  apiKey: 'AIzaSyAzni8DvqLlDB_rnt1nxtCpIEeHocXHaZA',
-  authDomain: 'graduation-project-2020.firebaseapp.com',
-  databaseURL: 'https://graduation-project-2020.firebaseio.com',
-  projectId: 'graduation-project-2020',
-  storageBucket: 'graduation-project-2020.appspot.com',
-  messagingSenderId: '950930789819',
-  appId: '1:950930789819:web:b54a53c02ebdcf7e59609e',
-  measurementId: 'G-MPT0K7B144'
-}
-firebase.initializeApp(firebaseConfig)
-const db = firebase.database()
+moment().format()
 const MY_USER_ID = 'tuinhune'
 export default function MessageList (props) {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
     getMessages()
+    document.getElementById(`input-custom-${props.convention.idChat}`).focus()
   }, [])
-
-  const getMessages = () => {
-    db.ref('chat1').on('value', (snapshot) => {
+  const getMessages = async () => {
+    firebase.database().ref(`messenger/${props.convention.idChat}`).on('value', (snapshot) => {
       // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-      setMessages(Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key })))
+      const temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+      temp.sort((a, b) => a.timestamp - b.timestamp)
+      setMessages(temp)
     })
-    // var tempMessages = [
-    //   {
-    //     id: 1,
-    //     author: 'apple',
-    //     message:
-    //       'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 2,
-    //     author: 'orange',
-    //     message:
-    //       'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 3,
-    //     author: 'orange',
-    //     message:
-    //       'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 4,
-    //     author: 'apple',
-    //     message:
-    //       'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 5,
-    //     author: 'apple',
-    //     message:
-    //       'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 6,
-    //     author: 'apple',
-    //     message:
-    //       'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 7,
-    //     author: 'orange',
-    //     message:
-    //       'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 8,
-    //     author: 'orange',
-    //     message:
-    //       'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 9,
-    //     author: 'apple',
-    //     message:
-    //       'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-    //     timestamp: new Date().getTime()
-    //   },
-    //   {
-    //     id: 10,
-    //     author: 'orange',
-    //     message:
-    //       'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-    //     timestamp: new Date().getTime()
-    //   }
-    // ]
-    // setMessages([...messages, ...tempMessages])
+    const ele = await document.getElementsByClassName(`message-list-container ${props.convention.idChat}`)[0]
+    ele.scrollTop = ele.scrollHeight
   }
 
   const renderMessages = () => {
@@ -153,7 +70,6 @@ export default function MessageList (props) {
           endsSequence = false
         }
       }
-      console.log(current, 'ưèwè')
       tempMessages.push(
         <Message
           key={i}
@@ -171,36 +87,42 @@ export default function MessageList (props) {
 
     return tempMessages
   }
+  const { idChat } = props.convention
   const handleSubmit = async (value, imgList) => {
-    console.log(imgList, 'list')
-    const chatId = 'chat1' + '/'
-    const message = 'mess6'
+    const chatId = `${idChat}` + '/'
+    const message = uuid.v4()
     try {
-      await db.ref(chatId + message).set({
-        id: uuid.v4(),
+      await firebase.database().ref('messenger/' + chatId + message).set({
         content: { message: value, img: imgList },
-        timestamp: Date.now(),
-        author: 'tuihieune',
-        seen: false,
+        timestamp: new Date().getTime(),
+        author: 'tuinhune',
+        seen: MY_USER_ID === 'tuinhune',
         hideWith: []
       })
     } catch (error) {
       console.log(error)
     }
-    const ele = document.getElementsByClassName('message-list-container')[0]
+    const ele = document.getElementsByClassName(`message-list-container ${idChat}`)[0]
+    // console.log(ele, 'elemu')
     ele.scrollTop = ele.scrollHeight
   }
+
+  const { onCancelMessbox, convention, isBroken } = props
   return (
     <div className='message-list'>
 
-      <Card title="Tuinhune"
-        className='ant-mess'
-        extra={!props.isBroken && <div className='delete-messbox'><CloseOutlined style={{ color: '#ccc' }}/></div>}
-        // style={{ 10 }}
-        actions={[
-          <InputCustome onSubmit={handleSubmit} placeholder='Nhạp tin nhắn' key='input'></InputCustome>
-        ]}>
-        <div className='message-list-container'>{renderMessages()}</div>
+      <Card title={<><Avatar src={props.convention.photo}></Avatar>
+        <span style={{ marginLeft: 5 }}>{props.convention.name}</span></>}
+      className='ant-mess'
+      extra={!isBroken &&
+      // <div className='delete-messbox'>
+        <CloseCircleFilled className='delete-messbox' onClick={() => onCancelMessbox(convention)} style={{ color: '#ccc' }}/>}
+      // </div>}
+      // style={{ 10 }}
+      actions={[
+        <InputCustome idElement={convention.idChat} onSubmit={handleSubmit} placeholder='Nhạp tin nhắn' key='input'></InputCustome>
+      ]}>
+        <div className={`message-list-container ${idChat}`} >{renderMessages()}</div>
       </Card>
 
     </div>

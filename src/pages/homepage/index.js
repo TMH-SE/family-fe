@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
+import firebase from 'firebase/app'
 import {
   Card,
   Input,
@@ -37,22 +38,22 @@ const data = [
   {
     title: 'Ant Design Title 1',
     groupId: '111',
-    postId: '1'
+    postId: 'post1'
   },
   {
     title: 'Ant Design Title 2',
     groupId: '222',
-    postId: '2'
+    postId: 'post2'
   },
   {
     title: 'Ant Design Title 3',
     groupId: '111',
-    postId: '3'
+    postId: 'post3'
   },
   {
     title: 'Ant Design Title 4',
     groupId: '222',
-    postId: '4'
+    postId: 'post4'
   }
 ]
 const HomePage = (props) => {
@@ -61,6 +62,7 @@ const HomePage = (props) => {
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const [showText, setShowText] = useState(false)
+
   const nameEl = showText ? 'expand' : 'collapse'
   const handleOk = () => {
     setVisibleModalCreate(false)
@@ -69,6 +71,15 @@ const HomePage = (props) => {
   const handleCancel = () => {
     setVisibleModalCreate(false)
     setVisibleModalReport(false)
+  }
+  const getSumComment = (idPost) => {
+    let temp
+    firebase.database().ref(idPost + '/comments').on('value', (snapshot) => {
+      // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+      temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+      // return temp.length
+    })
+    return temp ? temp.length : 0
   }
   const menu = (
     <Menu>
@@ -100,8 +111,9 @@ const HomePage = (props) => {
       <h3>Bài viết từ FAMILY</h3>
       <HighLightPost isBroken={isBroken}></HighLightPost>
 
-      {data.map((item, idx) =>
-        <Card
+      {data.map((item, idx) => {
+        const sumComment = getSumComment(item.postId)
+        return <Card
           key={idx}
           title={
             <div style={{ display: 'flex', justifyContent: 'start' }}>
@@ -134,11 +146,11 @@ const HomePage = (props) => {
           }
           style={{ maxWidth: '100%', marginTop: 16 }}
           actions={[
-            <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
-              <Reaction /></div>,
-            <div key='comment'>
-              <CommentOutlined />
-              <span style={{ fontWeight: 'bold' }}> 8 </span>
+            <div id='like-post' key='like'>
+              <Reaction idPost={item.postId} /></div>,
+            <div key='comment' onClick={() => document.getElementById(`input-custom-${item.postId}`).focus()}>
+              <CommentOutlined onClick={() => document.getElementById(`input-custom-${item.postId}`).focus()}/>
+              <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sumComment}</span>
             </div>,
             <SharePost key='share' />,
             <Dropdown
@@ -149,7 +161,7 @@ const HomePage = (props) => {
             >
               <EllipsisOutlined />
             </Dropdown>,
-            <CommentPost idPost={item.postId} key='commet'></CommentPost>
+            <CommentPost idPost={item.postId} key='commet' ></CommentPost>
           ]}
         >
           <Meta
@@ -192,6 +204,7 @@ const HomePage = (props) => {
             }
           />
         </Card>
+      }
       )}
 
       <ModalReport

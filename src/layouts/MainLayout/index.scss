@@ -135,6 +135,10 @@
     margin-right: 8px;
     color: rgba(0, 0, 0, 0.85);
   }
+.highlight-group{
+  position: fixed;
+  width: 15%;
+}
 .messenger-main{
   .contentMess-mainLayout{
     display: flex;
@@ -146,8 +150,9 @@
     .contentMess-box{ 
       width: 20em;
       margin-right: 10px;
-      border: #e6f4ff solid 5px;
+      // border: #e6f4ff solid 5px;
       background-color: #fff;
+      
       .message-list-container{
         height: 20em;
         background-color: initial;
@@ -156,6 +161,23 @@
     }
   }
 }
+.focus{
+  // border: #1f7fc8 solid 3px !important;
+  // margin: 40px;
+  background-color: rgb(68,68,68); /* Needed for IEs */
+
+  // -moz-box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+  // -webkit-box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+  box-shadow: 0px 0px 10px #1f7fc8;
+
+  filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30)";
+  zoom: 1;
+  .delete-messbox{
+    color: #6caee0 !important;
+  }
+}
+
 .sidebarMess-mainLayout{
   border:#d5edf9 solid 2px !important;
   background-color: #e6f4ff;
@@ -171,5 +193,21 @@
   }
 
 }
+
+.noti-item{
+  padding: 18px;
+  margin: 0 -15px
+}
+.noti-item:hover{
+  cursor: pointer;
+  background-color: #ccc !important;
+}
+.reaction-popover{
+  .ant-popover-inner{
+  padding: 10px 
+  }
+}  
+
+
 
 

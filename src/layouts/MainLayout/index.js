@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Layout,
   Menu,
@@ -10,7 +10,8 @@ import {
   Typography,
   Button,
   Tooltip,
-  Badge
+  Badge,
+  Popover
   // Switch
 } from 'antd'
 import {
@@ -27,7 +28,7 @@ import {
   HeartTwoTone
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
-
+import firebase from 'firebase/app'
 import { Logo, HighLightGroup } from '../../components'
 import './index.scss'
 import MessageList from '../../pages/messageDetail/MessageList'
@@ -37,13 +38,36 @@ const { Header, Content, Sider } = Layout
 // const { SubMenu } = Menu
 
 export const brokenContext = React.createContext(null)
-
+const MY_USER_ID = 'tuikyne'
+const reactStringReplace = require('react-string-replace')
 const index = ({ children }) => {
   // const myTheme = useContext(ThemeContext)
   // console.log(myTheme, 'dấdsadsad:')
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [messbox, setMessbox] = useState([])
+  const [notifications, setNotifications] = useState([])
 
+  useEffect(() => {
+    getNotification()
+  }, [])
+  const getNotification = () => {
+    let temp
+    firebase.database().ref('notifications/' + MY_USER_ID).on('value', (snapshot) => {
+      // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+      temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+      setNotifications(temp)
+      console.log('notifications', temp)
+    })
+  }
+  const chooseConvention = (convention) => {
+    if (messbox.findIndex(mess => mess.idChat === convention.idChat) === -1) {
+      const a = [...messbox]
+      a.push(convention)
+      setMessbox(a)
+    }
+    document.getElementById(`input-custom-${convention.idChat}`).focus()
+  }
   const history = useHistory()
   const menu = (
     <Menu>
@@ -68,6 +92,13 @@ const index = ({ children }) => {
       </Menu.Item>
     </Menu>
   )
+  const onCancelMessbox = (idChat) => {
+    const idx = messbox.findIndex(mess => mess.idChat === idChat)
+    var arr = [...messbox]
+    arr.splice(idx, 1)
+    setMessbox([...arr])
+  }
+
   return (
     <Layout >
       <Header
@@ -81,7 +112,7 @@ const index = ({ children }) => {
       >
         <div
           style={{
-            width: isBroken ? '100%' : '65%',
+            width: isBroken ? '100%' : '60%',
             display: 'flex',
             margin: '0 auto',
             justifyContent: 'space-between'
@@ -110,18 +141,7 @@ const index = ({ children }) => {
                   className='search-broken'
                   style={{ height: 30, top: '1em', borderRadius: 40 }}
                   prefix={
-                    <SearchOutlined
-                    //   onClick={() => {
-                    //   if(document.getElementsByClassName('ant-input-affix-wrapper-focused')){
-                    //     console.log(document.getElementsByClassName('ant-menu')[0].style, 'fwè')
-                    //   // style={{backgroundColor: 'lightskyblue'}}
-                    //   // document.getElementsByClassName('ant-menu')[0].setAttribute('style','width:30%  background-color: lightskyblue margin-top: 0.75em')
-                    //     document.getElementById('header-left').setAttribute('style','width:65% display: flex')
-                    //     // document.getElementById('header-right').setAttribute('style','width:35% display: flex justify-content: space-evenly')
-                    // }
-
-                    // }}
-                    />
+                    <SearchOutlined/>
                   }
                   placeholder='Tìm kiếm'
                 ></Input>
@@ -176,30 +196,28 @@ const index = ({ children }) => {
                   </>
                 ) : (
                   <Tooltip title='Thông báo' placement='bottomRight'>
-                    <Button
-                      className='btn-round'
-                      shape='circle'
-                      icon={<Badge size={1} overflowCount={9} count={5}><BellOutlined /></Badge>}
-                    />
+                    <Popover className='noti-popover' content={notifications.map((noti, idx) =>
+                      <div className='noti-item' style={{ backgroundColor: noti.seen ? 'initial' : 'rgba(214, 234, 248, 0.5)' }}
+                        key={idx} onClick={() => {
+                          firebase.database().ref('notifications/' + MY_USER_ID + '/' + noti.id).update({
+                            seen: true
+                          })
+                          history.push(noti.link)
+                        }}>
+                        <p style={{ display: 'inline' }}>
+                          {reactStringReplace(noti.content.trim(), /@(\w+)/g, (match, i) =>
+                            <a style={{ display: 'contents' }} key={match + i} onClick={() => history.push(`/${match}/info`)}>{match}</a>)}
+                        </p>
+                      </div>)} title="Thông Báo" trigger="click">
+                      <Button
+                        className='btn-round'
+                        shape='circle'
+                        icon={<Badge size={1} overflowCount={9} count={notifications.filter(item => item.seen === false).length}><BellOutlined /></Badge>}
+                      />
+                    </Popover>
                   </Tooltip>
                 )}
               </Menu.Item>
-              {/* <Menu.Item> */}
-              {/* { isBroken ?
-                <Dropdown overlay={menu} trigger={['click']}>
-                <a className='ant-dropdown-link' style={{ paddingLeft: 5 }}  onClick={e => e.preventDefault()}>
-                <Avatar style={{ color: 'white', backgroundColor: 'rgb(0, 152, 218)', fontSize: '14px', verticalAlign: 'sub'}} size={25}>N</Avatar><CaretDownOutlined />
-                </a>
-              </Dropdown>
-                :
-                <><Avatar style={{ color: 'white', backgroundColor: 'rgb(0, 152, 218)', fontSize: '14px', verticalAlign: 'sub'}} size={25}>N</Avatar>
-                <Dropdown overlay={menu} trigger={['click']}>
-                  <a className='ant-dropdown-link' style={{ paddingLeft: 5 }}  onClick={e => e.preventDefault()}>
-                    Tuinhune <CaretDownOutlined />
-                  </a>
-                </Dropdown></>
-} */}
-              {/* </Menu.Item> */}
             </Menu>
             <div >
               {isBroken ? (
@@ -255,51 +273,18 @@ const index = ({ children }) => {
         </Row> */}
           </div>
         </div>
-        {/* {isBroken &&
-            <Input className='search-line'
-              style={{ width: '70%', marginLeft: '14%', height: 30,  borderRadius: 40 }}
-              prefix={<SearchOutlined /> } placeholder='Tìm kiếm'>
-            </Input>} */}
       </Header>
 
       <Layout
         style={{
-          paddingTop: 100,
-          width: isBroken ? '100%' : '100%',
-          paddingLeft: 100,
+          paddingTop: isBroken ? 65 : 100,
+          width: '100%',
+          paddingLeft: isBroken ? 0 : 100,
           margin: '0 auto'
           // backgroundColor: 'aliceblue'
         }}
       >
-        {/* {isBroken ? (
-          <div
-            id='btn-trigger'
-            style={{
-              left: visible ? '80%' : 0,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              // position: 'absolute',
-              top: 70,
-              height: 40,
-              width: 40,
-              padding: 5,
-              background: 'initial',
-              color: '#000',
-              boxShadow: '2px 0 8px rgba(0,0,0,.2)',
-              borderRadius: '0 4px 4px 0',
-              zIndex: 1001,
-              transition: 'all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1)',
-              cursor: 'pointer',
-              position: 'fixed'
-            }}
-            onClick={() => setVisible(!visible)}
-          >
-            {visible ? <CloseOutlined /> : <MenuOutlined />}
-          </div>
-        ) : null} */}
         <Sider
-          // style={{ backgroundColor: myTheme.isDark ? '#51565A' : 'aliceblue' }}
           breakpoint='lg'
           collapsedWidth={0}
           width={isBroken ? 0 : '18%'}
@@ -310,14 +295,15 @@ const index = ({ children }) => {
           trigger={null}
         >
           {/* { !isBroken && <div style={{ position: 'fixed' }}> */}
-          {isBroken ? null : <><Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
-             : <HighLightGroup></HighLightGroup></>}
+          {isBroken ? null : <div className='highlight-group'><Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
+            <HighLightGroup></HighLightGroup></div>}
           {/* </div>} */}
         </Sider>
         <Content
           style={{
-            padding: isBroken ? '0 5px' : '0 24px',
-            paddingRight: 76,
+            // backgroundColor: 'aliceblue',
+            padding: isBroken ? 0 : '0 24px',
+            paddingRight: !isBroken && 76,
             marginTop: 0,
             width: '90%'
           }}
@@ -326,21 +312,25 @@ const index = ({ children }) => {
             {children}
           </brokenContext.Provider>
         </Content>
-        <Sider width='18%' >
+        { !isBroken && <Sider width='18%' >
           <div className='sidebarMess-mainLayout'>
-            <ConversationList />
+            <ConversationList chooseConvention={chooseConvention}/>
           </div>
-        </Sider>
+        </Sider> }
         { !isBroken && <div className='messenger-main'>
-          <div className='contentMess-mainLayout'>
-            <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className='contentMess-mainLayout' >
+            {messbox.map((convention, idx) => {
+              return (
+                <div key={idx}
+                  className={`contentMess-box ${convention.idChat}`}
+                  style={{ display: 'flex', flexDirection: 'column' }}>
+                  <MessageList idx={idx} onCancelMessbox={() => onCancelMessbox(convention.idChat)} convention={convention} />
+                </div>)
+            }
+            )}
+            {/* <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
               <MessageList />
-              {/* <InputCustome></InputCustome> */}
-            </div>
-            <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
-              <MessageList />
-              {/* <InputCustome></InputCustome> */}
-            </div>
+            </div> */}
           </div>
         </div>}
         {/* {isBroken && (

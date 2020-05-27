@@ -2,6 +2,7 @@
 import React, { useContext, useState } from 'react'
 import { Avatar, Menu, Button, Upload, Input } from 'antd'
 import { withRouter } from 'react-router-dom'
+import firebase from 'firebase/app'
 import { EllipsisOutlined, EditTwoTone, HeartTwoTone, MessageTwoTone } from '@ant-design/icons'
 import { brokenContext } from '../../layouts/MainLayout'
 import SavedPosts from './savedPosts'
@@ -9,6 +10,7 @@ import Info from './info'
 import MyPosts from './myPosts'
 import { HighLightGroup } from '../../components'
 import MyMessenger from '../myMessenger'
+import * as uuid from 'uuid'
 
 function Profile (props) {
   const [editBio, setditBio] = useState({
@@ -18,10 +20,24 @@ function Profile (props) {
   })
 
   const { history } = props
-  const { type } = props.match.params
-  //   const [keyMenu, setKeyMenu] = useState(type)
-  console.log('type', type)
+  const { type, userId } = props.match.params
+  const MY_USER_ID = 'tuinhune'
   const isBroken = useContext(brokenContext)
+
+  const sendNotifollow = async () => {
+    const notificationId = uuid.v4()
+    try {
+      await firebase.database().ref('notifications/' + userId + '/' + notificationId).set({
+        action: 'follow',
+        reciever: userId,
+        link: `/${MY_USER_ID}/info`,
+        content: `@${MY_USER_ID} đã bắt đầu theo dõi bạn`,
+        seen: false
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
   return (
     <>
       { type !== 'messenger' && <><div >
@@ -71,7 +87,7 @@ function Profile (props) {
               </p>
               <div>
                 { !isBroken ? (<>
-                  <Button type='ghost' icon={<HeartTwoTone />}>Theo dõi</Button>
+                  <Button type='ghost' icon={<HeartTwoTone />} onClick={sendNotifollow}>Theo dõi</Button>
                   <Button type='ghost' icon={<MessageTwoTone />}>Nhắn tin</Button>
                 </>)
                   : (<div style={{ marginTop: 5 }}>

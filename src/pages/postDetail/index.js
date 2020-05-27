@@ -97,7 +97,7 @@ function PostDetail (props) {
           >
             <EllipsisOutlined />
           </Dropdown>,
-          <CommentPost key='commet'></CommentPost>
+          <CommentPost idPost={props.match.params.postId} key='commet' ></CommentPost>
         ]}
       >
         <Meta

@@ -2,15 +2,23 @@
 /* eslint-disable indent */
 /* eslint-disable handle-callback-err */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Menu, Upload, Popover } from 'antd'
 import { FileImageTwoTone, SmileTwoTone, LoadingOutlined, CloseCircleFilled } from '@ant-design/icons'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
-import './index.css'
-import TextArea from 'antd/lib/input/TextArea'
+import './index.scss'
+import { MentionsInput, Mention } from 'react-mentions'
 
 function InputCustome (props) {
+  console.log(props.replyAuthor, 'tttt')
+  const mentionData = []
+  props.mentions && props.mentions.map((item, idx) => {
+   mentionData.push({
+    id: item + idx + '',
+    display: item
+  })
+})
   const CLOUDINARY_UPLOAD_PRESET = 'graduation-pj'
 const CLOUDINARY_UPLOAD_URL =
   'https://api.cloudinary.com/v1_1/nhuht/image/upload'
@@ -23,7 +31,16 @@ const CLOUDINARY_UPLOAD_URL =
     srcImg: '',
     listSrcImage: []
   })
-  const [text, setText] = useState('')
+
+  const [text, setText] = useState(props.replyAuthor ? '^@@@' + props.replyAuthor : '')
+  useEffect(() => {
+    props.replyAuthor && document.getElementById(`input-custom-${props.idElement}`).focus()
+    // const arr = document.getElementsByClassName('contentMess-box')
+    // arr.length !== 0 && arr.mapsetAttribute('style', 'border: #e6f4ff solid 5px;')
+    // const a = document.getElementsByClassName(`contentMess-box ${props.idElement}`)
+    // console.log(a, 'ấdsađ')
+    // a.length !== 0 && a[0].setAttribute('style', 'border: blue solid 3px ')
+  })
   const propsUpload = {
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     listType: 'picture-cards'
@@ -42,7 +59,6 @@ const CLOUDINARY_UPLOAD_URL =
     setImage({ ...image, listSrcImage: array })
   }
   const addEmoji = e => {
-    console.log(e, 'emoji')
     const sym = e.unified.split('-')
     const codesArray = []
     sym.forEach(el => codesArray.push('0x' + el))
@@ -50,7 +66,6 @@ const CLOUDINARY_UPLOAD_URL =
     setText(text + emoji)
   }
   const handleChange = async info => {
-    console.log(info, 'info')
     if (info.file.status === 'uploading') {
       setImage({ ...image, loading: true })
       console.log(image.loading)
@@ -60,7 +75,6 @@ const CLOUDINARY_UPLOAD_URL =
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, async imageUrl => {
         const url = await uploadMessage(imageUrl)
-        console.log(url, 'url')
         setImage({
           srcImg: url,
           listSrcImage: [...image.listSrcImage, url],
@@ -96,7 +110,7 @@ const uploadMessage = async (file) => {
     }
   }
   return (
-    <div className='input-custome' style={{ borderTop: 'solid #A0A5AF 1px', width: '100%', marginTop: 10 }}>
+    <div className='input-custome' style={{ width: '100%' }}>
       {/* <div> */}
       <div style={{ display: 'flex', overflowX: 'auto' }}>
         {image.listSrcImage.map((srcImg, idx) => {
@@ -110,24 +124,45 @@ const uploadMessage = async (file) => {
         { image.loading && <LoadingOutlined style={{ padding: 10 }}/> }
         {/* </div> */}
       </div>
-      <div style={{ display: 'flex' }}>
-        <TextArea
+      <div className='input-menu'>
+        <MentionsInput
+          // defaultValue={props.replyAuthor && props.replyAuthor }
+          style={{ width: '100%' }}
+          onFocus={() => {
+            const a = document.getElementsByClassName(`contentMess-box ${props.idElement}`)[0]
+            a && a.classList.add('focus')
+          }}
+          onBlur={() => {
+            const a = document.getElementsByClassName(`contentMess-box ${props.idElement}`)[0]
+            a && a.classList.remove('focus')
+          }}
           id={`input-custom-${props.idElement}`}
-          style={{ border: 'none' }}
+          className="mentions"
+          // style={{ border: 'none' }}
           placeholder={props.placeholder}
+          // markup='@__display__'
+          // markup='^@@@__display__'
           autoSize={{ minRows: 1, maxRows: 3 }}
-          onChange={(e) => {
-            // e.preventDefault()
-            setText(e.target.value)
+          onChange={(event, newValue, newPlainTextValue, mentions) => {
+              console.log(newValue, newPlainTextValue, mentions, 'uuuu')
+                // value: newValue,
+                // mentionData = { newValue, newPlainTextValue, mentions}
+              // })
+            setText(newValue)
           }}
           value={text}
           onKeyUp={(event) => handleSubmit(event)}
-        />
-        {/* <Input placeholder='Nhập tin nhăn'
-          value={text} onChange={(e) => {
-            setText(e.target.value)
-            console.log(text, 'ẻt')
-          }} style={{ border: 'none' }}></Input> */}
+          allowSuggestionsAboveCursor
+          allowSpaceInQuery
+        >
+           <Mention
+           appendSpaceOnAdd
+            trigger="@"
+            markup='^@@@__display__'
+            data={mentionData}
+            className="textMention__mention"
+          />
+        </MentionsInput>
         <Menu mode='horizontal' style={{ lineHeight: 0 }}>
           <Menu.Item key='mail'>
             <Popover

@@ -6,7 +6,7 @@
     padding: 10px;
     .ant-list-item-meta-description{
       white-space: nowrap;
-      width: 50%;
+      width: 90%;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -17,5 +17,9 @@
   .ant-card-head-title{
     padding: 10px
   }
+  .ant-list-item:hover{
+    cursor: pointer;
+  background-color: rgba(182,191,200, 0.5);
 
+  }
   
