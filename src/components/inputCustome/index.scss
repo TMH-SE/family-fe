@@ -9,14 +9,14 @@
     opacity: 1;
   }
   .textMention__input {
-  //   padding-left: 5px;
-  //   background-color:  rgb(251, 251, 251);
-  //   resize: none;
-  //   height: 40px;
-  //   border-radius: 10px;
-  //   border: rgba(199, 224, 240, 0.828) solid 1px;
-  //   box-shadow: 
-  //  inset 3px 3px 5px #9ac3e644;
+    padding-left: 5px;
+    background-color:  rgb(251, 251, 251);
+    resize: none;
+    height: 40px;
+    border-radius: 10px;
+    border: rgba(199, 224, 240, 0.828) solid 1px;
+    box-shadow: 
+   inset 3px 3px 5px #9ac3e644;
   // inset -5px -5px 10px rgba(251, 251, 251, 0.055);
   &:focus,&:active{
     outline: none;
@@ -43,6 +43,9 @@
   }
   .textMention__suggestions__item--focused {
     background-color: #daf4fa;
+  }
+  textarea.ant-input:focus {
+    /* border: none !important; */
   }
   .input-menu{
     display: flex;

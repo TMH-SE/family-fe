@@ -21,7 +21,7 @@ import {
   ModalReport
   // ModalCreatePost
 } from '../../../components'
-import Reaction from '../../../components/reaction'
+import { Reaction } from '@components'
 
 const { Meta } = Card
 // var moment = require('moment')

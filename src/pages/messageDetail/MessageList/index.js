@@ -6,7 +6,8 @@ import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
 import * as uuid from 'uuid'
-import InputCustome from 'src/components/inputCustome'
+
+import { InputCustome } from '@components'
 import Message from '../Message'
 moment().format()
 const MY_USER_ID = 'tuinhune'

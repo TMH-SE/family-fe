@@ -18,8 +18,11 @@ import {
   LeftOutlined
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
-import { SharePost, CommentPost, ModalReport, ModalCreatePost } from '@components'
-import { brokenContext } from 'src/layouts/MainLayout'
+
+// import { Reaction } from '@components'
+import { Reaction, SharePost, CommentPost, ModalCreatePost, ModalReport } from '@components'
+import { brokenContext } from '../../layouts/MainLayout'
+
 const { Meta } = Card
 // var moment = require('moment')
 

@@ -7,7 +7,7 @@ import './index.scss'
 import { CaretLeftOutlined } from '@ant-design/icons'
 import { Card } from 'antd'
 import * as uuid from 'uuid'
-import InputCustome from 'src/components/inputCustome'
+import { InputCustome } from '@components'
 moment().format()
 const MY_USER_ID = 'tuinhune'
 export default function MessageDetail (props) {

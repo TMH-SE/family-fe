@@ -18,9 +18,9 @@ import {
   EllipsisOutlined
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
-import { brokenContext } from 'src/layouts/MainLayout'
-import { HighLightPost, SharePost, CommentPost, ModalReport, ModalCreatePost } from '@components'
-import Reaction from 'src/components/reaction'
+import { brokenContext } from '../../layouts/MainLayout'
+import './index.scss'
+import { Reaction, HighLightPost, SharePost, CommentPost, ModalReport, ModalCreatePost } from '@components'
 
 // import { Emoji } from 'emoji-mart'
 // import { ThemeContext } from '../../router'

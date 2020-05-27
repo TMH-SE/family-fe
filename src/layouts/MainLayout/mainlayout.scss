@@ -1,3 +1,4 @@
+
 .search-broken {
   margin-top: 0.25em;
   width: 30px !important;
@@ -17,9 +18,6 @@
   overflow: hidden;
   line-height: 1.5em;
   height: 4.5em;
-}
-.ant-carousel .slick-dots{
-  z-index: 1;
 }
 .ant-upload.ant-upload-select-picture-card {
   width: 20% !important;
@@ -59,7 +57,6 @@
 .ant-layout-header {
   padding-left: 0px !important;
 }
-
 ul {
   list-style: none;
   padding: 0;
@@ -67,12 +64,15 @@ ul {
 .ant-menu-horizontal {
   border: none !important;
   .ant-menu-item {
-    top: 0.5em !important;
+    // top: 0.5em !important;
     padding-left: 0px;
     .anticon {
       margin-right: 0 !important;
     }
   }
+}
+.ant-menu-item .anticon{
+  font-size: 20px !important ;
 }
 .ant-carousel .slick-slide {
   text-align: center;
@@ -81,13 +81,10 @@ ul {
   background: initial;
   overflow: hidden;
 }
-.myLogo {
-  width: 'auto';
-}
-// .ant-card-actions{
-//   display: flex;
-//   flex-direction: column;
+// .myLogo {
+//   width: 'auto';
 // }
+
 .ant-card-actions {
   // padding-left: 16px !important;
   > li:not(:last-child) {
@@ -102,10 +99,11 @@ ul {
     border: none;
     // height: 50px;
   }
+}
 .highlight-group{
   position: fixed;
   width: 15%;
-}
+  }
 .messenger-main{
   .contentMess-mainLayout{
     display: flex;
@@ -154,7 +152,6 @@ ul {
   width: 22%;
   overflow-x: hidden;
 }
-
 .noti-item{
   padding: 18px;
   margin: 0 -15px
@@ -169,9 +166,6 @@ ul {
   }
 }  
 
-
-
-}
 .site-description-item-profile-wrapper {
   margin-bottom: 7px;
   color: rgba(0, 0, 0, 0.65);

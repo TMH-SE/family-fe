@@ -6,6 +6,12 @@ import firebase from 'firebase/app'
 import { EllipsisOutlined, EditTwoTone, HeartTwoTone, MessageTwoTone } from '@ant-design/icons'
 
 import * as uuid from 'uuid'
+import Info from './info'
+import myMessenger from '@pages/myMessenger'
+import MyPosts from './myPosts'
+import savedPosts from './savedPosts'
+import { HighLightGroup } from '@components'
+import { brokenContext } from '../../layouts/MainLayout'
 
 function Profile (props) {
   const [editBio, setditBio] = useState({
@@ -137,9 +143,9 @@ function Profile (props) {
       <br /> </>}
       <div style={{ backgroundColor: '#fff', padding: 16 }}>
         {type === 'info' && <Info /> }
-        {type === 'messenger' && <MyMessenger />}
+        {type === 'messenger' && <myMessenger />}
         {type === 'myposts' && <MyPosts history={history}/> }
-        {type === 'savedposts' && <SavedPosts history={history} />}
+        {type === 'savedposts' && <savedPosts history={history} />}
         {type === 'joinedGroup' && <HighLightGroup /> }
       </div>
     </>

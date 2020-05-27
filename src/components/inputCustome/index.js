@@ -137,12 +137,12 @@ const uploadMessage = async (file) => {
             a && a.classList.remove('focus')
           }}
           id={`input-custom-${props.idElement}`}
-          className="mentions"
+          className="textMention"
           // style={{ border: 'none' }}
           placeholder={props.placeholder}
           // markup='@__display__'
           // markup='^@@@__display__'
-          autoSize={{ minRows: 1, maxRows: 3 }}
+          // autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(event, newValue, newPlainTextValue, mentions) => {
               console.log(newValue, newPlainTextValue, mentions, 'uuuu')
                 // value: newValue,

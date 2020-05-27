@@ -30,23 +30,24 @@ import {
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { Logo, HighLightGroup } from '../../components'
-import './index.scss'
-import MessageList from '../../pages/messageDetail/MessageList'
+import './mainlayout.scss'
 // import InputCustome from '../../components/inputCustome'
-import ConversationList from '../../pages/myMessenger/ConversationList'
+
 import { IContext } from '@tools'
+import ConversationList from '@pages/myMessenger/ConversationList'
+import MessageList from '@pages/messageDetail/MessageList'
 // import { ThemeContext } from '../../router'
 // import HomePage from '../MainLayout/HomePage'
 // import HighLightPost from '../MainLayout/HighlightPost'
 // import ModalCreatePost from '../MainLayout/ModalCreatePost'
+import reactStringReplace from 'react-string-replace'
 const { Header, Content, Sider } = Layout
 
 export const brokenContext = React.createContext(null)
 const MY_USER_ID = 'tuikyne'
-const reactStringReplace = require('react-string-replace')
 const index = ({ children }) => {
-  const { logout, me } = useContext(IContext)
-  console.log(me)
+  const { logout, me, isAuth } = useContext(IContext)
+  console.log(me, 'uuu')
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
   const [messbox, setMessbox] = useState([])
@@ -171,7 +172,7 @@ const index = ({ children }) => {
                 backgroundColor: 'initial',
                 width: isBroken ? 50 : 120
               }}
-              overflowedIndicator={<UnorderedListOutlined />}
+              overflowedIndicator={<UnorderedListOutlined style={{ fontSize: 23 }}/>}
               mode='horizontal'
             >
               <Menu.Item onClick={() => history.push('/createpost')}>
@@ -224,7 +225,8 @@ const index = ({ children }) => {
               </Menu.Item>
             </Menu>
             <div >
-              {isBroken ? (
+              {isAuth ?
+              isBroken ? (
                 <Dropdown overlay={menu} trigger={['click']}>
                   <a
                     className='ant-dropdown-link'
@@ -233,10 +235,10 @@ const index = ({ children }) => {
                   >
                     <Avatar
                       style={{
-                        top: '0.5em',
+                        top: '0.75em',
                         color: 'white',
                         backgroundColor: 'rgb(0, 152, 218)',
-                        fontSize: '14px',
+                        fontSize: '15px',
                         verticalAlign: 'sub'
                       }}
                       size={30}
@@ -270,7 +272,8 @@ const index = ({ children }) => {
                     </a>
                   </Dropdown>
                 </>
-              )}
+              )
+              : <Button type='primary' onClick={() => history.push('./login')}> Đăng nhập </Button> }
               {/* <Switch onChange={ () => myTheme.toggleTheme()} /> */}
             </div>
             {/* </Col>
@@ -284,8 +287,8 @@ const index = ({ children }) => {
           paddingTop: isBroken ? 65 : 100,
           width: '100%',
           paddingLeft: isBroken ? 0 : 100,
-          margin: '0 auto'
-          // backgroundColor: 'aliceblue'
+          margin: '0 auto',
+          backgroundColor: 'aliceblue'
         }}
       >
         <Sider

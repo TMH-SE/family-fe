@@ -5,10 +5,10 @@ import moment from 'moment'
 import firebase from 'firebase/app'
 import * as uuid from 'uuid'
 import './index.scss'
-import InputCustome from '../inputCustome'
+import { InputCustome } from '@components'
 import { useHistory } from 'react-router-dom'
 // import { useHistory } from 'react-router-dom'
-const reactStringReplace = require('react-string-replace')
+import reactStringReplace from 'react-string-replace'
 const MY_USER_ID = 'tuinhune'
 const CommentList = ({ comments, showMore, idPost }) => {
   const history = useHistory()
@@ -17,7 +17,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
     imgSrc: ''
   })
   const [rep, setRep] = useState({})
-  const [showMoreRep, setShowMoreRep] = useState(3)
+  const [showMoreRep, setShowMoreRep] = useState(0)
   let lessComment = []
   lessComment = comments.slice(comments.length - showMore, comments.length - 1)
 
