@@ -13,7 +13,8 @@ const components = [
   'avatar',
   'typography',
   'popover',
-  'carousel'
+  'carousel',
+  'result'
 ]
 
 const styles = components.map((component) =>

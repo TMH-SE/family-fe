@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import firebase from 'firebase/app'
-import Message from '../Message'
 import moment from 'moment'
 import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
-import InputCustome from '../../../components/inputCustome'
 import * as uuid from 'uuid'
+import InputCustome from 'src/components/inputCustome'
+import Message from '../Message'
 moment().format()
 const MY_USER_ID = 'tuinhune'
 export default function MessageList (props) {

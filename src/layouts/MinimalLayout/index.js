@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col } from 'antd'
 import { Logo } from '../../components'
 
-const index = ({ children }) => {
+const MinimalLayout = ({ children }) => {
   return (
     <Row style={{ height: '100vh' }}>
       <Col
@@ -30,4 +30,4 @@ const index = ({ children }) => {
   )
 }
 
-export default index
+export default MinimalLayout

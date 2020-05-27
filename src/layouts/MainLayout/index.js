@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   Layout,
   Menu,
@@ -34,15 +34,19 @@ import './index.scss'
 import MessageList from '../../pages/messageDetail/MessageList'
 // import InputCustome from '../../components/inputCustome'
 import ConversationList from '../../pages/myMessenger/ConversationList'
+import { IContext } from '@tools'
+// import { ThemeContext } from '../../router'
+// import HomePage from '../MainLayout/HomePage'
+// import HighLightPost from '../MainLayout/HighlightPost'
+// import ModalCreatePost from '../MainLayout/ModalCreatePost'
 const { Header, Content, Sider } = Layout
-// const { SubMenu } = Menu
 
 export const brokenContext = React.createContext(null)
 const MY_USER_ID = 'tuikyne'
 const reactStringReplace = require('react-string-replace')
 const index = ({ children }) => {
-  // const myTheme = useContext(ThemeContext)
-  // console.log(myTheme, 'dấdsadsad:')
+  const { logout, me } = useContext(IContext)
+  console.log(me)
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
   const [messbox, setMessbox] = useState([])
@@ -87,7 +91,7 @@ const index = ({ children }) => {
         <HeartTwoTone /> Cộng đồng đã tham gia{' '}
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key='5'>
+      <Menu.Item key='5' onClick={logout}>
         <LogoutOutlined /> Đăng xuất
       </Menu.Item>
     </Menu>

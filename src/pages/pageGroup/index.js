@@ -16,13 +16,8 @@ import {
   EllipsisOutlined
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
-import {
-  SharePost,
-  CommentPost,
-  ModalReport
-  // ModalCreatePost
-} from '../../components'
-import Reaction from '../../components/reaction'
+import Reaction from 'src/components/reaction'
+import { SharePost, CommentPost, ModalReport } from '@components'
 
 const { Meta } = Card
 // var moment = require('moment')

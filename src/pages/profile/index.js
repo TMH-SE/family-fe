@@ -4,12 +4,7 @@ import { Avatar, Menu, Button, Upload, Input } from 'antd'
 import { withRouter } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { EllipsisOutlined, EditTwoTone, HeartTwoTone, MessageTwoTone } from '@ant-design/icons'
-import { brokenContext } from '../../layouts/MainLayout'
-import SavedPosts from './savedPosts'
-import Info from './info'
-import MyPosts from './myPosts'
-import { HighLightGroup } from '../../components'
-import MyMessenger from '../myMessenger'
+
 import * as uuid from 'uuid'
 
 function Profile (props) {

@@ -18,16 +18,11 @@ import {
   EllipsisOutlined
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
-import {
-  SharePost,
-  CommentPost,
-  ModalReport,
-  HighLightPost,
-  ModalCreatePost
-} from '../../components'
-import { brokenContext } from '../../layouts/MainLayout'
+import { brokenContext } from 'src/layouts/MainLayout'
+import { HighLightPost, SharePost, CommentPost, ModalReport, ModalCreatePost } from '@components'
+import Reaction from 'src/components/reaction'
+
 // import { Emoji } from 'emoji-mart'
-import Reaction from '../../components/reaction'
 // import { ThemeContext } from '../../router'
 // import ModalReport from '../../components/ModalReport'
 // import HighLightPost from '../../components/HighlightPost'

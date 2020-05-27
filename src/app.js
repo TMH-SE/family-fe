@@ -1,8 +1,11 @@
 import React from 'react'
+import { ApolloProvider } from '@apollo/react-hooks'
 import { BrowserRouter } from 'react-router-dom'
-import Routers from './router'
 import * as firebase from 'firebase/app'
 import 'firebase/database'
+import { SdkUtils } from '@utils'
+import { Client, ContextWrapper } from '@tools'
+import Routers from '@routers'
 import './app.scss'
 
 const firebaseConfig = {
@@ -21,10 +24,16 @@ if (!firebase.apps.length) {
 }
 const App = () => {
   // firebase.initializeApp(firebaseConfig)
+  SdkUtils.initFacebookSdk()
+  SdkUtils.initGooglePlatform()
   return (
-    <BrowserRouter>
-      <Routers></Routers>
-    </BrowserRouter>
+    <ApolloProvider client={Client}>
+      <BrowserRouter>
+        <ContextWrapper>
+          <Routers />
+        </ContextWrapper>
+      </BrowserRouter>
+    </ApolloProvider>
   )
 }
 

@@ -1,3 +1,4 @@
+require('dotenv').config()
 const webpack = require('webpack')
 
 const path = require('path')
@@ -39,24 +40,42 @@ const handler = (percentage, message, moduleProgress, activeModule) => {
   }
 }
 
-module.exports = (env) => {
-  const devMode = env.NODE_ENV === 'development'
+module.exports = () => {
+  const devMode = process.env.NODE_ENV === 'development'
   const performanceLoaders = [
     {
       loader: 'thread-loader',
-      options: { workers: require('os').cpus.length, workerParallelJobs: 2 },
+      options: { workers: require('os').cpus.length, workerParallelJobs: 2 }
     },
-    ...(!devMode ? ['cache-loader'] : []),
+    ...(!devMode ? ['cache-loader'] : [])
   ]
 
   return {
-    mode: env.NODE_ENV,
+    resolve: {
+      modules: [
+        path.resolve(__dirname, './src'),
+        path.resolve(__dirname, './node_modules')
+      ],
+      extensions: ['.js', '.jsx'],
+      alias: {
+        '@assets': path.resolve(__dirname, './src/assets'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '@constants': path.resolve(__dirname, './src/constants'),
+        '@layouts': path.resolve(__dirname, './src/layouts'),
+        '@pages': path.resolve(__dirname, './src/pages'),
+        '@routers': path.resolve(__dirname, './src/routers'),
+        '@tools': path.resolve(__dirname, './src/tools'),
+        '@utils': path.resolve(__dirname, './src/utils'),
+        'react-dom': '@hot-loader/react-dom'
+      }
+    },
+    mode: process.env.NODE_ENV,
     entry: path.resolve(__dirname, './src/index.js'),
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'static/js/[id]_[hash].bundle.js',
       chunkFilename: 'static/js/chunk/[chunkhash].bundle.js',
-      publicPath: '/',
+      publicPath: '/'
     },
     watch: devMode,
     cache: true,
@@ -71,40 +90,40 @@ module.exports = (env) => {
             parallel: true,
             terserOptions: {
               parse: {
-                ecma: 8,
+                ecma: 8
               },
               compress: {
                 ecma: 5,
                 warnings: false,
                 comparisons: false,
-                inline: 2,
+                inline: 2
               },
               mangle: {
-                safari10: true,
+                safari10: true
               },
               output: {
                 ecma: 5,
                 comments: false,
-                ascii_only: true,
-              },
-            },
+                ascii_only: true
+              }
+            }
           }),
           new OptimizeCSSAssetsPlugin({
             cssProcessorOptions: {
-              parser: safePostCssParser,
-            },
-          }),
-        ],
+              parser: safePostCssParser
+            }
+          })
+        ]
       }),
       splitChunks: {
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      },
+            chunks: 'all'
+          }
+        }
+      }
     },
     module: {
       rules: [
@@ -117,22 +136,29 @@ module.exports = (env) => {
               options: {
                 cacheDirectory: true,
                 presets: ['@babel/preset-env', '@babel/preset-react'],
-              },
+                plugins: [
+                  ['@babel/plugin-proposal-decorators', { legacy: true }],
+                  ['@babel/plugin-proposal-class-properties', { loose: true }],
+                  '@babel/plugin-transform-runtime',
+                  '@babel/plugin-proposal-optional-chaining',
+                  'react-hot-loader/babel'
+                ]
+              }
             },
-            ...performanceLoaders,
-          ],
+            ...performanceLoaders
+          ]
         },
         {
           test: /\.css$/,
           use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
             'css-loader',
-            ...performanceLoaders,
-          ],
+            ...performanceLoaders
+          ]
         },
         {
           test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-          use: ['raw-loader'],
+          use: ['raw-loader']
         },
         {
           test: /\.(png|svg|jpg|gif)$/,
@@ -141,11 +167,11 @@ module.exports = (env) => {
               loader: 'file-loader',
               options: {
                 outputPath: 'static/assets/images',
-                name: '[hash].[ext]',
-              },
+                name: '[hash].[ext]'
+              }
             },
-            ...performanceLoaders,
-          ],
+            ...performanceLoaders
+          ]
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/,
@@ -154,35 +180,35 @@ module.exports = (env) => {
               loader: 'file-loader',
               options: {
                 outputPath: 'static/assets/fonts',
-                name: '[hash].[ext]',
-              },
+                name: '[hash].[ext]'
+              }
             },
-            ...performanceLoaders,
-          ],
+            ...performanceLoaders
+          ]
         },
         {
           test: /\.s[ac]ss$/,
           use: [
             {
-              loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader, // creates style nodes from JS strings
+              loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader // creates style nodes from JS strings
             },
             {
-              loader: 'css-loader', // translates CSS into CommonJS
+              loader: 'css-loader' // translates CSS into CommonJS
             },
             {
-              loader: 'sass-loader', // compiles Sass to CSS
+              loader: 'sass-loader' // compiles Sass to CSS
             },
-            ...performanceLoaders,
-          ],
+            ...performanceLoaders
+          ]
         },
         {
           test: /\.less$/,
           use: [
             {
-              loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader, // creates style nodes from JS strings
+              loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader // creates style nodes from JS strings
             },
             {
-              loader: 'css-loader', // translates CSS into CommonJS
+              loader: 'css-loader' // translates CSS into CommonJS
             },
             {
               loader: 'less-loader', // compiles Less to CSS
@@ -191,7 +217,7 @@ module.exports = (env) => {
                   'layout-footer-padding': '0px',
                   'layout-header-padding': '0 0 0 24px',
                   'layout-header-background': 'transparent',
-                  'layout-body-background': 'transparent',
+                  'layout-body-background': 'transparent'
                   // '@primary-color': '#1890ff', // primary color for all components
                   // '@link-color': '#1890ff', // link color
                   // '@success-color': '#52c41a', // success state color
@@ -206,19 +232,19 @@ module.exports = (env) => {
                   // '@border-color-base': '#d9d9d9', // major border color
                   // '@box-shadow-base': '0 2px 8px rgba(0, 0, 0, 0.15)', // major shadow for layers
                 },
-                javascriptEnabled: true,
-              },
+                javascriptEnabled: true
+              }
             },
-            ...performanceLoaders,
-          ],
-        },
-      ],
+            ...performanceLoaders
+          ]
+        }
+      ]
     },
     devtool: 'cheap-module-eval-source-map',
     devServer: {
-      // historyApiFallback: true,
+      historyApiFallback: true, // set for react-router-dom
       contentBase: './dist',
-      host: '0.0.0.0',
+      // host: '0.0.0.0',
       port: process.env.PORT || 8000,
       hot: true,
       hotOnly: true,
@@ -226,24 +252,24 @@ module.exports = (env) => {
       clientLogLevel: 'silent',
       noInfo: true,
       disableHostCheck: true,
-      useLocalIp: true,
-      open: true,
+      // useLocalIp: true,
+      open: true
     },
     plugins: [
       new MiniCssExtractPlugin({
         filename: 'static/css/[id]_[hash].css',
         chunkFilename: 'static/css/chunk/[chunkhash].css',
-        ignoreOrder: true,
+        ignoreOrder: true
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, './public/index.html'),
+        template: path.resolve(__dirname, './public/index.html')
       }),
       new Dotenv({
         path: devMode ? './.env' : './.env.production',
         safe: true,
         systemvars: true,
-        silent: true,
+        silent: true
       }),
       new WebpackPwaManifest({
         filename: 'manifest.json',
@@ -256,13 +282,13 @@ module.exports = (env) => {
             src: path.resolve(__dirname, './src/assets/images/logo.png'),
             sizes: [72, 96, 128, 192, 256, 384, 512],
             destination: path.join('static/assets/images', 'icons'),
-            ios: true,
-          },
+            ios: true
+          }
         ],
         start_url: '.',
         background_color: '#fff',
         display: 'standalone',
-        theme_color: '#fff',
+        theme_color: '#fff'
       }),
       ...(devMode
         ? []
@@ -270,21 +296,21 @@ module.exports = (env) => {
             new WorkboxPlugin.InjectManifest({
               swSrc: path.resolve(__dirname, './src/sw.js'),
               swDest: 'sw.js',
-              maximumFileSizeToCacheInBytes: 50000000,
-            }),
+              maximumFileSizeToCacheInBytes: 50000000
+            })
           ]),
       new webpack.ProgressPlugin(handler),
       ...(devMode
         ? [
             new BundleAnalyzerPlugin({
               openAnalyzer: false,
-              logLevel: 'silent',
-            }),
+              logLevel: 'silent'
+            })
           ]
-        : []),
+        : [])
     ],
     performance: {
-      hints: false,
-    },
+      hints: false
+    }
   }
 }
