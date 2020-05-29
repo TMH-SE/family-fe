@@ -32,22 +32,22 @@ const data = [
   {
     title: 'Ant Design Title 1',
     groupId: '111',
-    postId: '1'
+    postId: 'post1'
   },
   {
     title: 'Ant Design Title 2',
     groupId: '222',
-    postId: '2'
+    postId: 'post2'
   },
   {
     title: 'Ant Design Title 3',
     groupId: '111',
-    postId: '3'
+    postId: 'post3'
   },
   {
     title: 'Ant Design Title 4',
     groupId: '222',
-    postId: '4'
+    postId: 'post4'
   }
 ]
 function SavedPosts (props) {

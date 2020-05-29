@@ -78,7 +78,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
       itemLayout='horizontal'
       renderItem={(comment) => <>
         <Comment id={`parent-cmt-${comment.id}`} actions={[<span onClick={() => setRep({ commentId: comment.id, author: comment.author })} key='comment-basic-reply-to' on>Reply to</span>]}
-          author={<p style={{ color: 'black', fontSize: 14 }}>{comment.author}</p>}
+          author={<a onClick={() => history.push('/comment.author/info')} style={{ color: 'black', fontSize: 14 }}>{comment.author}</a>}
           avatar={comment.photo}
           content={<>
             <div style={{ display: 'flex', overflowX: 'auto' }}>
@@ -124,7 +124,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
         }
         { comment.replies && comment.replies.sort((a, b) => b.timestamp - a.timestamp).slice(0, showMoreRep).map((reply, idx) => <Comment key={idx} className={`reply ${comment.id}`}
           actions={[<span onClick={() => setRep({ commentId: comment.id, author: reply.author })} key='comment-basic-reply-to' on>Reply to</span>]}
-          author={<p style={{ color: 'black', fontSize: 14 }}>{reply.author}</p>}
+          author={<a style={{ color: 'black', fontSize: 14 }} onClick={() => history.push('/reply.author/info')}>{reply.author}</a>}
           avatar={reply.photo}
           content={<>
             <div style={{ display: 'flex', overflowX: 'auto' }}>

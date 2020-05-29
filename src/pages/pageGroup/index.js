@@ -17,29 +17,29 @@ import {
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
 import { Reaction, SharePost, CommentPost, ModalReport } from '@components'
-
+import firebase from 'firebase/app'
 const { Meta } = Card
 // var moment = require('moment')
 const data = [
   {
     title: 'Ant Design Title 1',
     groupId: '111',
-    postId: '1'
+    postId: 'post1'
   },
   {
     title: 'Ant Design Title 2',
     groupId: '222',
-    postId: '2'
+    postId: 'post2'
   },
   {
     title: 'Ant Design Title 3',
     groupId: '111',
-    postId: '3'
+    postId: 'post3'
   },
   {
     title: 'Ant Design Title 4',
     groupId: '222',
-    postId: '4'
+    postId: 'post4'
   }
 ]
 function PageGroup (props) {
@@ -55,6 +55,15 @@ function PageGroup (props) {
   const handleCancel = () => {
     // setVisibleModalCreate(false)
     setVisibleModalReport(false)
+  }
+  const getSumComment = (idPost) => {
+    let temp
+    firebase.database().ref(idPost + '/comments').on('value', (snapshot) => {
+      // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+      temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+      // return temp.length
+    })
+    return temp ? temp.length : 0
   }
   const menu = (
     <Menu>
@@ -113,8 +122,9 @@ function PageGroup (props) {
         </div>
       </div>
       <br />
-      {data.map((item, idx) =>
-        <Card
+      {data.map((item, idx) => {
+        const sumCmt = getSumComment(item.postId)
+        return <Card
           key={idx}
           title={
             <div style={{ display: 'flex', justifyContent: 'start' }}>
@@ -146,11 +156,11 @@ function PageGroup (props) {
           style={{ maxWidth: '100%', marginTop: 16 }}
           actions={[
             <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
-              <Reaction />
+              <Reaction idPost={item.postId}/>
             </div>,
             <div key='comment'>
               <CommentOutlined />
-              <span style={{ fontWeight: 'bold' }}> 8 </span>
+              <span style={{ fontWeight: 'bold' }}>{sumCmt} </span>
             </div>,
             <SharePost key='share' />,
             <Dropdown
@@ -161,7 +171,7 @@ function PageGroup (props) {
             >
               <EllipsisOutlined />
             </Dropdown>,
-            <CommentPost key='commet'></CommentPost>
+            <CommentPost idPost={item.postId} key='commet'></CommentPost>
           ]}
         >
           <Meta
@@ -203,6 +213,7 @@ function PageGroup (props) {
             }
           />
         </Card>
+        }
       )}
 
       <ModalReport

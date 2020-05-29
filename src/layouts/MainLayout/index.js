@@ -76,19 +76,19 @@ const index = ({ children }) => {
   const history = useHistory()
   const menu = (
     <Menu>
-      <Menu.Item key='0'onClick={() => history.push('/tuinhune/info')}>
+      <Menu.Item key='0'onClick={() => history.push(`/${me?._id}/info`)}>
         <InfoCircleTwoTone /> Thông tin cá nhân{' '}
       </Menu.Item>
-      { isBroken && <Menu.Item key='1' onClick={() => history.push('/tuinhune/messenger')}>
+      { isBroken && <Menu.Item key='1' onClick={() => history.push(`/${me?._id}/messenger`)}>
         <MessageTwoTone /> Tin nhắn{' '}
       </Menu.Item>}
-      <Menu.Item key='2' onClick={() => history.push('/tuinhune/myposts')} >
+      <Menu.Item key='2' onClick={() => history.push(`/${me?._id}/myposts`)} >
         <FileTextTwoTone /> Bài viết của tôi{' '}
       </Menu.Item>
-      <Menu.Item key='3' onClick={() => history.push('/tuinhune/savedposts')}>
+      <Menu.Item key='3' onClick={() => history.push(`/${me?._id}/savedposts`)}>
         <BookTwoTone /> Bài viết đã lưu{' '}
       </Menu.Item>
-      <Menu.Item key='4' onClick={() => history.push('/tuinhune/joinedGroup')}>
+      <Menu.Item key='4' onClick={() => history.push(`/${me?._id}/joinedGroup`)}>
         <HeartTwoTone /> Cộng đồng đã tham gia{' '}
       </Menu.Item>
       <Menu.Divider />
@@ -242,8 +242,9 @@ const index = ({ children }) => {
                         verticalAlign: 'sub'
                       }}
                       size={30}
+                      src={me?.avatar}
                     >
-                      N
+                      {/* N */}
                     </Avatar>
                     <CaretDownOutlined />
                   </a>
@@ -259,22 +260,23 @@ const index = ({ children }) => {
                       verticalAlign: 'sub'
                     }}
                     size={30}
+                    src={me?.avatar}
                   >
-                    N
+                    {/* N */}
                   </Avatar>
                   <Dropdown overlay={menu} trigger={['click']}>
                     <a
                       className='ant-dropdown-link'
-                      style={{ paddingLeft: 5 }}
+                      style={{ paddingLeft: 5, fontWeight: 'bold' }}
                       onClick={(e) => e.preventDefault()}
                     >
-                      Tuinhune <CaretDownOutlined />
+                      {me?.firstname} <CaretDownOutlined />
                     </a>
                   </Dropdown>
                 </>
               )
               : <Button type='primary' onClick={() => history.push('./login')}> Đăng nhập </Button> }
-              {/* <Switch onChange={ () => myTheme.toggleTheme()} /> */}
+              {/* <Switch onChange={ () => myTheme?.toggleTheme()} /> */}
             </div>
             {/* </Col>
         </Row> */}
@@ -283,6 +285,7 @@ const index = ({ children }) => {
       </Header>
 
       <Layout
+        className='home'
         style={{
           paddingTop: isBroken ? 65 : 100,
           width: '100%',
@@ -312,18 +315,20 @@ const index = ({ children }) => {
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
             marginTop: 0,
-            width: '90%'
+            // width: '90%'
+            // width: isAuth ? '90%' : '10%'
           }}
         >
           <brokenContext.Provider value={isBroken}>
             {children}
           </brokenContext.Provider>
         </Content>
-        { !isBroken && <Sider width='18%' >
+        { !isBroken && isAuth ? <Sider width='18%' >
           <div className='sidebarMess-mainLayout'>
             <ConversationList chooseConvention={chooseConvention}/>
           </div>
-        </Sider> }
+        </Sider> 
+        : !isBroken && <Sider width='17%'></Sider>}
         { !isBroken && <div className='messenger-main'>
           <div className='contentMess-mainLayout' >
             {messbox.map((convention, idx) => {

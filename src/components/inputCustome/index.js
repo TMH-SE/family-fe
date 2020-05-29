@@ -9,6 +9,7 @@ import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import './index.scss'
 import { MentionsInput, Mention } from 'react-mentions'
+import { uploadImg } from '@shared'
 
 function InputCustome (props) {
   console.log(props.replyAuthor, 'tttt')
@@ -19,9 +20,6 @@ function InputCustome (props) {
     display: item
   })
 })
-  const CLOUDINARY_UPLOAD_PRESET = 'graduation-pj'
-const CLOUDINARY_UPLOAD_URL =
-  'https://api.cloudinary.com/v1_1/nhuht/image/upload'
   const [emoji, setEmoji] = useState({
     showEmoji: false,
     chosenEmoji: null
@@ -74,7 +72,7 @@ const CLOUDINARY_UPLOAD_URL =
     if (info.file.status === 'done') {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, async imageUrl => {
-        const url = await uploadMessage(imageUrl)
+        const url = await uploadImg(imageUrl)
         setImage({
           srcImg: url,
           listSrcImage: [...image.listSrcImage, url],
@@ -84,20 +82,20 @@ const CLOUDINARY_UPLOAD_URL =
       document.getElementById(`input-custom-${props.idElement}`).focus()
   }
 }
-const uploadMessage = async (file) => {
-  const data = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    file: file,
-    upload_preset: CLOUDINARY_UPLOAD_PRESET
-  })
-}
-  const upload = await fetch(CLOUDINARY_UPLOAD_URL, data).then(res => res.json())
- return upload.secure_url
-}
+// const uploadMessage = async (file) => {
+//   const data = {
+//   method: 'POST',
+//   headers: {
+//     'Content-Type': 'application/json'
+//   },
+//   body: JSON.stringify({
+//     file: file,
+//     upload_preset: CLOUDINARY_UPLOAD_PRESET
+//   })
+// }
+//   const upload = await fetch(CLOUDINARY_UPLOAD_URL, data).then(res => res.json())
+//  return upload.secure_url
+// }
   const handleSubmit = (event) => {
     if (event.shiftKey && event.keyCode === 13) {
       event.stopPropagation()

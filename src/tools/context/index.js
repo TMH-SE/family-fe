@@ -10,10 +10,21 @@ export const IContext = React.createContext()
 const GET_ME = gql`
   query me {
     me {
-      email
+      _id
       firstname
       lastname
       avatar
+      coverPhoto
+      email
+      gender
+      phoneNumber
+      birthday
+      expert {
+        areasOfExpertise
+        jobTitle
+        yearsExperience
+        isVerify
+      }
     }
   }
 `

@@ -21,12 +21,8 @@ import { withRouter } from 'react-router-dom'
 import { brokenContext } from '../../layouts/MainLayout'
 import './index.scss'
 import { Reaction, HighLightPost, SharePost, CommentPost, ModalReport, ModalCreatePost } from '@components'
+import { IContext } from '@tools'
 
-// import { Emoji } from 'emoji-mart'
-// import { ThemeContext } from '../../router'
-// import ModalReport from '../../components/ModalReport'
-// import HighLightPost from '../../components/HighlightPost'
-// import ModalCreatePost from '../../components/ModalCreatePost'
 const { Meta } = Card
 // var moment = require('moment')
 const data = [
@@ -53,12 +49,12 @@ const data = [
 ]
 const HomePage = (props) => {
   const isBroken = useContext(brokenContext)
-  // const myTheme = useContext(ThemeContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const [showText, setShowText] = useState(false)
 
   const nameEl = showText ? 'expand' : 'collapse'
+  const { me } = useContext(IContext)
   const handleOk = () => {
     setVisibleModalCreate(false)
     setVisibleModalReport(false)
@@ -100,7 +96,7 @@ const HomePage = (props) => {
       <Input.TextArea
         onClick={() => setVisibleModalCreate(!visibleModalCreate)}
         style={{ margin: '0 auto', marginBottom: 10 }}
-        placeholder='Như ơi, Bạn đang nghĩ gì ?'
+        placeholder={`${me?.firstname} ơi, hôm nay bạn cần chia sẻ gì ?`}
         autoSize={{ minRows: 3, maxRows: 5 }}
       />
       <h3>Bài viết từ FAMILY</h3>

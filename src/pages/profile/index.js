@@ -1,130 +1,420 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState } from 'react'
-import { Avatar, Menu, Button, Upload, Input } from 'antd'
+import { Avatar, Menu, Button, Upload, message, notification } from 'antd'
 import { withRouter } from 'react-router-dom'
 import firebase from 'firebase/app'
-import { EllipsisOutlined, EditTwoTone, HeartTwoTone, MessageTwoTone } from '@ant-design/icons'
+import {
+  EllipsisOutlined,
+  HeartTwoTone,
+  MessageTwoTone,
+  PlusOutlined,
+  LoadingOutlined,
+  CameraFilled,
+  CheckOutlined,
+  CloseOutlined,
+  CheckCircleTwoTone,
+  CloseCircleTwoTone,
+  CloseCircleFilled
+} from '@ant-design/icons'
 
 import * as uuid from 'uuid'
 import Info from './info'
 import myMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
-import savedPosts from './savedPosts'
+import SavedPosts from './savedPosts'
 import { HighLightGroup } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
+import './index.scss'
+import { IContext } from '@tools'
 
-function Profile (props) {
-  const [editBio, setditBio] = useState({
-    isEdit: false,
-    valueTemp: 'tui nhu day ne mn',
-    valueBio: 'tui nhu day ne mn'
-  })
-
+function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
   const MY_USER_ID = 'tuinhune'
   const isBroken = useContext(brokenContext)
-
+  const { loading, error, data, refetch } = useQuery(GET_USER, {
+    variables: { userId: userId },
+    fetchPolicy: 'no-cache'
+  })
+  console.log(data, 'dattaa')
+  const { me } = useContext(IContext)
+  const [loadingImg, setLoadingImg] = useState({
+    coverPhoto: false,
+    avatar: false
+  })
+  const [img, setImg] = useState({
+    coverPhoto: null,
+    avatar: null
+  })
+  const [updateUser] = useMutation(UPDATE_USER)
   const sendNotifollow = async () => {
     const notificationId = uuid.v4()
     try {
-      await firebase.database().ref('notifications/' + userId + '/' + notificationId).set({
-        action: 'follow',
-        reciever: userId,
-        link: `/${MY_USER_ID}/info`,
-        content: `@${MY_USER_ID} đã bắt đầu theo dõi bạn`,
-        seen: false
-      })
+      await firebase
+        .database()
+        .ref('notifications/' + userId + '/' + notificationId)
+        .set({
+          action: 'follow',
+          reciever: userId,
+          link: `/${MY_USER_ID}/info`,
+          content: `@${MY_USER_ID} đã bắt đầu theo dõi bạn`,
+          seen: false
+        })
     } catch (err) {
       console.log(err)
     }
   }
+  const uploadButtonCover = (
+    userId === me?._id && 
+    !img.coverPhoto ? (
+    <div
+      className='btn-saveCover'
+      style={{
+        border: '1px solid #fff',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        color: '#fff',
+        position: 'absolute',
+        top: '5px',
+        left: '5px'
+      }}
+    >
+      <Upload
+        name='cover'
+        listType='picture-card'
+        className='icon-uploader'
+        showUploadList={false}
+        action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+        // beforeUpload={beforeUpload}
+        onChange={info => handleChangeCover(info)}
+      >
+        <CameraFilled style={{ fontSize: 25 }} />
+      </Upload>
+    </div>
+  ) : (
+    <div
+      className='btn-saveCover'
+      style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.4)'
+      }}
+    >
+      <Button
+        style={{ marginRight: 15, padding: '0 20px' }}
+        type='primary'
+        onClick={() => handleSubmitUpload('coverPhoto')}
+      >
+        Lưu
+      </Button>
+      <Button type='ghost' style={{ padding: '0 20px' }} onClick={() => handleCancel()}>
+        {' '}
+        Hủy
+      </Button>
+    </div>)
+  )
+  const uploadButtonAvt = (
+    userId === me?._id && 
+      !img.avatar ? (
+       <div
+         className='avatar-uploader'
+         style={{ position: 'absolute', bottom: 5, right: 5 }}
+       >
+         <Upload
+           name='avatar'
+           listType='picture-card'
+           className='icon-avt-uploader'
+           showUploadList={false}
+           action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+           // beforeUpload={beforeUpload}
+           onChange={info => handleChangeAvatar(info)}
+         >
+           <CameraFilled style={{ fontSize: 23 }} />
+         </Upload>
+       </div>
+     ) : (
+       <div
+         className='btn-saveAvt'
+         style={{
+           fontSize: 25,
+           borderRadius: '50%',
+           position: 'absolute',
+           width: '100%',
+           height: '100%',
+           top: 0,
+           display: 'flex',
+           justifyContent: 'center',
+           alignItems: 'center',
+           backgroundColor: 'rgba(0,0,0,0.2)'
+         }}
+       >
+         <CheckCircleTwoTone
+           twoToneColor='#52c41a'
+           style={{ marginRight: 10 }}
+           onClick={() => handleSubmitUpload('avatar')}
+         />
+         <CloseCircleTwoTone twoToneColor='red' onClick={() => handleCancel()}/>
+       </div>
+     )
+  )
+  function getBase64(img, callback) {
+    const reader = new FileReader()
+    reader.addEventListener('load', () => callback(reader.result))
+    reader.readAsDataURL(img)
+  }
+  const handleChangeAvatar = async info => {
+    setLoadingImg({
+      ...loadingImg,
+      coverPhoto: false
+    })
+    setImg({
+      ...img,
+      coverPhoto: null
+    })
+    if (info.file.status === 'uploading') {
+      setLoadingImg({
+        ...loadingImg,
+        avatar: true
+      })
+      return
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, async imageUrl => {
+        const url = await uploadImg(imageUrl)
+        setLoadingImg({ ...loadingImg, avatar: false })
+        setImg({
+          ...img,
+          avatar: url
+        })
+      })
+    }
+  }
+  const handleChangeCover = info => {
+    setLoadingImg({
+      ...loadingImg,
+      avatar: false
+    })
+    setImg({
+      ...img,
+      avatar: null
+    })
+    if (info.file.status === 'uploading') {
+      setLoadingImg({
+        ...loadingImg,
+        coverPhoto: true
+      })
+      return
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, async imageUrl => {
+        const url = await uploadImg(imageUrl)
+        setLoadingImg({ ...loadingImg, coverPhoto: false })
+        setImg({
+          ...img,
+          coverPhoto: url
+        })
+      })
+      console.log(img, 'img')
+    }
+  }
+  const handleSubmitUpload =  async type => {
+    await updateUser({
+      variables: {
+        userId: userId,
+        editUser: {
+          coverPhoto: type === 'coverPhoto' ? img.coverPhoto : data?.getUser.coverPhoto,
+          avatar: type === 'avatar' ? img.avatar : data?.getUser.avatar
+        }
+      }
+    })
+    setImg({
+      coverPhoto: null,
+      avatar: null
+    })
+    await refetch()
+    notification.success({
+      message: `Thay ảnh ${type === 'avatar' ? 'đại diện' : 'bìa'} thành công`
+    })
+    
+  }
+  const handleCancel = () => {
+    setLoadingImg({
+      coverPhoto: false,
+      avatar: false
+    })
+    setImg({
+      coverPhoto: null,
+      avatar: null
+    })
+  }
   return (
     <>
-      { type !== 'messenger' && <><div >
-        <img
-          className='cover-img'
-          style={{ objectFit: 'cover', height: 250, width: '100%' }}
-          alt='example'
-          src='https://scontent.fsgn2-2.fna.fbcdn.net/v/t1.0-9/92522573_1498212850342148_3908204202505011200_n.jpg?_nc_cat=100&_nc_sid=85a577&_nc_ohc=Hs7CLNZhiVYAX8UfzYa&_nc_ht=scontent.fsgn2-2.fna&oh=bd39d3ac8da082083ba12c10e4b8870a&oe=5EDC49A8'
-        />
-      </div>
-      <div
-        style={{
-          backgroundColor: '#fff',
-          width: '100%',
-          display: 'flex',
-          marginTop: -95,
-          justifyContent: 'space-between'
-        }}
-      >
-        <div style={{ display: 'flex', width: '100%' }}>
-          <Upload
-            name="avatar"
-            listType="picture-card"
-            className="avatar-uploader"
-            showUploadList={false}
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            // beforeUpload={beforeUpload}
-            // onChange={this.handleChange}
+      {type !== 'messenger' && (
+        <>
+          <div className='cover-uploader'>
+            <div
+              style={{
+                position: 'relative',
+                width: '100%',
+                height: '250px',
+                backgroundColor: '#ccc'
+              }}
+            >
+              {(img.coverPhoto || data?.getUser.coverPhoto) && (
+                <img
+                  className='cover-img'
+                  style={{ objectFit: 'cover', height: 250, width: '100%' }}
+                  // alt='example'
+                  src={img.coverPhoto || data?.getUser.coverPhoto}
+                />
+              )}
+              {loadingImg.coverPhoto && (
+                <LoadingOutlined
+                  style={{
+                    fontSize: 30,
+                    position: 'absolute',
+                    top: 'calc(50% - 15px)',
+                    left: 'calc(50% - 15px)'
+                  }}
+                />
+              )}
+               { uploadButtonCover }
+              
+            </div>
+          </div>
+          <div
+            style={{
+              backgroundColor: '#fff',
+              width: '100%',
+              display: 'flex',
+              marginTop: -95,
+              justifyContent: 'space-between'
+            }}
           >
-            <Avatar
-              style={{ border: '2px solid black', objectFit: 'cover' }}
-              shape='circle'
-              size={130}
-              src='https://scontent.fsgn2-3.fna.fbcdn.net/v/t1.0-9/42509129_1029389683910372_8485576172426493952_n.jpg?_nc_cat=106&_nc_sid=dd9801&_nc_ohc=3By-MUAxPSkAX-vnCzn&_nc_ht=scontent.fsgn2-3.fna&oh=de4871077a93092c361bb222770ed707&oe=5EDD69A3'
-            />
-          </Upload>
-          <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
-            <div style={{ display: 'flex', justifyContent: isBroken ? 'flex-start' : 'space-between' }}>
-              <p
-                style={{
-                  fontWeight: 'bolder',
-                  fontSize: 20,
-                  color: 'black'
-                }}
-              >
-                    Tuinhune
-              </p>
-              <div>
-                { !isBroken ? (<>
-                  <Button type='ghost' icon={<HeartTwoTone />} onClick={sendNotifollow}>Theo dõi</Button>
-                  <Button type='ghost' icon={<MessageTwoTone />}>Nhắn tin</Button>
-                </>)
-                  : (<div style={{ marginTop: 5 }}>
-                    <HeartTwoTone style={{ marginLeft: 10 }} />
-                    <MessageTwoTone style={{ marginLeft: 10 }}/>
-                  </div>)}
+            <div style={{ display: 'flex', width: '100%' }}>
+              <div style={{ position: 'relative', width: 130, height: 130, marginRight: 30 }}>
+                {(data?.getUser.avatar || img.avatar) && (
+                  <Avatar
+                    className='img-avt'
+                    style={{ border: '2px solid black', objectFit: 'cover' }}
+                    shape='circle'
+                    size={130}
+                    src={img.avatar || data?.getUser.avatar}
+                  />)}
+                {uploadButtonAvt}
+                {loadingImg.avatar && (
+                  <LoadingOutlined
+                    style={{
+                      fontSize: 30,
+                      position: 'absolute',
+                      top: 'calc(50% - 15px)',
+                      left: 'calc(50% - 15px)',
+                      color: '#fff'
+                    }}
+                  />
+                ) }
+              </div>
+              <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: isBroken ? 'flex-start' : 'space-between'
+                  }}
+                >
+                  <p
+                    style={{
+                      fontWeight: 'bolder',
+                      fontSize: 20,
+                      color: 'black'
+                    }}
+                  >
+                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`}
+                  </p>
+                  <div>
+                    {!isBroken ? (
+                      <>
+                        <Button
+                          type='ghost'
+                          icon={<HeartTwoTone />}
+                          onClick={sendNotifollow}
+                        >
+                          Theo dõi
+                        </Button>
+                        <Button type='ghost' icon={<MessageTwoTone />}>
+                          Nhắn tin
+                        </Button>
+                      </>
+                    ) : (
+                      <div style={{ marginTop: 5 }}>
+                        <HeartTwoTone style={{ marginLeft: 10 }} />
+                        <MessageTwoTone style={{ marginLeft: 10 }} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <Menu
+                  selectedKeys={[type]}
+                  //   onSelect={(e) => {
+                  //     // setKeyMenu(e.key)
+                  //     // console.log(keyMenu)
+                  //   }
+                  //   }
+                  style={{
+                    marginTop: -30,
+                    // color: 'black',
+                    fontSize: 15,
+                    fontWeight: 550,
+                    width: isBroken ? '60vw' : '35vw',
+                    backgroundColor: 'initial'
+                  }}
+                  overflowedIndicator={<EllipsisOutlined color='black' />}
+                  mode='horizontal'
+                >
+                  <Menu.Item
+                    onClick={() => history.push(`/${userId}/info`)}
+                    key='info'
+                  >
+                    Thông tin
+                  </Menu.Item>
+                  {isBroken && (
+                    <Menu.Item
+                      onClick={() => history.push(`/${userId}/messenger`)}
+                      key='mail'
+                    >
+                      Tin nhắn
+                    </Menu.Item>
+                  )}
+                  <Menu.Item
+                    onClick={() => history.push(`/${userId}/savedposts`)}
+                    key='savedposts'
+                  >
+                    Bài viết đã lưu
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() => history.push(`/${userId}/myposts`)}
+                    key='myposts'
+                  >
+                    Bài viết của tôi
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() => history.push(`/${userId}/joinedGroup`)}
+                    key='joinedGroup'
+                  >
+                    Cộng đồng đã tham gia
+                  </Menu.Item>
+                </Menu>
               </div>
             </div>
-            <Menu
-              selectedKeys={[type]}
-              //   onSelect={(e) => {
-              //     // setKeyMenu(e.key)
-              //     // console.log(keyMenu)
-              //   }
-              //   }
-              style={{
-                marginTop: -30,
-                // color: 'black',
-                fontSize: 15,
-                fontWeight: 550,
-                width: isBroken ? '60vw' : '35vw',
-                backgroundColor: 'initial'
-              }}
-              overflowedIndicator={<EllipsisOutlined color='black'/>}
-              mode='horizontal'
-            >
-              <Menu.Item onClick={() => history.push('/tuinhune/info')} key='info'>Thông tin</Menu.Item>
-              <Menu.Item onClick={() => history.push('/tuinhune/messenger')} key='mail'>Tin nhắn</Menu.Item>
-              <Menu.Item onClick={() => history.push('/tuinhune/savedposts')} key='savedposts'>Bài viết đã lưu</Menu.Item>
-              <Menu.Item onClick={() => history.push('/tuinhune/myposts')} key='myposts'>Bài viết của tôi</Menu.Item>
-              <Menu.Item onClick={() => history.push('/tuinhune/joinedGroup')} key='joinedGroup'>Cộng đồng đã tham gia</Menu.Item>
-            </Menu>
           </div>
-        </div>
-      </div>
-      <br></br>
+          {/* <br></br>
       <div style={{ backgroundColor: '#fff', padding: 16 }} >
         <center>
           { editBio.isEdit
@@ -139,14 +429,20 @@ function Profile (props) {
             } >Lưu</Button>
             : <EditTwoTone onClick={() => setditBio({ ...editBio, isEdit: true })} />}
         </center>
-      </div>
-      <br /> </>}
-      <div style={{ backgroundColor: '#fff', padding: 16 }}>
-        {type === 'info' && <Info /> }
-        {type === 'messenger' && <myMessenger />}
-        {type === 'myposts' && <MyPosts history={history}/> }
-        {type === 'savedposts' && <savedPosts history={history} />}
-        {type === 'joinedGroup' && <HighLightGroup /> }
+      </div> */}
+          <br />{' '}
+        </>
+      )}
+      <div style={{ backgroundColor: 'aliceblue' }}>
+        {type === 'info' && <Info userInfo={data?.getUser} />}
+        {type === 'messenger' && <myMessenger userInfo={data?.getUser} />}
+        {type === 'myposts' && (
+          <MyPosts history={history} userInfo={data?.getUser} />
+        )}
+        {type === 'savedposts' && (
+          <SavedPosts history={history} userInfo={data?.getUser} />
+        )}
+        {type === 'joinedGroup' && <HighLightGroup userInfo={data?.getUser} />}
       </div>
     </>
   )

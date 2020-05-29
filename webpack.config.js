@@ -66,6 +66,7 @@ module.exports = () => {
         '@routers': path.resolve(__dirname, './src/routers'),
         '@tools': path.resolve(__dirname, './src/tools'),
         '@utils': path.resolve(__dirname, './src/utils'),
+        '@shared': path.resolve(__dirname, './src/shared'),
         'react-dom': '@hot-loader/react-dom'
       }
     },

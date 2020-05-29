@@ -18,8 +18,7 @@ import {
   LeftOutlined
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
-
-// import { Reaction } from '@components'
+import firebase from 'firebase/app'
 import { Reaction, SharePost, CommentPost, ModalCreatePost, ModalReport } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 
@@ -56,6 +55,16 @@ function PostDetail (props) {
     </Menu>
   )
   const { history } = props
+  const { postId } = props.match.params
+  const getSumComment = () => {
+    let temp
+    firebase.database().ref(postId + '/comments').on('value', (snapshot) => {
+      // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+      temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+      // return temp.length
+    })
+    return temp ? temp.length : 0
+  }
   return (
     <>
       <Card
@@ -84,11 +93,11 @@ function PostDetail (props) {
         style={{ maxWidth: '100%', marginTop: 16 }}
         actions={[
           <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
-            <Reaction />
+            <Reaction idPost={postId}/>
           </div>,
           <div key='comment'>
             <CommentOutlined />
-            <span style={{ fontWeight: 'bold' }}> 8 </span>
+            <span style={{ fontWeight: 'bold' }}> {getSumComment()} </span>
           </div>,
           <SharePost key='share' />,
           <Dropdown
