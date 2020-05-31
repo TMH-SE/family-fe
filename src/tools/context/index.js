@@ -56,7 +56,8 @@ const ContextWrapper = ({ children, history }) => {
         isAuth,
         authenticate,
         logout,
-        me: data?.me
+        me: data?.me,
+        refetchMe: refetch
       }}
     >
       {children}

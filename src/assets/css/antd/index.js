@@ -14,7 +14,9 @@ const components = [
   'typography',
   'popover',
   'carousel',
-  'result'
+  'result',
+  'auto-complete',
+  'select'
 ]
 
 const styles = components.map((component) =>

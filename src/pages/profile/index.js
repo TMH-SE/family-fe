@@ -22,7 +22,7 @@ import Info from './info'
 import myMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
-import { HighLightGroup } from '@components'
+import { HighLightGroup, ModalPreviewImg } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
@@ -38,8 +38,12 @@ function Profile(props) {
     variables: { userId: userId },
     fetchPolicy: 'no-cache'
   })
-  console.log(data, 'dattaa')
-  const { me } = useContext(IContext)
+  const [previewImg, setPreviewImg] = useState({
+    isShow: false,
+    imgSrc: ''
+  })
+  const { me, refetchMe } = useContext(IContext)
+  const isMe = userId === me?._id
   const [loadingImg, setLoadingImg] = useState({
     coverPhoto: false,
     avatar: false
@@ -66,103 +70,105 @@ function Profile(props) {
       console.log(err)
     }
   }
-  const uploadButtonCover = (
-    userId === me?._id && 
-    !img.coverPhoto ? (
-    <div
-      className='btn-saveCover'
-      style={{
-        border: '1px solid #fff',
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        color: '#fff',
-        position: 'absolute',
-        top: '5px',
-        left: '5px'
-      }}
-    >
-      <Upload
-        name='cover'
-        listType='picture-card'
-        className='icon-uploader'
-        showUploadList={false}
-        action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-        // beforeUpload={beforeUpload}
-        onChange={info => handleChangeCover(info)}
+  const uploadButtonCover =
+    isMe &&
+    (!img.coverPhoto ? (
+      <div
+        className="btn-saveCover"
+        style={{
+          // border: '1px solid #fff',
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          position: 'absolute',
+          top: '5px',
+          left: '5px'
+        }}
       >
-        <CameraFilled style={{ fontSize: 25 }} />
-      </Upload>
-    </div>
-  ) : (
-    <div
-      className='btn-saveCover'
-      style={{
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        top: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.4)'
-      }}
-    >
-      <Button
-        style={{ marginRight: 15, padding: '0 20px' }}
-        type='primary'
-        onClick={() => handleSubmitUpload('coverPhoto')}
+        <Upload
+          name="cover"
+          listType="picture-card"
+          className="icon-uploader"
+          showUploadList={false}
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          beforeUpload={beforeUpload}
+          onChange={info => handleChangeCover(info)}
+        >
+          <CameraFilled style={{ fontSize: 25, color: '#fff' }} />
+        </Upload>
+      </div>
+    ) : (
+      <div
+        className="btn-saveCover"
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0,0,0,0.4)'
+        }}
       >
-        Lưu
-      </Button>
-      <Button type='ghost' style={{ padding: '0 20px' }} onClick={() => handleCancel()}>
-        {' '}
-        Hủy
-      </Button>
-    </div>)
-  )
-  const uploadButtonAvt = (
-    userId === me?._id && 
-      !img.avatar ? (
-       <div
-         className='avatar-uploader'
-         style={{ position: 'absolute', bottom: 5, right: 5 }}
-       >
-         <Upload
-           name='avatar'
-           listType='picture-card'
-           className='icon-avt-uploader'
-           showUploadList={false}
-           action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-           // beforeUpload={beforeUpload}
-           onChange={info => handleChangeAvatar(info)}
-         >
-           <CameraFilled style={{ fontSize: 23 }} />
-         </Upload>
-       </div>
-     ) : (
-       <div
-         className='btn-saveAvt'
-         style={{
-           fontSize: 25,
-           borderRadius: '50%',
-           position: 'absolute',
-           width: '100%',
-           height: '100%',
-           top: 0,
-           display: 'flex',
-           justifyContent: 'center',
-           alignItems: 'center',
-           backgroundColor: 'rgba(0,0,0,0.2)'
-         }}
-       >
-         <CheckCircleTwoTone
-           twoToneColor='#52c41a'
-           style={{ marginRight: 10 }}
-           onClick={() => handleSubmitUpload('avatar')}
-         />
-         <CloseCircleTwoTone twoToneColor='red' onClick={() => handleCancel()}/>
-       </div>
-     )
-  )
+        <Button
+          style={{ marginRight: 15, padding: '0 20px' }}
+          type="primary"
+          onClick={() => handleSubmitUpload('coverPhoto')}
+        >
+          Lưu
+        </Button>
+        <Button
+          type="ghost"
+          style={{ padding: '0 20px' }}
+          onClick={() => handleCancel()}
+        >
+          {' '}
+          Hủy
+        </Button>
+      </div>
+    ))
+  const uploadButtonAvt =
+    isMe &&
+    (!img.avatar ? (
+      <div
+        className="avatar-uploader"
+        style={{ position: 'absolute', bottom: 5, right: 5 }}
+      >
+        <Upload
+          name="avatar"
+          listType="picture-card"
+          className="icon-avt-uploader"
+          showUploadList={false}
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          beforeUpload={beforeUpload}
+          onChange={info => handleChangeAvatar(info)}
+        >
+          <CameraFilled style={{ fontSize: 23 }} />
+        </Upload>
+      </div>
+    ) : (
+      <div
+        className="btn-saveAvt"
+        style={{
+          fontSize: 25,
+          borderRadius: '50%',
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0,0,0,0.2)'
+        }}
+      >
+        <CheckCircleTwoTone
+          twoToneColor="#52c41a"
+          style={{ marginRight: 10 }}
+          onClick={() => handleSubmitUpload('avatar')}
+        />
+        <CloseCircleTwoTone twoToneColor="red" onClick={() => handleCancel()} />
+      </div>
+    ))
   function getBase64(img, callback) {
     const reader = new FileReader()
     reader.addEventListener('load', () => callback(reader.result))
@@ -222,15 +228,27 @@ function Profile(props) {
           coverPhoto: url
         })
       })
-      console.log(img, 'img')
     }
   }
-  const handleSubmitUpload =  async type => {
+  function beforeUpload(file) {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+    if (!isJpgOrPng) {
+      notification.error({ message: 'You can only upload JPG/PNG file!' })
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2
+    if (!isLt2M) {
+      notification.error({ message: 'Image must smaller than 2MB!' })
+    }
+    return isJpgOrPng && isLt2M
+  }
+
+  const handleSubmitUpload = async type => {
     await updateUser({
       variables: {
         userId: userId,
         editUser: {
-          coverPhoto: type === 'coverPhoto' ? img.coverPhoto : data?.getUser.coverPhoto,
+          coverPhoto:
+            type === 'coverPhoto' ? img.coverPhoto : data?.getUser.coverPhoto,
           avatar: type === 'avatar' ? img.avatar : data?.getUser.avatar
         }
       }
@@ -240,10 +258,10 @@ function Profile(props) {
       avatar: null
     })
     await refetch()
+    refetchMe()
     notification.success({
       message: `Thay ảnh ${type === 'avatar' ? 'đại diện' : 'bìa'} thành công`
     })
-    
   }
   const handleCancel = () => {
     setLoadingImg({
@@ -259,7 +277,7 @@ function Profile(props) {
     <>
       {type !== 'messenger' && (
         <>
-          <div className='cover-uploader'>
+          <div className="cover-uploader">
             <div
               style={{
                 position: 'relative',
@@ -270,10 +288,16 @@ function Profile(props) {
             >
               {(img.coverPhoto || data?.getUser.coverPhoto) && (
                 <img
-                  className='cover-img'
+                  className="cover-img"
                   style={{ objectFit: 'cover', height: 250, width: '100%' }}
                   // alt='example'
                   src={img.coverPhoto || data?.getUser.coverPhoto}
+                  onClick={() => {
+                    setPreviewImg({
+                      isShow: true,
+                      imgSrc: img.coverPhoto || data?.getUser.coverPhoto
+                    })
+                  }}
                 />
               )}
               {loadingImg.coverPhoto && (
@@ -286,8 +310,7 @@ function Profile(props) {
                   }}
                 />
               )}
-               { uploadButtonCover }
-              
+              {uploadButtonCover}
             </div>
           </div>
           <div
@@ -300,15 +323,29 @@ function Profile(props) {
             }}
           >
             <div style={{ display: 'flex', width: '100%' }}>
-              <div style={{ position: 'relative', width: 130, height: 130, marginRight: 30 }}>
+              <div
+                style={{
+                  position: 'relative',
+                  width: 130,
+                  height: 130,
+                  marginRight: 30
+                }}
+              >
                 {(data?.getUser.avatar || img.avatar) && (
                   <Avatar
-                    className='img-avt'
+                    className="img-avt"
                     style={{ border: '2px solid black', objectFit: 'cover' }}
-                    shape='circle'
+                    shape="circle"
                     size={130}
                     src={img.avatar || data?.getUser.avatar}
-                  />)}
+                    onClick={() => {
+                      setPreviewImg({
+                        isShow: true,
+                        imgSrc: img.avatar || data?.getUser.avatar
+                      })
+                    }}
+                  />
+                )}
                 {uploadButtonAvt}
                 {loadingImg.avatar && (
                   <LoadingOutlined
@@ -320,7 +357,7 @@ function Profile(props) {
                       color: '#fff'
                     }}
                   />
-                ) }
+                )}
               </div>
               <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
                 <div
@@ -339,25 +376,26 @@ function Profile(props) {
                     {`${data?.getUser.firstname} ${data?.getUser.lastname}`}
                   </p>
                   <div>
-                    {!isBroken ? (
-                      <>
-                        <Button
-                          type='ghost'
-                          icon={<HeartTwoTone />}
-                          onClick={sendNotifollow}
-                        >
-                          Theo dõi
-                        </Button>
-                        <Button type='ghost' icon={<MessageTwoTone />}>
-                          Nhắn tin
-                        </Button>
-                      </>
-                    ) : (
-                      <div style={{ marginTop: 5 }}>
-                        <HeartTwoTone style={{ marginLeft: 10 }} />
-                        <MessageTwoTone style={{ marginLeft: 10 }} />
-                      </div>
-                    )}
+                    {!isMe &&
+                      (!isBroken ? (
+                        <>
+                          <Button
+                            type="ghost"
+                            icon={<HeartTwoTone />}
+                            onClick={sendNotifollow}
+                          >
+                            Theo dõi
+                          </Button>
+                          <Button type="ghost" icon={<MessageTwoTone />}>
+                            Nhắn tin
+                          </Button>
+                        </>
+                      ) : (
+                        <div style={{ marginTop: 5 }}>
+                          <HeartTwoTone style={{ marginLeft: 10 }} />
+                          <MessageTwoTone style={{ marginLeft: 10 }} />
+                        </div>
+                      ))}
                   </div>
                 </div>
                 <Menu
@@ -375,38 +413,38 @@ function Profile(props) {
                     width: isBroken ? '60vw' : '35vw',
                     backgroundColor: 'initial'
                   }}
-                  overflowedIndicator={<EllipsisOutlined color='black' />}
-                  mode='horizontal'
+                  overflowedIndicator={<EllipsisOutlined color="black" />}
+                  mode="horizontal"
                 >
                   <Menu.Item
                     onClick={() => history.push(`/${userId}/info`)}
-                    key='info'
+                    key="info"
                   >
                     Thông tin
                   </Menu.Item>
                   {isBroken && (
                     <Menu.Item
                       onClick={() => history.push(`/${userId}/messenger`)}
-                      key='mail'
+                      key="mail"
                     >
                       Tin nhắn
                     </Menu.Item>
                   )}
                   <Menu.Item
                     onClick={() => history.push(`/${userId}/savedposts`)}
-                    key='savedposts'
+                    key="savedposts"
                   >
                     Bài viết đã lưu
                   </Menu.Item>
                   <Menu.Item
                     onClick={() => history.push(`/${userId}/myposts`)}
-                    key='myposts'
+                    key="myposts"
                   >
                     Bài viết của tôi
                   </Menu.Item>
                   <Menu.Item
                     onClick={() => history.push(`/${userId}/joinedGroup`)}
-                    key='joinedGroup'
+                    key="joinedGroup"
                   >
                     Cộng đồng đã tham gia
                   </Menu.Item>
@@ -414,26 +452,15 @@ function Profile(props) {
               </div>
             </div>
           </div>
-          {/* <br></br>
-      <div style={{ backgroundColor: '#fff', padding: 16 }} >
-        <center>
-          { editBio.isEdit
-            ? <Input value={editBio.valueTemp}
-              onChange={(e) => setditBio({ ...editBio, valueTemp: e.target.value })} >
-            </Input>
-            : <p>{editBio.valueBio}</p>}
-          { editBio.isEdit
-            ? <Button type='primary' onClick={() => {
-              setditBio({ ...editBio, valueBio: editBio.valueTemp, isEdit: false })
-            }
-            } >Lưu</Button>
-            : <EditTwoTone onClick={() => setditBio({ ...editBio, isEdit: true })} />}
-        </center>
-      </div> */}
           <br />{' '}
         </>
       )}
-      <div style={{ backgroundColor: 'aliceblue' }}>
+      <div
+        style={{
+          backgroundColor: type === 'info' ? '#fff' : 'aliceblue',
+          padding: type === 'info' && 16
+        }}
+      >
         {type === 'info' && <Info userInfo={data?.getUser} />}
         {type === 'messenger' && <myMessenger userInfo={data?.getUser} />}
         {type === 'myposts' && (
@@ -444,6 +471,10 @@ function Profile(props) {
         )}
         {type === 'joinedGroup' && <HighLightGroup userInfo={data?.getUser} />}
       </div>
+      <ModalPreviewImg
+        previewImg={previewImg}
+        onCancel={() => setPreviewImg({ ...previewImg, isShow: false })}
+      />
     </>
   )
 }

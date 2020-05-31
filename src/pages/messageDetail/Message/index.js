@@ -1,11 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import './Message.css'
+import { ModalPreviewImg } from '@components'
 
-export default function Message (props) {
+export default function Message(props) {
   const { data, isMine, startsSequence, endsSequence, showTimestamp } = props
   const friendlyTimestamp = moment(data).format('LLLL')
+  const [previewImg, setPreviewImg] = useState({
+    isShow: false,
+    imgSrc: ''
+  })
   return (
     <div
       className={[
@@ -15,18 +20,35 @@ export default function Message (props) {
         `${endsSequence ? 'end' : ''}`
       ].join(' ')}
     >
-      {showTimestamp && <div className='timestamp'>{friendlyTimestamp}</div>}
+      {showTimestamp && <div className="timestamp">{friendlyTimestamp}</div>}
 
-      { data.content.img && <div className='bubble-container'>
-        <div className='imgBubble'>
-          <img width='30%' src={ data.content.img[0]} />
+      {data.content.img && (
+        <div className="bubble-container">
+          <div className="imgBubble">
+            <img
+              width="30%"
+              src={data.content.img}
+              onClick={() => {
+                setPreviewImg({
+                  isShow: true,
+                  imgSrc: data.content.img
+                })
+              }}
+            />
+          </div>
         </div>
-      </div> }
-      { data.content.message.trim() && <div className='bubble-container'>
-        <div className='bubble' title={friendlyTimestamp}>
-          {data.content.message}
+      )}
+      {data.content.message.trim() && (
+        <div className="bubble-container">
+          <div className="bubble" title={friendlyTimestamp}>
+            {data.content.message}
+          </div>
         </div>
-      </div>}
+      )}
+      <ModalPreviewImg
+        previewImg={previewImg}
+        onCancel={() => setPreviewImg({ ...previewImg, isShow: false })}
+      />
     </div>
   )
 }

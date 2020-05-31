@@ -29,7 +29,7 @@ import {
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
-import { Logo, HighLightGroup } from '../../components'
+import { Logo, HighLightGroup, Noti } from '@components'
 import './mainlayout.scss'
 // import InputCustome from '../../components/inputCustome'
 
@@ -44,28 +44,28 @@ import reactStringReplace from 'react-string-replace'
 const { Header, Content, Sider } = Layout
 
 export const brokenContext = React.createContext(null)
-const MY_USER_ID = 'tuikyne'
+// const MY_USER_ID =
 const index = ({ children }) => {
   const { logout, me, isAuth } = useContext(IContext)
-  console.log(me, 'uuu')
+
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
   const [messbox, setMessbox] = useState([])
-  const [notifications, setNotifications] = useState([])
+  // const [notifications, setNotifications] = useState([])
 
-  useEffect(() => {
-    getNotification()
-  }, [])
-  const getNotification = () => {
-    let temp
-    firebase.database().ref('notifications/' + MY_USER_ID).on('value', (snapshot) => {
-      // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-      temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
-      setNotifications(temp)
-      console.log('notifications', temp)
-    })
-  }
-  const chooseConvention = (convention) => {
+  // useEffect(() => {
+  //   getNotification()
+  // }, [me])
+  // const getNotification = () => {
+  //   let temp
+  //   firebase.database().ref('notifications/' + me?._id).on('value', (snapshot) => {
+  //     temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+
+  //     setNotifications(temp)
+
+  //   })
+  // }
+  const chooseConvention = convention => {
     if (messbox.findIndex(mess => mess.idChat === convention.idChat) === -1) {
       const a = [...messbox]
       a.push(convention)
@@ -76,28 +76,36 @@ const index = ({ children }) => {
   const history = useHistory()
   const menu = (
     <Menu>
-      <Menu.Item key='0'onClick={() => history.push(`/${me?._id}/info`)}>
+      <Menu.Item key="0" onClick={() => history.push(`/${me?._id}/info`)}>
         <InfoCircleTwoTone /> Thông tin cá nhân{' '}
       </Menu.Item>
-      { isBroken && <Menu.Item key='1' onClick={() => history.push(`/${me?._id}/messenger`)}>
-        <MessageTwoTone /> Tin nhắn{' '}
-      </Menu.Item>}
-      <Menu.Item key='2' onClick={() => history.push(`/${me?._id}/myposts`)} >
+      {isBroken && (
+        <Menu.Item
+          key="1"
+          onClick={() => history.push(`/${me?._id}/messenger`)}
+        >
+          <MessageTwoTone /> Tin nhắn{' '}
+        </Menu.Item>
+      )}
+      <Menu.Item key="2" onClick={() => history.push(`/${me?._id}/myposts`)}>
         <FileTextTwoTone /> Bài viết của tôi{' '}
       </Menu.Item>
-      <Menu.Item key='3' onClick={() => history.push(`/${me?._id}/savedposts`)}>
+      <Menu.Item key="3" onClick={() => history.push(`/${me?._id}/savedposts`)}>
         <BookTwoTone /> Bài viết đã lưu{' '}
       </Menu.Item>
-      <Menu.Item key='4' onClick={() => history.push(`/${me?._id}/joinedGroup`)}>
+      <Menu.Item
+        key="4"
+        onClick={() => history.push(`/${me?._id}/joinedGroup`)}
+      >
         <HeartTwoTone /> Cộng đồng đã tham gia{' '}
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key='5' onClick={logout}>
+      <Menu.Item key="5" onClick={logout}>
         <LogoutOutlined /> Đăng xuất
       </Menu.Item>
     </Menu>
   )
-  const onCancelMessbox = (idChat) => {
+  const onCancelMessbox = idChat => {
     const idx = messbox.findIndex(mess => mess.idChat === idChat)
     var arr = [...messbox]
     arr.splice(idx, 1)
@@ -105,7 +113,7 @@ const index = ({ children }) => {
   }
 
   return (
-    <Layout >
+    <Layout>
       <Header
         style={{
           boxShadow: '0 1px 8px #f0f1f2',
@@ -124,31 +132,33 @@ const index = ({ children }) => {
           }}
         >
           <div
-            id='header-left'
+            id="header-left"
             style={{
               width: isBroken ? '70%' : '62%',
               display: 'flex',
               justifyContent: 'flex-start'
             }}
           >
-            <Logo isBroken={isBroken} size='medium' onClick={() => history.push('/')}/>
+            <Logo
+              isBroken={isBroken}
+              size="medium"
+              onClick={() => history.push('/')}
+            />
             {
               !isBroken ? (
                 <Input
-                  className='search-flex'
+                  className="search-flex"
                   style={{ height: 30, top: '1em', borderRadius: 40 }}
                   prefix={<SearchOutlined />}
-                  placeholder='Tìm kiếm'
+                  placeholder="Tìm kiếm"
                 ></Input>
               ) : (
                 // <Tooltip title='search'>
                 <Input
-                  className='search-broken'
+                  className="search-broken"
                   style={{ height: 30, top: '1em', borderRadius: 40 }}
-                  prefix={
-                    <SearchOutlined/>
-                  }
-                  placeholder='Tìm kiếm'
+                  prefix={<SearchOutlined />}
+                  placeholder="Tìm kiếm"
                 ></Input>
               )
 
@@ -156,7 +166,7 @@ const index = ({ children }) => {
             }
           </div>
           <div
-            id='header-right'
+            id="header-right"
             style={{
               width: isBroken ? '30%' : '38%',
               borderBottom: 'none',
@@ -172,8 +182,10 @@ const index = ({ children }) => {
                 backgroundColor: 'initial',
                 width: isBroken ? 50 : 120
               }}
-              overflowedIndicator={<UnorderedListOutlined style={{ fontSize: 23 }}/>}
-              mode='horizontal'
+              overflowedIndicator={
+                <UnorderedListOutlined style={{ fontSize: 23 }} />
+              }
+              mode="horizontal"
             >
               <Menu.Item onClick={() => history.push('/createpost')}>
                 {isBroken ? (
@@ -182,63 +194,55 @@ const index = ({ children }) => {
                     <span>Thêm bài viết</span>
                   </>
                 ) : (
-                  <Tooltip title='Thêm bài viết' placement='bottomRight'><Button
-                    className='btn-round'
-                    shape='circle'
-                    icon={
-                      <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
-                    }
-                    // onClick={() => history.push('/createpost')}
-                  />
+                  <Tooltip title="Thêm bài viết" placement="bottomRight">
+                    <Button
+                      className="btn-round"
+                      shape="circle"
+                      icon={
+                        <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
+                      }
+                      // onClick={() => history.push('/createpost')}
+                    />
                   </Tooltip>
                 )}
               </Menu.Item>
               <Menu.Item>
-                {isBroken ? (
-                  <>
-                    <BellOutlined />
-                    <span>Thông báo</span>
-                  </>
-                ) : (
-                  <Tooltip title='Thông báo' placement='bottomRight'>
-                    <Popover className='noti-popover' content={notifications.map((noti, idx) =>
-                      <div className='noti-item' style={{ backgroundColor: noti.seen ? 'initial' : 'rgba(214, 234, 248, 0.5)' }}
-                        key={idx} onClick={() => {
-                          firebase.database().ref('notifications/' + MY_USER_ID + '/' + noti.id).update({
-                            seen: true
-                          })
-                          history.push(noti.link)
-                        }}>
-                        <p style={{ display: 'inline' }}>
-                          {reactStringReplace(noti.content.trim(), /@(\w+)/g, (match, i) =>
-                            <a style={{ display: 'contents' }} key={match + i} onClick={() => history.push(`/${match}/info`)}>{match}</a>)}
-                        </p>
-                      </div>)} title="Thông Báo" trigger="click">
-                      <Button
-                        className='btn-round'
-                        shape='circle'
-                        icon={<Badge size={1} overflowCount={9} count={notifications.filter(item => item.seen === false).length}><BellOutlined /></Badge>}
-                      />
-                    </Popover>
-                  </Tooltip>
-                )}
+                <Noti history={history} />
               </Menu.Item>
             </Menu>
-            <div >
-              {isAuth ?
-              isBroken ? (
-                <Dropdown overlay={menu} trigger={['click']}>
-                  <a
-                    className='ant-dropdown-link'
-                    style={{ paddingLeft: 5 }}
-                    onClick={(e) => e.preventDefault()}
-                  >
+            <div>
+              {isAuth ? (
+                isBroken ? (
+                  <Dropdown overlay={menu} trigger={['click']}>
+                    <a
+                      className="ant-dropdown-link"
+                      style={{ paddingLeft: 5 }}
+                      onClick={e => e.preventDefault()}
+                    >
+                      <Avatar
+                        style={{
+                          top: '0.75em',
+                          color: 'white',
+                          backgroundColor: 'rgb(0, 152, 218)',
+                          fontSize: '15px',
+                          verticalAlign: 'sub'
+                        }}
+                        size={30}
+                        src={me?.avatar}
+                      >
+                        {/* N */}
+                      </Avatar>
+                      <CaretDownOutlined />
+                    </a>
+                  </Dropdown>
+                ) : (
+                  <>
                     <Avatar
                       style={{
-                        top: '0.75em',
+                        top: '0.5em',
                         color: 'white',
                         backgroundColor: 'rgb(0, 152, 218)',
-                        fontSize: '15px',
+                        fontSize: '14px',
                         verticalAlign: 'sub'
                       }}
                       size={30}
@@ -246,36 +250,23 @@ const index = ({ children }) => {
                     >
                       {/* N */}
                     </Avatar>
-                    <CaretDownOutlined />
-                  </a>
-                </Dropdown>
+                    <Dropdown overlay={menu} trigger={['click']}>
+                      <a
+                        className="ant-dropdown-link"
+                        style={{ paddingLeft: 5, fontWeight: 'bold' }}
+                        onClick={e => e.preventDefault()}
+                      >
+                        {me?.firstname} <CaretDownOutlined />
+                      </a>
+                    </Dropdown>
+                  </>
+                )
               ) : (
-                <>
-                  <Avatar
-                    style={{
-                      top: '0.5em',
-                      color: 'white',
-                      backgroundColor: 'rgb(0, 152, 218)',
-                      fontSize: '14px',
-                      verticalAlign: 'sub'
-                    }}
-                    size={30}
-                    src={me?.avatar}
-                  >
-                    {/* N */}
-                  </Avatar>
-                  <Dropdown overlay={menu} trigger={['click']}>
-                    <a
-                      className='ant-dropdown-link'
-                      style={{ paddingLeft: 5, fontWeight: 'bold' }}
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      {me?.firstname} <CaretDownOutlined />
-                    </a>
-                  </Dropdown>
-                </>
-              )
-              : <Button type='primary' onClick={() => history.push('./login')}> Đăng nhập </Button> }
+                <Button type="primary" onClick={() => history.push('./login')}>
+                  {' '}
+                  Đăng nhập{' '}
+                </Button>
+              )}
               {/* <Switch onChange={ () => myTheme?.toggleTheme()} /> */}
             </div>
             {/* </Col>
@@ -285,7 +276,7 @@ const index = ({ children }) => {
       </Header>
 
       <Layout
-        className='home'
+        className="home"
         style={{
           paddingTop: isBroken ? 65 : 100,
           width: '100%',
@@ -295,18 +286,22 @@ const index = ({ children }) => {
         }}
       >
         <Sider
-          breakpoint='lg'
+          breakpoint="lg"
           collapsedWidth={0}
           width={isBroken ? 0 : '18%'}
-          onBreakpoint={(broken) => setIsBroken(broken)}
-          onCollapse={(collapsed) => {
+          onBreakpoint={broken => setIsBroken(broken)}
+          onCollapse={collapsed => {
             setVisible(!collapsed)
           }}
           trigger={null}
         >
           {/* { !isBroken && <div style={{ position: 'fixed' }}> */}
-          {isBroken ? null : <div className='highlight-group'><Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
-            <HighLightGroup></HighLightGroup></div>}
+          {isBroken ? null : (
+            <div className="highlight-group">
+              <Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
+              <HighLightGroup></HighLightGroup>
+            </div>
+          )}
           {/* </div>} */}
         </Sider>
         <Content
@@ -314,7 +309,7 @@ const index = ({ children }) => {
             // backgroundColor: 'aliceblue',
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
-            marginTop: 0,
+            marginTop: 0
             // width: '90%'
             // width: isAuth ? '90%' : '10%'
           }}
@@ -323,28 +318,39 @@ const index = ({ children }) => {
             {children}
           </brokenContext.Provider>
         </Content>
-        { !isBroken && isAuth ? <Sider width='18%' >
-          <div className='sidebarMess-mainLayout'>
-            <ConversationList chooseConvention={chooseConvention}/>
-          </div>
-        </Sider> 
-        : !isBroken && <Sider width='17%'></Sider>}
-        { !isBroken && <div className='messenger-main'>
-          <div className='contentMess-mainLayout' >
-            {messbox.map((convention, idx) => {
-              return (
-                <div key={idx}
-                  className={`contentMess-box ${convention.idChat}`}
-                  style={{ display: 'flex', flexDirection: 'column' }}>
-                  <MessageList idx={idx} onCancelMessbox={() => onCancelMessbox(convention.idChat)} convention={convention} />
-                </div>)
-            }
-            )}
-            {/* <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
+        {!isBroken && isAuth ? (
+          <Sider width="18%">
+            <div className="sidebarMess-mainLayout">
+              <ConversationList chooseConvention={chooseConvention} />
+            </div>
+          </Sider>
+        ) : (
+          !isBroken && <Sider width="17%"></Sider>
+        )}
+        {!isBroken && (
+          <div className="messenger-main">
+            <div className="contentMess-mainLayout">
+              {messbox.map((convention, idx) => {
+                return (
+                  <div
+                    key={idx}
+                    className={`contentMess-box ${convention.idChat}`}
+                    style={{ display: 'flex', flexDirection: 'column' }}
+                  >
+                    <MessageList
+                      idx={idx}
+                      onCancelMessbox={() => onCancelMessbox(convention.idChat)}
+                      convention={convention}
+                    />
+                  </div>
+                )
+              })}
+              {/* <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
               <MessageList />
             </div> */}
+            </div>
           </div>
-        </div>}
+        )}
         {/* {isBroken && (
           <Drawer
             drawerStyle={{ transition: 'all 0.2s' }}

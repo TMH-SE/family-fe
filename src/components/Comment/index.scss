@@ -48,3 +48,12 @@
     overflow: hidden;
     border-radius: 20px
 }
+.rep-content {
+    a{
+    display: contents !important;
+    color: rgba(15, 90, 228, 0.7) !important;
+    }
+    a:hover{
+        color: rgb(27, 93, 226) !important;
+    }
+}

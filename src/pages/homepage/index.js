@@ -65,7 +65,7 @@ const HomePage = (props) => {
   }
   const getSumComment = (idPost) => {
     let temp
-    firebase.database().ref(idPost + '/comments').on('value', (snapshot) => {
+    firebase.database().ref(`posts/${idPost}/comments`).on('value', (snapshot) => {
       // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
       temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
       // return temp.length

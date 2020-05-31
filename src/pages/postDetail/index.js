@@ -58,7 +58,7 @@ function PostDetail (props) {
   const { postId } = props.match.params
   const getSumComment = () => {
     let temp
-    firebase.database().ref(postId + '/comments').on('value', (snapshot) => {
+    firebase.database().ref(`posts/${postId}/comments`).on('value', (snapshot) => {
       // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
       temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
       // return temp.length

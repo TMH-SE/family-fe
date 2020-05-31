@@ -35,9 +35,9 @@ function ModalCreatePost (props) {
         <AutoComplete
           options={options}
           //  placeholder="try to type `b`"
-          filterOption={(inputValue, option) =>
-            option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-          }
+          filterOption={(inputValue, option) => {
+            return option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+          }}
         >
           <Input style={{ width: '100%' }} prefix={<SearchOutlined/>} size="large" placeholder="Chọn công đồng" />
         </AutoComplete>

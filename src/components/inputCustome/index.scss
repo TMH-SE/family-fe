@@ -20,6 +20,7 @@
   // inset -5px -5px 10px rgba(251, 251, 251, 0.055);
   &:focus,&:active{
     outline: none;
+    color: #454647;
     border: 1px solid #3facded0;
   }
   &::placeholder {
@@ -44,7 +45,7 @@
   .textMention__suggestions__item--focused {
     background-color: #daf4fa;
   }
-  textarea.ant-input:focus {
+  textarea.ant-input:hover {
     /* border: none !important; */
   }
   .input-menu{
