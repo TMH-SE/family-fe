@@ -47,7 +47,10 @@ const AdminLayout = ({ children }) => {
             trigger={['click']}
             placement="bottomRight"
           >
-            <Avatar style={{ backgroundColor: 'rgba(0, 0, 0, .1)' }} src={logoImgSrc} />
+            <Avatar
+              style={{ backgroundColor: 'rgba(0, 0, 0, .1)' }}
+              src={logoImgSrc}
+            />
           </Dropdown>
         ]}
         footer={<Divider style={{ margin: 0 }} />}

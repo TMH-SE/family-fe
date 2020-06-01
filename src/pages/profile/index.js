@@ -32,7 +32,7 @@ import { IContext } from '@tools'
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
-  const MY_USER_ID = 'tuinhune'
+  // const MY_USER_ID = 'tuinhune'
   const isBroken = useContext(brokenContext)
   const { loading, error, data, refetch } = useQuery(GET_USER, {
     variables: { userId: userId },
@@ -62,13 +62,14 @@ function Profile(props) {
         .set({
           action: 'follow',
           reciever: userId,
-          link: `/${MY_USER_ID}/info`,
-          content: `@${MY_USER_ID} đã bắt đầu theo dõi bạn`,
+          link: `/${me?._id}/info`,
+          content: `${me?.firstname} đã bắt đầu theo dõi bạn`,
           seen: false
         })
     } catch (err) {
       console.log(err)
     }
+    notification.success({ message: 'Đã theo dõi' })
   }
   const uploadButtonCover =
     isMe &&

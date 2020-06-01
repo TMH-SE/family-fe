@@ -10,15 +10,14 @@ import { useHistory } from 'react-router-dom'
 // import { useHistory } from 'react-router-dom'
 import reactStringReplace from 'react-string-replace'
 import { IContext } from '@tools'
-// const MY_USER_ID = 'tuinhune'
+import { GET_USER } from '@shared'
+import CommentItem from './CommentItem'
+
 const CommentList = ({ comments, showMore, idPost }) => {
   const history = useHistory()
   const { me } = useContext(IContext)
-  const [previewImg, setPreviewImg] = useState({
-    isShow: false,
-    imgSrc: ''
-  })
   const [rep, setRep] = useState({})
+
   const [showMoreRep, setShowMoreRep] = useState({ idParent: null, rows: 0 })
   const [arrTag, setArrTag] = useState([])
   let lessComment = []
@@ -27,20 +26,9 @@ const CommentList = ({ comments, showMore, idPost }) => {
   const onAdd = mentions => {
     setArrTag(mentions)
   }
-  // const sendNotiComment = async (userId, postId) => {
-  //   const notificationId = uuid.v4()
-  //   try {
-  //     await firebase.database().ref('notifications/' + userId + '/' + notificationId).set({
-  //       action: 'comment',
-  //       reciever: userId,
-  //       link: `/postdetail/${postId}`,
-  //       content: `@${MY_USER_ID} đã bình luận về bài viết của bạn`,
-  //       seen: false
-  //     })
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
+  const replyTo = repTo => {
+    setRep(repTo)
+  }
   const sendNotiTagReply = async (userId, postId) => {
     const notificationId = uuid.v4()
     arrTag &&
@@ -88,8 +76,8 @@ const CommentList = ({ comments, showMore, idPost }) => {
       {
         content: { message: value, img: img && img },
         timestamp: new Date().getTime(),
-        author: { id: `${me?._id}`, name: `${me?.firstname}` },
-        photo: me?.avatar
+        author: me?._id
+        // photo: me?.avatar
       }
     ]
     try {
@@ -115,57 +103,12 @@ const CommentList = ({ comments, showMore, idPost }) => {
         itemLayout="horizontal"
         renderItem={comment => (
           <>
-            <Comment
-              id={`parent-cmt-${comment.id}`}
-              actions={[
-                <span
-                  onClick={() => {
-                    // setArrTag([{id: comment.author.id, display: comment.author.name }])
-                    setRep({ commentId: comment.id, author: comment.author })
-                  }}
-                  key="comment-basic-reply-to"
-                  on
-                >
-                  Reply to
-                </span>
-              ]}
-              author={
-                <a
-                  onClick={() => history.push(`/${comment.author.id}/info`)}
-                  style={{ color: 'black', fontSize: 14 }}
-                >
-                  {comment.author.name}
-                </a>
-              }
-              avatar={comment.photo}
-              content={
-                <>
-                  <div style={{ display: 'flex', overflowX: 'auto' }}>
-                    {comment.content.img && (
-                      <div className="img-cmt" style={{ display: 'flex' }}>
-                        <img
-                          style={{
-                            height: 160,
-                            width: 160,
-                            objectFit: 'cover',
-                            borderRadius: 15
-                          }}
-                          src={comment.content.img}
-                          onClick={() => {
-                            setPreviewImg({
-                              isShow: true,
-                              imgSrc: comment.content.img
-                            })
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <p>{comment.content.message.trim()}</p>
-                </>
-              }
-              datetime={moment(comment.timestamp).fromNow()}
-            />
+            <CommentItem
+              comment={comment}
+              idParent={comment.id}
+              replyTo={replyTo}
+              type="parent"
+            ></CommentItem>
             {comment.replies && comment.replies.length - 1 > showMoreRep.rows && (
               <a
                 style={{ textAlign: 'left', marginLeft: '10%' }}
@@ -211,93 +154,16 @@ const CommentList = ({ comments, showMore, idPost }) => {
                   comment.id === showMoreRep?.idParent ? showMoreRep.rows : 1
                 )
                 .map((reply, idx) => (
-                  <Comment
-                    key={idx}
-                    className={`reply ${comment.id}`}
-                    actions={[
-                      <span
-                        onClick={() => {
-                          // setArrTag([...arrTag, {id: reply.author.id, display: reply.author.name }])
-                          // console.log(arrTag, 'arRepff', reply.author, 'đf')
-                          setRep({
-                            commentId: comment.id,
-                            author: reply.author
-                          })
-                        }}
-                        key="comment-basic-reply-to"
-                        on
-                      >
-                        Reply to
-                      </span>
-                    ]}
-                    author={
-                      <a
-                        style={{ color: 'black', fontSize: 14 }}
-                        onClick={() => history.push(`/${reply.author.id}/info`)}
-                      >
-                        {reply.author.name}
-                      </a>
-                    }
-                    avatar={reply.photo}
-                    content={
-                      <>
-                        <div style={{ display: 'flex', overflowX: 'auto' }}>
-                          {reply.content.img && (
-                            <div
-                              className="img-cmt"
-                              style={{
-                                display: 'flex'
-                                // margin: '5px 0 0 5px'
-                              }}
-                            >
-                              <img
-                                style={{
-                                  height: 160,
-                                  width: 160,
-                                  objectFit: 'cover',
-                                  borderRadius: 15
-                                }}
-                                src={reply.content.img}
-                                onClick={() => {
-                                  setPreviewImg({
-                                    isShow: true,
-                                    imgSrc: reply.content.img
-                                  })
-                                }}
-                              />
-                            </div>
-                          )}
-                        </div>
-                        <p
-                          dangerouslySetInnerHTML={{
-                            __html: reply.content.message.trim()
-                          }}
-                          style={{ display: 'inline' }}
-                          className="rep-content"
-                        />
-                      </>
-                    }
-                    datetime={moment(reply.timestamp).fromNow()}
+                  <CommentItem
+                    comment={reply}
+                    idParent={comment.id}
+                    replyTo={replyTo}
+                    type="reply"
                   />
                 ))}
           </>
         )}
       />
-      <ModalPreviewImg
-        previewImg={previewImg}
-        onCancel={() => setPreviewImg({ ...previewImg, isShow: false })}
-      />
-      {/* <Modal
-        visible={previewImg.isShow}
-        footer={null}
-        onCancel={() => setPreviewImg(false)}
-      >
-        <img
-          alt="example"
-          style={{ width: '100%', paddingTop: 20 }}
-          src={previewImg.imgSrc}
-        />
-      </Modal> */}
     </>
   )
 }
@@ -305,11 +171,21 @@ const CommentList = ({ comments, showMore, idPost }) => {
 function CommentPost(props) {
   const [comments, setComments] = useState([])
   const [showMore, setShowMore] = useState(3)
+  const [user, setUser] = useState(null)
   const { me } = useContext(IContext)
   const { idPost } = props
   useEffect(() => {
     getComment()
   }, [])
+  // const [getUser, { loading, data }] = useLazyQuery(GET_USER);
+
+  // if (loading) return <p>Loading ...</p>;
+
+  // if (data && data.getUser) {
+  //   console.log(data, 'data')
+  //   // setUser(data.getUser);
+  // }
+
   const getComment = () => {
     firebase
       .database()
@@ -321,7 +197,8 @@ function CommentPost(props) {
           ...snapshot.val()[key],
           id: key
         }))
-        // temp.sort((a, b) => b.timestamp - a.timestamp)
+
+        temp.sort((a, b) => b.timestamp - a.timestamp)
         setComments(temp)
       })
   }
@@ -341,8 +218,8 @@ function CommentPost(props) {
         .set({
           content: { message: value, img: img },
           timestamp: new Date().getTime(),
-          author: { id: me?._id, name: me?.firstname },
-          photo: me?.avatar,
+          author: me?._id,
+          // photo: me?.avatar,
           mention: mentions,
           replies: []
         })

@@ -45,7 +45,7 @@ function InputCustome(props) {
     props.replyAuthor &&
       document.getElementById(`input-custom-${props.idElement}`).focus()
     // props.onAdd && props.onAdd([{ id: props.replyAuthor.id, display: props.replyAuthor.name }])
-  }, [props.idElement])
+  }, [props.replyAuthor])
   const propsUpload = {
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     listType: 'picture-cards'

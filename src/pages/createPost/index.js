@@ -15,11 +15,14 @@ const options = [
   { value: 'Wall Street' }
 ]
 
-const CreatePost = (props) => {
+const CreatePost = props => {
   return (
     <>
       <h1> Tạo Bài Viết </h1>
-      <div className='create-post' style={{ display: 'flex', flexDirection: 'column' }}>
+      <div
+        className="create-post"
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         <AutoComplete
           options={options}
           //  placeholder="try to type `b`"
@@ -27,15 +30,36 @@ const CreatePost = (props) => {
             option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
           }
         >
-          <Input style={{ width: '100%' }} prefix={<SearchOutlined/>} size="large" placeholder="Chọn công đồng" />
+          <Input
+            style={{ width: '100%' }}
+            prefix={<SearchOutlined />}
+            size="large"
+            placeholder="Chọn công đồng"
+          />
         </AutoComplete>
         <br></br>
-        <Input prefix={<EditTwoTone />} style={{ width: '100%' }} placeholder='Tiêu đề bài viết'></Input>
+        <Input
+          prefix={<EditTwoTone />}
+          style={{ width: '100%' }}
+          placeholder="Tiêu đề bài viết"
+        ></Input>
         <br></br>
         <Editor></Editor>
-        <div style={{ marginTop: 15, display: 'flex', justifyContent: 'flex-end' }}>
-          <Button style ={{ fontWeight: 'bolder', marginRight: 15, textAlign: 'center' }}>Hủy</Button>
-          <Button style ={{ fontWeight: 'bolder' }} type='primary' >Đăng bài</Button>
+        <div
+          style={{ marginTop: 15, display: 'flex', justifyContent: 'flex-end' }}
+        >
+          <Button
+            style={{
+              fontWeight: 'bolder',
+              marginRight: 15,
+              textAlign: 'center'
+            }}
+          >
+            Hủy
+          </Button>
+          <Button style={{ fontWeight: 'bolder' }} type="primary">
+            Đăng bài
+          </Button>
         </div>
       </div>
     </>

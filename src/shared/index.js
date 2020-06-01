@@ -2,8 +2,8 @@ import gql from 'graphql-tag'
 const CLOUDINARY_UPLOAD_PRESET = 'graduation-pj'
 const CLOUDINARY_UPLOAD_URL =
   'https://api.cloudinary.com/v1_1/nhuht/image/upload'
-export const uploadImg = async (file) => {
-    const data = {
+export const uploadImg = async file => {
+  const data = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -13,33 +13,40 @@ export const uploadImg = async (file) => {
       upload_preset: CLOUDINARY_UPLOAD_PRESET
     })
   }
-    const upload = await fetch(CLOUDINARY_UPLOAD_URL, data).then(res => res.json())
-   return upload.secure_url
-  }
+  const upload = await fetch(CLOUDINARY_UPLOAD_URL, data).then(res =>
+    res.json()
+  )
+  return upload.secure_url
+}
 
 export const GET_USER = gql`
-    query getUser($userId: ID) {
-        getUser(userId: $userId) {
-        _id
-        firstname
-        lastname
-        avatar
-        coverPhoto
-        email
-        gender
-        phoneNumber
-        birthday
-        expert{
-            jobTitle
-            areasOfExpertise
-            yearsExperience
-            isVerify
-        }
+  query getUser($userId: ID) {
+    getUser(userId: $userId) {
+      _id
+      firstname
+      lastname
+      avatar
+      coverPhoto
+      email
+      gender
+      phoneNumber
+      birthday
+      expert {
+        jobTitle
+        areasOfExpertise
+        yearsExperience
+        isVerify
+      }
     }
   }
 `
 export const UPDATE_USER = gql`
-  mutation updateUser($userId: ID, $editUser: EditUser){
-      updateUser(userId: $userId, editUser: $editUser)
+  mutation updateUser($userId: ID, $editUser: EditUser) {
+    updateUser(userId: $userId, editUser: $editUser)
+  }
+`
+export const UPDATE_USER_INFO = gql`
+  mutation updateUserInfo($userId: ID, $userInfo: UserInfo) {
+    updateUserInfo(userId: $userId, userInfo: $userInfo)
   }
 `

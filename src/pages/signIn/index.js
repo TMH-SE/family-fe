@@ -55,9 +55,15 @@ const SignIn = () => {
       variables: {
         token: idToken
       }
-    }).then(({ data: { signInWithGoogle: { accessToken } } }) => {
-      authenticate(accessToken)
-    })
+    }).then(
+      ({
+        data: {
+          signInWithGoogle: { accessToken }
+        }
+      }) => {
+        authenticate(accessToken)
+      }
+    )
   }
   return (
     <MinimalLayout>

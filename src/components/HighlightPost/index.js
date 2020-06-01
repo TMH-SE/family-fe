@@ -29,7 +29,7 @@ const data = [
     title: 'Ant 6'
   }
 ]
-function HighlightPost (props) {
+function HighlightPost(props) {
   const { isBroken } = props
   const history = useHistory()
   return (
@@ -48,8 +48,8 @@ function HighlightPost (props) {
               style={{ margin: '10px 0 0 10px' }}
               cover={
                 <img
-                  alt='example'
-                  src='https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+                  alt="example"
+                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
                 />
               }
               // actions={[
@@ -61,7 +61,7 @@ function HighlightPost (props) {
               <Meta
                 //   avatar={<Avatar size={64} shape='square' src='https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png' />}
                 title={item.title}
-                description='This is the description'
+                description="This is the description"
               />
             </Card>
           </div>

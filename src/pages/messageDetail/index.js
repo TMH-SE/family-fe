@@ -10,7 +10,7 @@ import * as uuid from 'uuid'
 import { InputCustome } from '@components'
 moment().format()
 const MY_USER_ID = 'tuinhune'
-export default function MessageDetail (props) {
+export default function MessageDetail(props) {
   const [messages, setMessages] = useState([])
   const { idChat } = props.match.params
   useEffect(() => {
@@ -18,16 +18,24 @@ export default function MessageDetail (props) {
     document.getElementById(`input-custom-${idChat}`).focus()
   }, [])
   const getMessages = async () => {
-    firebase.database().ref(`messenger/${idChat}`).on('value', (snapshot) => {
-      // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-      const temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
-      if (window.UndefinedVariable) {
-        Object.assign(window.UndefinedVariable, {})
-      }
-      temp.sort((a, b) => a.timestamp - b.timestamp)
-      setMessages(temp)
-    })
-    const ele = await document.getElementsByClassName(`message-list-container ${idChat}`)[0]
+    firebase
+      .database()
+      .ref(`messenger/${idChat}`)
+      .on('value', snapshot => {
+        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+        const temp = Object.keys(snapshot.val()).map(key => ({
+          ...snapshot.val()[key],
+          id: key
+        }))
+        if (window.UndefinedVariable) {
+          Object.assign(window.UndefinedVariable, {})
+        }
+        temp.sort((a, b) => a.timestamp - b.timestamp)
+        setMessages(temp)
+      })
+    const ele = await document.getElementsByClassName(
+      `message-list-container ${idChat}`
+    )[0]
     ele.scrollTop = ele.scrollHeight
   }
 
@@ -95,39 +103,60 @@ export default function MessageDetail (props) {
     const chatId = `${idChat}` + '/'
     const message = uuid.v4()
     try {
-      await firebase.database().ref('messenger/' + chatId + message).set({
-        id: uuid.v4(),
-        content: { message: value, img: imgList },
-        timestamp: new Date().getTime(),
-        author: 'tuikyne',
-        seen: false,
-        hideWith: []
-      })
+      await firebase
+        .database()
+        .ref('messenger/' + chatId + message)
+        .set({
+          id: uuid.v4(),
+          content: { message: value, img: imgList },
+          timestamp: new Date().getTime(),
+          author: 'tuikyne',
+          seen: false,
+          hideWith: []
+        })
     } catch (error) {
       console.log(error)
     }
-    const ele = document.getElementsByClassName(`message-list-container ${idChat}`)[0]
+    const ele = document.getElementsByClassName(
+      `message-list-container ${idChat}`
+    )[0]
     // console.log(ele, 'elemu')
     ele.scrollTop = ele.scrollHeight
   }
 
   return (
-    <div className='message-list'>
-
-      <Card title={<>
-        <span style={{ marginLeft: 5 }}>tuinhune</span></>}
-      className='ant-mess'
-      extra={!props.isBroken &&
-      // <div className='delete-messbox'>
-        <CaretLeftOutlined className='delete-messbox' onClick={() => props.history.goBack()} />}
-      // </div>}
-      // style={{ 10 }}
-      actions={[
-        <InputCustome idElement={idChat} onSubmit={handleSubmit} placeholder='Nhạp tin nhắn' key='input'></InputCustome>
-      ]}>
-        <div className={`message-list-container ${idChat}`} >{renderMessages()}</div>
+    <div className="message-list">
+      <Card
+        title={
+          <>
+            <span style={{ marginLeft: 5 }}>tuinhune</span>
+          </>
+        }
+        className="ant-mess"
+        extra={
+          !props.isBroken && (
+            // <div className='delete-messbox'>
+            <CaretLeftOutlined
+              className="delete-messbox"
+              onClick={() => props.history.goBack()}
+            />
+          )
+        }
+        // </div>}
+        // style={{ 10 }}
+        actions={[
+          <InputCustome
+            idElement={idChat}
+            onSubmit={handleSubmit}
+            placeholder="Nhạp tin nhắn"
+            key="input"
+          ></InputCustome>
+        ]}
+      >
+        <div className={`message-list-container ${idChat}`}>
+          {renderMessages()}
+        </div>
       </Card>
-
     </div>
   )
 }

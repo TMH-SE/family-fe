@@ -12,15 +12,17 @@ const MinimalLayout = ({ children }) => {
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
-        }}></Col>
-      <Col xs={24} md={12} flex='auto'>
+        }}
+      ></Col>
+      <Col xs={24} md={12} flex="auto">
         <Row
           style={{ height: '100vh', background: '#fff' }}
-          justify='center'
-          align='middle'>
+          justify="center"
+          align="middle"
+        >
           <Col xs={22} sm={16} md={16}>
             <div style={{ marginBottom: 30, textAlign: 'center' }}>
-              <Logo size='large' />
+              <Logo size="large" />
             </div>
             {children}
           </Col>

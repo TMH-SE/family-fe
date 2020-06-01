@@ -11,7 +11,7 @@ import { InputCustome } from '@components'
 import Message from '../Message'
 moment().format()
 const MY_USER_ID = 'tuinhune'
-export default function MessageList (props) {
+export default function MessageList(props) {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
@@ -19,13 +19,21 @@ export default function MessageList (props) {
     document.getElementById(`input-custom-${props.convention.idChat}`).focus()
   }, [])
   const getMessages = async () => {
-    firebase.database().ref(`messenger/${props.convention.idChat}`).on('value', (snapshot) => {
-      // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-      const temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
-      temp.sort((a, b) => a.timestamp - b.timestamp)
-      setMessages(temp)
-    })
-    const ele = await document.getElementsByClassName(`message-list-container ${props.convention.idChat}`)[0]
+    firebase
+      .database()
+      .ref(`messenger/${props.convention.idChat}`)
+      .on('value', snapshot => {
+        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+        const temp = Object.keys(snapshot.val()).map(key => ({
+          ...snapshot.val()[key],
+          id: key
+        }))
+        temp.sort((a, b) => a.timestamp - b.timestamp)
+        setMessages(temp)
+      })
+    const ele = await document.getElementsByClassName(
+      `message-list-container ${props.convention.idChat}`
+    )[0]
     ele.scrollTop = ele.scrollHeight
   }
 
@@ -93,39 +101,62 @@ export default function MessageList (props) {
     const chatId = `${idChat}` + '/'
     const message = uuid.v4()
     try {
-      await firebase.database().ref('messenger/' + chatId + message).set({
-        content: { message: value, img: imgList },
-        timestamp: new Date().getTime(),
-        author: 'tuinhune',
-        seen: MY_USER_ID === 'tuinhune',
-        hideWith: []
-      })
+      await firebase
+        .database()
+        .ref('messenger/' + chatId + message)
+        .set({
+          content: { message: value, img: imgList },
+          timestamp: new Date().getTime(),
+          author: 'tuinhune',
+          seen: MY_USER_ID === 'tuinhune',
+          hideWith: []
+        })
     } catch (error) {
       console.log(error)
     }
-    const ele = document.getElementsByClassName(`message-list-container ${idChat}`)[0]
+    const ele = document.getElementsByClassName(
+      `message-list-container ${idChat}`
+    )[0]
     // console.log(ele, 'elemu')
     ele.scrollTop = ele.scrollHeight
   }
 
   const { onCancelMessbox, convention, isBroken } = props
   return (
-    <div className='message-list'>
-
-      <Card title={<><Avatar src={props.convention.photo}></Avatar>
-        <span style={{ marginLeft: 5 }}>{props.convention.name}</span></>}
-      className='ant-mess'
-      extra={!isBroken &&
-      // <div className='delete-messbox'>
-        <CloseCircleFilled className='delete-messbox' onClick={() => onCancelMessbox(convention)} style={{ color: '#ccc' }}/>}
-      // </div>}
-      // style={{ 10 }}
-      actions={[
-        <InputCustome idElement={convention.idChat} onSubmit={handleSubmit} placeholder='Nhạp tin nhắn' key='input'></InputCustome>
-      ]}>
-        <div className={`message-list-container ${idChat}`} >{renderMessages()}</div>
+    <div className="message-list">
+      <Card
+        title={
+          <>
+            <Avatar src={props.convention.photo}></Avatar>
+            <span style={{ marginLeft: 5 }}>{props.convention.name}</span>
+          </>
+        }
+        className="ant-mess"
+        extra={
+          !isBroken && (
+            // <div className='delete-messbox'>
+            <CloseCircleFilled
+              className="delete-messbox"
+              onClick={() => onCancelMessbox(convention)}
+              style={{ color: '#ccc' }}
+            />
+          )
+        }
+        // </div>}
+        // style={{ 10 }}
+        actions={[
+          <InputCustome
+            idElement={convention.idChat}
+            onSubmit={handleSubmit}
+            placeholder="Nhạp tin nhắn"
+            key="input"
+          ></InputCustome>
+        ]}
+      >
+        <div className={`message-list-container ${idChat}`}>
+          {renderMessages()}
+        </div>
       </Card>
-
     </div>
   )
 }
