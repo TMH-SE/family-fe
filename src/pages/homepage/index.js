@@ -70,6 +70,7 @@ const HomePage = props => {
     setVisibleModalCreate(false)
     setVisibleModalReport(false)
   }
+
   const getSumComment = idPost => {
     let temp
     firebase

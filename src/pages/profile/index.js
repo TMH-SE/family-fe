@@ -22,7 +22,7 @@ import Info from './info'
 import myMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
-import { HighLightGroup, ModalPreviewImg, Chat } from '@components'
+import { HighLightGroup, ModalPreviewImg, Chat, Follow } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
@@ -30,7 +30,6 @@ import './index.scss'
 import { IContext } from '@tools'
 
 function Profile(props) {
-
   const { history } = props
   const { type, userId } = props.match.params
   // const MY_USER_ID = 'tuinhune'
@@ -53,24 +52,24 @@ function Profile(props) {
     avatar: null
   })
   const [updateUser] = useMutation(UPDATE_USER)
-  const sendNotifollow = async () => {
-    const notificationId = uuid.v1()
-    try {
-      await firebase
-        .database()
-        .ref('notifications/' + userId + '/' + notificationId)
-        .set({
-          action: 'follow',
-          reciever: userId,
-          link: `/${me?._id}/info`,
-          content: `${me?.firstname} đã bắt đầu theo dõi bạn`,
-          seen: false
-        })
-    } catch (err) {
-      console.log(err)
-    }
-    notification.success({ message: 'Đã theo dõi' })
-  }
+  // const sendNotifollow = async () => {
+  //   const notificationId = uuid.v1()
+  //   try {
+  //     await firebase
+  //       .database()
+  //       .ref('notifications/' + userId + '/' + notificationId)
+  //       .set({
+  //         action: 'follow',
+  //         reciever: userId,
+  //         link: `/${me?._id}/info`,
+  //         content: `${me?.firstname} đã bắt đầu theo dõi bạn`,
+  //         seen: false
+  //       })
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  //   notification.success({ message: 'Đã theo dõi' })
+  // }
   const uploadButtonCover =
     isMe &&
     (!img.coverPhoto ? (
@@ -377,27 +376,32 @@ function Profile(props) {
                     {`${data?.getUser.firstname} ${data?.getUser.lastname}`}
                   </p>
                   <div>
-                    {!isMe &&
-                      (!isBroken ? (
+                    {
+                      !isMe && 
+                      // (
+                        // (!isBroken ? (
                         <>
-                          <Button
+                          <Follow isBroken={isBroken} follower={{userId: userId, followerId: me?._id}}/>
+                          {/* <Button
                             type="ghost"
                             icon={<HeartTwoTone />}
                             onClick={sendNotifollow}
                           >
                             Theo dõi
-                          </Button>
-                          <Chat members={[me?._id, userId ]}></Chat>
+                          </Button> */}
+                          <Chat members={[me?._id, userId]}></Chat>
                           {/* <Button type="ghost" icon={<MessageTwoTone />} >
                             Nhắn tin
                           </Button> */}
                         </>
-                      ) : (
-                        <div style={{ marginTop: 5 }}>
-                          <HeartTwoTone style={{ marginLeft: 10 }} />
-                          <MessageTwoTone style={{ marginLeft: 10 }} />
-                        </div>
-                      ))}
+                      // )
+                      // ) : (
+                      // <div style={{ marginTop: 5 }}>
+                      //   <HeartTwoTone style={{ marginLeft: 10 }} />
+                      //   <MessageTwoTone style={{ marginLeft: 10 }} />
+                      // </div>
+                      // ))
+                    }
                   </div>
                 </div>
                 <Menu

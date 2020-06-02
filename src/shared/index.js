@@ -77,3 +77,18 @@ export const GET_CHAT_BY_USER = gql`
     }
   }
 `
+export const CHECK_FOLLOW = gql`
+  query checkFollow($id: FollowerInput) {
+    checkFollow(id: $id)
+  }
+`
+export const CREATE_FOLLOWER = gql`
+  mutation createFollower($id: FollowerInput) {
+    createFollower(id: $id)
+  }
+`
+export const DELETE_FOLLOWER = gql`
+  mutation deleteFollower($id: FollowerInput) {
+    deleteFollower(id: $id)
+  }
+`
