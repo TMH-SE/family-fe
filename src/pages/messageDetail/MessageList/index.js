@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
@@ -9,30 +9,41 @@ import * as uuid from 'uuid'
 
 import { InputCustome } from '@components'
 import Message from '../Message'
+import { IContext } from '@tools'
+import { useQuery } from '@apollo/react-hooks'
+import { GET_USER } from '@shared'
 moment().format()
-const MY_USER_ID = 'tuinhune'
+
 export default function MessageList(props) {
   const [messages, setMessages] = useState([])
-
+  const { chatBox } = props
+  const { idChat, userId } = chatBox
+  const { me, onCancelMessbox } = useContext(IContext)
+  const { showMoreMess, setShowMoreMess } = useState(10)
   useEffect(() => {
     getMessages()
-    document.getElementById(`input-custom-${props.convention.idChat}`).focus()
-  }, [])
-  const getMessages = async () => {
+    document.getElementById(`input-custom-${idChat}`).focus()
+  }, [messages])
+  const { data } = useQuery(GET_USER, { variables: { userId } })
+  const [ showMore, setShowMore ] =  useState(10)
+  const getMessages =  () => {
+    const a = showMoreMess
     firebase
       .database()
-      .ref(`messenger/${props.convention.idChat}`)
+      .ref(`messenger/${idChat}`)
+      .orderByKey()
+      .limitToLast(showMore)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = Object.keys(snapshot.val()).map(key => ({
           ...snapshot.val()[key],
           id: key
         }))
-        temp.sort((a, b) => a.timestamp - b.timestamp)
+        // temp.sort((a, b) => a.timestamp - b.timestamp)
         setMessages(temp)
       })
-    const ele = await document.getElementsByClassName(
-      `message-list-container ${props.convention.idChat}`
+    const ele = document.getElementsByClassName(
+      `message-list-container ${idChat}`
     )[0]
     ele.scrollTop = ele.scrollHeight
   }
@@ -46,7 +57,7 @@ export default function MessageList(props) {
       const previous = messages[i - 1]
       const current = messages[i]
       const next = messages[i + 1]
-      const isMine = current.author === MY_USER_ID
+      const isMine = current.author === me?._id
       const currentMoment = moment(current.timestamp)
       let prevBySameAuthor = false
       let nextBySameAuthor = false
@@ -96,19 +107,18 @@ export default function MessageList(props) {
 
     return tempMessages
   }
-  const { idChat } = props.convention
   const handleSubmit = async (value, imgList) => {
     const chatId = `${idChat}` + '/'
-    const message = uuid.v4()
+    const message = uuid.v1()
     try {
       await firebase
         .database()
         .ref('messenger/' + chatId + message)
         .set({
           content: { message: value, img: imgList },
-          timestamp: new Date().getTime(),
-          author: 'tuinhune',
-          seen: MY_USER_ID === 'tuinhune',
+          timestamp: +new Date(),
+          author: me?._id,
+          seen: false,
           hideWith: []
         })
     } catch (error) {
@@ -121,14 +131,15 @@ export default function MessageList(props) {
     ele.scrollTop = ele.scrollHeight
   }
 
-  const { onCancelMessbox, convention, isBroken } = props
+  const { isBroken } = props
+
   return (
     <div className="message-list">
       <Card
         title={
           <>
-            <Avatar src={props.convention.photo}></Avatar>
-            <span style={{ marginLeft: 5 }}>{props.convention.name}</span>
+            <Avatar src={data?.getUser?.avatar}></Avatar>
+            <span style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</span>
           </>
         }
         className="ant-mess"
@@ -137,7 +148,7 @@ export default function MessageList(props) {
             // <div className='delete-messbox'>
             <CloseCircleFilled
               className="delete-messbox"
-              onClick={() => onCancelMessbox(convention)}
+              onClick={() => onCancelMessbox(idChat)}
               style={{ color: '#ccc' }}
             />
           )
@@ -146,7 +157,7 @@ export default function MessageList(props) {
         // style={{ 10 }}
         actions={[
           <InputCustome
-            idElement={convention.idChat}
+            idElement={idChat}
             onSubmit={handleSubmit}
             placeholder="Nhạp tin nhắn"
             key="input"

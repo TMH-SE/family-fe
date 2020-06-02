@@ -30,7 +30,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
     setRep(repTo)
   }
   const sendNotiTagReply = async (userId, postId) => {
-    const notificationId = uuid.v4()
+    const notificationId = uuid.v1()
     arrTag &&
       arrTag.map(async item => {
         try {
@@ -104,6 +104,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
         renderItem={comment => (
           <>
             <CommentItem
+              key={comment.id}
               comment={comment}
               idParent={comment.id}
               replyTo={replyTo}
@@ -155,6 +156,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
                 )
                 .map((reply, idx) => (
                   <CommentItem
+                    key={idx}
                     comment={reply}
                     idParent={comment.id}
                     replyTo={replyTo}
@@ -204,7 +206,7 @@ function CommentPost(props) {
   }
   const handleSubmit = async (value, img) => {
     const postId = idPost
-    const commentId = uuid.v4()
+    const commentId = uuid.v1()
     const mentions = [
       {
         id: `${me?._id}`,

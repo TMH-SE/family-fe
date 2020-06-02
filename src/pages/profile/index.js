@@ -22,7 +22,7 @@ import Info from './info'
 import myMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
-import { HighLightGroup, ModalPreviewImg } from '@components'
+import { HighLightGroup, ModalPreviewImg, Chat } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
@@ -30,13 +30,13 @@ import './index.scss'
 import { IContext } from '@tools'
 
 function Profile(props) {
+
   const { history } = props
   const { type, userId } = props.match.params
   // const MY_USER_ID = 'tuinhune'
   const isBroken = useContext(brokenContext)
   const { loading, error, data, refetch } = useQuery(GET_USER, {
-    variables: { userId: userId },
-    fetchPolicy: 'no-cache'
+    variables: { userId: userId }
   })
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
@@ -54,7 +54,7 @@ function Profile(props) {
   })
   const [updateUser] = useMutation(UPDATE_USER)
   const sendNotifollow = async () => {
-    const notificationId = uuid.v4()
+    const notificationId = uuid.v1()
     try {
       await firebase
         .database()
@@ -387,9 +387,10 @@ function Profile(props) {
                           >
                             Theo dõi
                           </Button>
-                          <Button type="ghost" icon={<MessageTwoTone />}>
+                          <Chat members={[me?._id, userId ]}></Chat>
+                          {/* <Button type="ghost" icon={<MessageTwoTone />} >
                             Nhắn tin
-                          </Button>
+                          </Button> */}
                         </>
                       ) : (
                         <div style={{ marginTop: 5 }}>

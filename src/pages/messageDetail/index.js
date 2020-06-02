@@ -101,13 +101,13 @@ export default function MessageDetail(props) {
 
   const handleSubmit = async (value, imgList) => {
     const chatId = `${idChat}` + '/'
-    const message = uuid.v4()
+    const message = uuid.v1()
     try {
       await firebase
         .database()
         .ref('messenger/' + chatId + message)
         .set({
-          id: uuid.v4(),
+          id: uuid.v1(),
           content: { message: value, img: imgList },
           timestamp: new Date().getTime(),
           author: 'tuikyne',

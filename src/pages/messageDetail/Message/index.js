@@ -4,9 +4,11 @@ import moment from 'moment'
 import './Message.css'
 import { ModalPreviewImg } from '@components'
 
+
 export default function Message(props) {
   const { data, isMine, startsSequence, endsSequence, showTimestamp } = props
-  const friendlyTimestamp = moment(data).format('LLLL')
+  // console.log(data, 'data')
+  const friendlyTimestamp = moment(data?.timestamp).locale('vi').format('llll')
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''

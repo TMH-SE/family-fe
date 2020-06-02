@@ -41,38 +41,43 @@ import MessageList from '@pages/messageDetail/MessageList'
 // import HighLightPost from '../MainLayout/HighlightPost'
 // import ModalCreatePost from '../MainLayout/ModalCreatePost'
 import reactStringReplace from 'react-string-replace'
+import { useQuery } from '@apollo/react-hooks'
+import { GET_CHAT_BY_USER } from '@shared'
 const { Header, Content, Sider } = Layout
 
 export const brokenContext = React.createContext(null)
 // const MY_USER_ID =
 const index = ({ children }) => {
-  const { logout, me, isAuth } = useContext(IContext)
+  const { logout, me, isAuth, messbox, onCancelMessbox } = useContext(IContext)
 
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
-  const [messbox, setMessbox] = useState([])
-  // const [notifications, setNotifications] = useState([])
+  // const [messbox, setMessbox] = useState([])
+  const { data } = useQuery(GET_CHAT_BY_USER, {
+    variables: { userId: me?._id }
+  })
+  const [notifications, setNotifications] = useState([])
 
-  // useEffect(() => {
-  //   getNotification()
-  // }, [me])
-  // const getNotification = () => {
-  //   let temp
-  //   firebase.database().ref('notifications/' + me?._id).on('value', (snapshot) => {
-  //     temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+  useEffect(() => {
+    getNotification()
+  }, [me])
+  const getNotification = () => {
+    let temp
+    firebase.database().ref('notifications/' + me?._id).on('value', (snapshot) => {
+      temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
 
-  //     setNotifications(temp)
+      setNotifications(temp)
 
-  //   })
-  // }
-  const chooseConvention = convention => {
-    if (messbox.findIndex(mess => mess.idChat === convention.idChat) === -1) {
-      const a = [...messbox]
-      a.push(convention)
-      setMessbox(a)
-    }
-    document.getElementById(`input-custom-${convention.idChat}`).focus()
+    })
   }
+  // const chooseConvention = convention => {
+  //   if (messbox.findIndex(mess => mess.idChat === convention.idChat) === -1) {
+  //     const a = [...messbox]
+  //     a.push(convention)
+  //     setMessbox(a)
+  //   }
+  //   document.getElementById(`input-custom-${convention.idChat}`).focus()
+  // }
   const history = useHistory()
   const menu = (
     <Menu>
@@ -105,12 +110,12 @@ const index = ({ children }) => {
       </Menu.Item>
     </Menu>
   )
-  const onCancelMessbox = idChat => {
-    const idx = messbox.findIndex(mess => mess.idChat === idChat)
-    var arr = [...messbox]
-    arr.splice(idx, 1)
-    setMessbox([...arr])
-  }
+  // const onCancelMessbox = idChat => {
+  //   const idx = messbox.findIndex(mess => mess.idChat === idChat)
+  //   var arr = [...messbox]
+  //   arr.splice(idx, 1)
+  //   setMessbox([...arr])
+  // }
 
   return (
     <Layout>
@@ -321,7 +326,7 @@ const index = ({ children }) => {
         {!isBroken && isAuth ? (
           <Sider width="18%">
             <div className="sidebarMess-mainLayout">
-              <ConversationList chooseConvention={chooseConvention} />
+              <ConversationList dataChat={data?.getChatByUser} />
             </div>
           </Sider>
         ) : (
@@ -330,17 +335,17 @@ const index = ({ children }) => {
         {!isBroken && (
           <div className="messenger-main">
             <div className="contentMess-mainLayout">
-              {messbox.map((convention, idx) => {
+              {messbox.map((mess, idx) => {
                 return (
                   <div
                     key={idx}
-                    className={`contentMess-box ${convention.idChat}`}
+                    className={`contentMess-box ${mess.idChat}`}
                     style={{ display: 'flex', flexDirection: 'column' }}
                   >
                     <MessageList
                       idx={idx}
-                      onCancelMessbox={() => onCancelMessbox(convention.idChat)}
-                      convention={convention}
+                      onCancelMessbox={() => onCancelMessbox(mess.idChat)}
+                      chatBox={mess}
                     />
                   </div>
                 )
