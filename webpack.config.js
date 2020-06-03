@@ -242,7 +242,9 @@ module.exports = () => {
     },
     devtool: 'cheap-module-eval-source-map',
     devServer: {
-      historyApiFallback: true, // set for react-router-dom
+      historyApiFallback: {
+        disableDotRule: true
+      },
       contentBase: './dist',
       // host: '0.0.0.0',
       port: process.env.PORT || 8000,

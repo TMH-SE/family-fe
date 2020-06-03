@@ -4,6 +4,7 @@ import { SdkUtils } from '@utils'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import { notification } from 'antd'
 
 export const IContext = React.createContext()
 
@@ -30,14 +31,18 @@ const ContextWrapper = ({ children, history }) => {
     window.localStorage.setItem('access-token', token)
     setIsAuth(true)
     history.push('/')
-    refetch()
+    refetch().then(() => {
+      notification.success({
+        message: 'Đăng nhập thành công',
+        placement: 'bottomRight'
+      })
+    })
   }
   const logout = () => {
     window.localStorage.clear()
     SdkUtils.logoutFB()
     SdkUtils.loginGoogle()
     setIsAuth(false)
-    refetch()
   }
   return (
     <IContext.Provider
@@ -45,7 +50,8 @@ const ContextWrapper = ({ children, history }) => {
         isAuth,
         authenticate,
         logout,
-        me: data?.me
+        me: data?.me,
+        history
       }}
     >
       {children}

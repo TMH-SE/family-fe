@@ -5,8 +5,14 @@ import { Result, Button } from 'antd'
 import FamilyAppRoutes from './app'
 
 const FamilyRoutes = () => {
-  const { isAuth } = useContext(IContext)
+  const { history, isAuth } = useContext(IContext)
   const routes = [
+    {
+      exact: true,
+      path: '/verify/:verifyToken',
+      component: 'verifyAccount',
+      title: 'Xác minh tài khoản'
+    },
     {
       exact: true,
       path: '/login',
@@ -16,7 +22,7 @@ const FamilyRoutes = () => {
     {
       exact: true,
       path: '/register',
-      component: 'register',
+      component: 'signUp',
       title: 'Đăng ký thành viên'
     }
   ]
@@ -45,6 +51,25 @@ const FamilyRoutes = () => {
                 title="404"
                 subTitle="Sorry, the page you visited does not exist."
                 extra={<Button type="primary">Back Home</Button>}
+              />
+            )
+          }}
+        />
+        <Route
+          path="/success"
+          render={() => {
+            document.title = 'Thành công'
+            return (
+              <Result
+                status="success"
+                title="Đăng ký thành viên thành công!"
+                subTitle="Vui lòng kiểm tra mail để xác minh tài khoản."
+                extra={[
+                  <Button onClick={() => history.push('/login')} type="primary" key="login">
+                    Đăng nhập
+                  </Button>,
+                  <Button onClick={() => history.push('/homepage')} key="home">Về trang chủ</Button>,
+                ]}
               />
             )
           }}
