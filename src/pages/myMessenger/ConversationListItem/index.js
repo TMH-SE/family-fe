@@ -14,15 +14,16 @@ export default function ConversationListItem(props) {
   const { me, chooseConversation } = useContext(IContext)
   const isBroken = useContext(brokenContext)
   const [conversation, setConversation] = useState(null)
-  useEffect(() => {
-    getConversation()
-  }, [])
   const { data } = useQuery(GET_USER, {
     variables: { userId: members.filter(item => item !== me?._id)[0] }
   })
+  useEffect(() => {
+    getConversation()
+  }, [_id])
+
   const selectHandler = () => {
     isBroken
-      ? history.push(`messenger/${_id}`)
+      ? props.history.push(`/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`)
       : chooseConversation(_id, members.filter(item => item !== me?._id)[0])
     firebase
       .database()
@@ -39,19 +40,20 @@ export default function ConversationListItem(props) {
       .limitToLast(1)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = Object.keys(snapshot.val()).map(key => ({
-          ...snapshot.val()[key],
-          id: key
-        }))
+        const temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key
+            }))
+          : []
         // temp.sort((a, b) => a.timestamp - b.timestamp)
-
         setConversation({
           user: data?.getUser,
           lastMess: temp[0]
         })
       })
   }
-//   const { author, content, seen } = conversation && conversation.lastMess
+  //   const { author, content, seen } = conversation && conversation.lastMess
   //   const seen = conversation.lastMess && conversation.lastMess.seen ?  conversation.lastMess.seen : conversation.lastMess.author === me?._id
   return (
     conversation && (
@@ -59,13 +61,18 @@ export default function ConversationListItem(props) {
         <Skeleton avatar title={false} loading={conversation.loading} active>
           <List.Item.Meta
             avatar={
-              <Badge dot={conversation.lastMess.author !== me?._id &&  !conversation.lastMess.seen}>
+              <Badge
+                dot={
+                  conversation.lastMess.author !== me?._id &&
+                  !conversation.lastMess.seen
+                }
+              >
                 <Avatar size={42} src={data?.getUser?.avatar} />
               </Badge>
             }
             title={data?.getUser?.firstname}
             description={
-                conversation.lastMess.content?.message.trim()
+              conversation.lastMess.content?.message.trim()
                 ? conversation.lastMess.content?.message
                 : conversation.lastMess.author === me?._id
                 ? ' Bạn đã gửi 1 hình'

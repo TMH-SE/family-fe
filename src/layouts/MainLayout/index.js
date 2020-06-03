@@ -63,8 +63,8 @@ const index = ({ children }) => {
   }, [me])
   const getNotification = () => {
     let temp
-    firebase.database().ref('notifications/' + me?._id).on('value', (snapshot) => {
-      temp = Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+    firebase.database().ref('notifications/' + me?._id).orderByKey().limitToLast(10).on('value', (snapshot) => {
+      temp = snapshot.val() && Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
 
       setNotifications(temp)
 
@@ -212,7 +212,7 @@ const index = ({ children }) => {
                 )}
               </Menu.Item>
               <Menu.Item>
-                <Noti history={history} />
+                <Noti history={history} isBroken={isBroken} />
               </Menu.Item>
             </Menu>
             <div>

@@ -1,21 +1,48 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react'
 import { Comment, Avatar, List, Modal } from 'antd'
 import moment from 'moment'
 import firebase from 'firebase/app'
 import * as uuid from 'uuid'
 import './index.scss'
 import { InputCustome, ModalPreviewImg } from '@components'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Redirect } from 'react-router-dom'
 // import { useHistory } from 'react-router-dom'
 import reactStringReplace from 'react-string-replace'
 import { IContext } from '@tools'
 import { GET_USER } from '@shared'
 import CommentItem from './CommentItem'
+import { CommentOutlined } from '@ant-design/icons'
 
+// export const SumComment = (props) => {
+//   const { getSumComment } = useContext(IContext)
+//   const {idPost } = props
+//   const [sum, setSum] = useState(0)
+
+//   useLayoutEffect(() => {
+//      setSum(getSumComment(idPost))
+//     console.log(sum, 'a', idPost)
+//   }, [idPost])
+
+//   return <div
+//     key="comment"
+//     onClick={() =>
+//       document.getElementById(`input-custom-${idPost}`).focus()
+//     }
+//   >
+//     <CommentOutlined
+//       onClick={() =>
+//         document.getElementById(`input-custom-${idPost}`).focus()
+//       }
+//     />
+//     <span style={{ marginLeft: 5, fontWeight: 'bold' }}>
+//      {/* {sum} */}
+//     </span>
+//   </div>
+// }
 const CommentList = ({ comments, showMore, idPost }) => {
   const history = useHistory()
-  const { me } = useContext(IContext)
+  const { me, isAuth } = useContext(IContext)
   const [rep, setRep] = useState({})
 
   const [showMoreRep, setShowMoreRep] = useState({ idParent: null, rows: 0 })
@@ -27,7 +54,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
     setArrTag(mentions)
   }
   const replyTo = repTo => {
-    setRep(repTo)
+    isAuth ? setRep(repTo) : history.push('/login')
   }
   const sendNotiTagReply = async (userId, postId) => {
     const notificationId = uuid.v1()
@@ -36,10 +63,10 @@ const CommentList = ({ comments, showMore, idPost }) => {
         try {
           await firebase
             .database()
-            .ref('notifications/' + item.id + '/' + notificationId)
+            .ref('notifications/' + item?.id + '/' + notificationId)
             .set({
               action: 'tag',
-              reciever: item.id,
+              reciever: item?.id,
               link: `/postdetail/${postId}`,
               content: `${me?.firstname} đã nhắc đến bạn trong bình luận`,
               seen: false
@@ -171,23 +198,15 @@ const CommentList = ({ comments, showMore, idPost }) => {
 }
 
 function CommentPost(props) {
+  const history = useHistory()
   const [comments, setComments] = useState([])
   const [showMore, setShowMore] = useState(3)
-  const [user, setUser] = useState(null)
-  const { me } = useContext(IContext)
+
+  const { me, isAuth } = useContext(IContext)
   const { idPost } = props
   useEffect(() => {
     getComment()
-  }, [])
-  // const [getUser, { loading, data }] = useLazyQuery(GET_USER);
-
-  // if (loading) return <p>Loading ...</p>;
-
-  // if (data && data.getUser) {
-  //   console.log(data, 'data')
-  //   // setUser(data.getUser);
-  // }
-
+  }, [idPost])
   const getComment = () => {
     firebase
       .database()
@@ -195,10 +214,10 @@ function CommentPost(props) {
       .limitToLast(showMore + 1)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = Object.keys(snapshot.val()).map(key => ({
+        const temp = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({
           ...snapshot.val()[key],
           id: key
-        }))
+        })) : []
 
         temp.sort((a, b) => b.timestamp - a.timestamp)
         setComments(temp)
@@ -238,7 +257,9 @@ function CommentPost(props) {
         content={
           <InputCustome
             idElement={props.idPost}
-            onSubmit={handleSubmit}
+            onSubmit={() => {
+              isAuth ? handleSubmit() : history.push('/login')
+            }}
             placeholder="Nhập bình luận"
             // value={value}
           />

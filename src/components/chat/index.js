@@ -10,7 +10,7 @@ import { IContext } from '@tools'
 
 function Chat(props) {
   console.log(props)
-
+  const { members, history, isBroken } = props
   const { chooseConversation, me } = useContext(IContext)
   const [createChat] = useMutation(CREATE_CHAT)
   const { data, loading } = useQuery(GET_CHAT_BY_MEMBERS, {
@@ -21,26 +21,28 @@ function Chat(props) {
     console.log(!loading && !data)
     if (!loading) {
       if (!data.getChatByMembers) {
-        await createChat({ variables: { members: props.members } })
+        await createChat({ variables: { members: members } })
           .then(res => {
             console.log(res, 'res')
             const a = res.data.members.filter(item => item !== me?._id)
 
-            chooseConversation(res.data._id, a[0])
+            isBroken
+              ? history.push(`/${a[0]}/messenger/${res.data._id}`)
+              : chooseConversation(res.data._id, a[0])
           })
           .catch(err => console.log(err))
       } else {
         const a = data.getChatByMembers.members.filter(item => item !== me?._id)
-        // setChatId(data.getChatByMembers._id)
-        // setUserReciveId(a[0])
-        // console.log( data.getChatByMembers.members.filter(item => item !== me?._id), 'pppppppppppp')
-        chooseConversation(data.getChatByMembers._id, a[0] )
+        isBroken
+          ? history.push(`/${a[0]}/messenger/${data?.getChatByMembers._id}`)
+          : chooseConversation(data?.getChatByMembers._id, a[0])
       }
-     
     }
-   
   }
-  return (
+
+  return isBroken ? (
+    <MessageTwoTone style={{ fontSize: 20, marginLeft: 10 }} onClick={() => openChat()} />
+  ) : (
     <Button type="ghost" icon={<MessageTwoTone />} onClick={() => openChat()}>
       Nhắn tin
     </Button>

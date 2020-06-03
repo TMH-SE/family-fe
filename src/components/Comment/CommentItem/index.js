@@ -20,8 +20,8 @@ const CommentItem = props => {
     <>
       <Comment
         key={comment.id}
-        id={type === 'parent' && `parent-cmt-${comment.id}`}
-        className={type === 'reply' && `reply ${comment.id}`}
+        id={type === 'parent' ? `parent-cmt-${comment.id}` : ''}
+        className={type === 'reply' ? `reply ${comment.id}` : ''}
         actions={[
           <span
             onClick={() => {
@@ -32,7 +32,6 @@ const CommentItem = props => {
               })
             }}
             key="comment-basic-reply-to"
-            on
           >
             Reply to
           </span>

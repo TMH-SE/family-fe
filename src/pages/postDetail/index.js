@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Card,
   Avatar,
@@ -23,24 +23,19 @@ import {
   Reaction,
   SharePost,
   CommentPost,
-  ModalCreatePost,
   ModalReport
 } from '@components'
-import { brokenContext } from '../../layouts/MainLayout'
 
 const { Meta } = Card
 // var moment = require('moment')
 
 function PostDetail(props) {
-  const isBroken = useContext(brokenContext)
-  const [visibleModalCreate, setVisibleModalCreate] = useState(false)
+  const [sum, setSum] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const handleOk = () => {
-    setVisibleModalCreate(false)
     setVisibleModalReport(false)
   }
   const handleCancel = () => {
-    setVisibleModalCreate(false)
     setVisibleModalReport(false)
   }
   const menu = (
@@ -62,20 +57,19 @@ function PostDetail(props) {
   )
   const { history } = props
   const { postId } = props.match.params
-  const getSumComment = () => {
-    let temp
-    firebase
+ 
+   useEffect(() => {
+    getSumComment()
+   }, [postId])
+    const getSumComment = () => {
+      firebase
       .database()
       .ref(`posts/${postId}/comments`)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        temp = Object.keys(snapshot.val()).map(key => ({
-          ...snapshot.val()[key],
-          id: key
-        }))
-        // return temp.length
+        const temp = snapshot.val() && Object.keys(snapshot.val()).length
+        setSum(temp)
       })
-    return temp ? temp.length : 0
   }
   return (
     <>
@@ -116,8 +110,10 @@ function PostDetail(props) {
             <Reaction idPost={postId} />
           </div>,
           <div key="comment">
-            <CommentOutlined />
-            <span style={{ fontWeight: 'bold' }}> {getSumComment()} </span>
+            <CommentOutlined onClick={() =>
+              document.getElementById(`input-custom-${postId}`).focus()
+            }/>
+            <span style={{ fontWeight: 'bold' }}> {sum} </span>
           </div>,
           <SharePost key="share" />,
           <Dropdown
@@ -217,12 +213,6 @@ function PostDetail(props) {
         handleCancel={handleCancel}
         handleOk={handleOk}
       ></ModalReport>
-      <ModalCreatePost
-        isBroken={isBroken}
-        handleCancel={handleCancel}
-        handleOk={handleOk}
-        visible={visibleModalCreate}
-      ></ModalCreatePost>
     </>
   )
 }

@@ -53,11 +53,11 @@ function Follow(props) {
   return data?.checkFollow ? (
     props.isBroken 
     ? 
-      <HeartFilled style={{ marginLeft: 10 }} onClick={() => sendNotifollow('unfollow')}/>
+      <HeartFilled style={{ marginLeft: 10, color: 'red', fontSize: 20 }} onClick={() => sendNotifollow('unfollow')}/>
     : 
       <Button
         type="ghost"
-        icon={<HeartFilled />}
+        icon={<HeartFilled style={{ color: 'red'}} />}
         onClick={() => sendNotifollow('unfollow')}
       >
         Đã theo dõi

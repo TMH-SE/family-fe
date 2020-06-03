@@ -19,7 +19,7 @@ import {
 
 import * as uuid from 'uuid'
 import Info from './info'
-import myMessenger from '@pages/myMessenger'
+import MyMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
 import { HighLightGroup, ModalPreviewImg, Chat, Follow } from '@components'
@@ -378,29 +378,10 @@ function Profile(props) {
                   <div>
                     {
                       !isMe && 
-                      // (
-                        // (!isBroken ? (
-                        <>
+                        <div style={{ marginTop: 5 }}> 
                           <Follow isBroken={isBroken} follower={{userId: userId, followerId: me?._id}}/>
-                          {/* <Button
-                            type="ghost"
-                            icon={<HeartTwoTone />}
-                            onClick={sendNotifollow}
-                          >
-                            Theo dõi
-                          </Button> */}
-                          <Chat members={[me?._id, userId]}></Chat>
-                          {/* <Button type="ghost" icon={<MessageTwoTone />} >
-                            Nhắn tin
-                          </Button> */}
-                        </>
-                      // )
-                      // ) : (
-                      // <div style={{ marginTop: 5 }}>
-                      //   <HeartTwoTone style={{ marginLeft: 10 }} />
-                      //   <MessageTwoTone style={{ marginLeft: 10 }} />
-                      // </div>
-                      // ))
+                          <Chat members={[me?._id, userId]} history={history} isBroken={isBroken}></Chat>
+                        </div>
                     }
                   </div>
                 </div>
@@ -468,7 +449,7 @@ function Profile(props) {
         }}
       >
         {type === 'info' && <Info userInfo={data?.getUser} />}
-        {type === 'messenger' && <myMessenger userInfo={data?.getUser} />}
+        {type === 'messenger' && <MyMessenger userInfo={data?.getUser} />}
         {type === 'myposts' && (
           <MyPosts history={history} userInfo={data?.getUser} />
         )}

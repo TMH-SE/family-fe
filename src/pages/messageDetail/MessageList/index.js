@@ -23,29 +23,30 @@ export default function MessageList(props) {
   useEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
-  }, [messages])
+  }, [idChat])
   const { data } = useQuery(GET_USER, { variables: { userId } })
-  const [ showMore, setShowMore ] =  useState(10)
-  const getMessages =  () => {
-    const a = showMoreMess
+  const [showMore, setShowMore] = useState(10)
+  const getMessages = () => {
     firebase
       .database()
       .ref(`messenger/${idChat}`)
       .orderByKey()
-      .limitToLast(showMore)
+      // .limitToLast(100)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = Object.keys(snapshot.val()).map(key => ({
-          ...snapshot.val()[key],
-          id: key
-        }))
+        const temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key
+            }))
+          : []
         // temp.sort((a, b) => a.timestamp - b.timestamp)
         setMessages(temp)
+        const ele = document.getElementsByClassName(
+          `message-list-container ${idChat}`
+        )[0]
+        ele.scrollTop = ele.scrollHeight
       })
-    const ele = document.getElementsByClassName(
-      `message-list-container ${idChat}`
-    )[0]
-    ele.scrollTop = ele.scrollHeight
   }
 
   const renderMessages = () => {
