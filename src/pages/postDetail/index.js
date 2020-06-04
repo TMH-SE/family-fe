@@ -105,7 +105,7 @@ function PostDetail(props) {
           <div
             id="like-post"
             key="like"
-            onDoubleClick={() => console.log('đâsđâsd')}
+            // onDoubleClick={() => console.log('đâsđâsd')}
           >
             <Reaction idPost={postId} />
           </div>,

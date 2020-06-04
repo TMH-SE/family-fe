@@ -31,7 +31,7 @@ export default function MessageList(props) {
       .database()
       .ref(`messenger/${idChat}`)
       .orderByKey()
-      // .limitToLast(100)
+      .limitToLast(100)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = snapshot.val()
@@ -111,6 +111,7 @@ export default function MessageList(props) {
   const handleSubmit = async (value, imgList) => {
     const chatId = `${idChat}` + '/'
     const message = uuid.v1()
+    console.log(value, 'value')
     try {
       await firebase
         .database()

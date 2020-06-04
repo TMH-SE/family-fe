@@ -49,7 +49,6 @@ export const Post = props => {
   }, [item.postId])
   const getSum = idPost => {
     let sumTemp = 0
-    console.log(sum, 'sétum')
     firebase
       .database()
       .ref(`posts/${idPost}/comments`)

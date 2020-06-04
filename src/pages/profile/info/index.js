@@ -13,7 +13,6 @@ const DescriptionItem = ({ title, content }) => (
 function Info(props) {
   const { userInfo } = props
   const [visible, setVisible] = useState(false)
-  console.log(userInfo, 'userÌno')
   return (
     <>
       <Row>

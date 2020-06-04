@@ -17,14 +17,12 @@ const formItemLayout = {
   wrapperCol: { span: 18 }
 }
 const EditUser = props => {
-  console.log(props, 'props')
 
   const { visible, onCancel } = props
   const { me, refetchMe } = useContext(IContext)
   const [form] = Form.useForm()
   const [updateUserInfo] = useMutation(UPDATE_USER_INFO)
   const onFinish = async values => {
-    console.log('Received values of form: ', values)
     // console.log(Date.parse(values.birthday.toString()))
     await updateUserInfo({
       variables: {

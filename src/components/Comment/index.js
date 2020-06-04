@@ -214,10 +214,12 @@ function CommentPost(props) {
       .limitToLast(showMore + 1)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({
-          ...snapshot.val()[key],
-          id: key
-        })) : []
+        const temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key
+            }))
+          : []
 
         temp.sort((a, b) => b.timestamp - a.timestamp)
         setComments(temp)
@@ -232,6 +234,7 @@ function CommentPost(props) {
         name: `${me?.firstname}`
       }
     ]
+    console.log(value, 'value')
     try {
       await firebase
         .database()
@@ -257,9 +260,7 @@ function CommentPost(props) {
         content={
           <InputCustome
             idElement={props.idPost}
-            onSubmit={() => {
-              isAuth ? handleSubmit() : history.push('/login')
-            }}
+            onSubmit={isAuth ? handleSubmit : history.push('/login')}
             placeholder="Nhập bình luận"
             // value={value}
           />

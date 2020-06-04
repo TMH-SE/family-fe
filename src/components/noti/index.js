@@ -39,9 +39,9 @@ const Noti = props => {
         dot
         count={notifications.filter(item => item.seen === false).length}
       >
-        <BellOutlined style={{ color: 'rgb(0, 152, 218)' }} />
+        <BellOutlined  />
         </Badge>
-      <span style={{ marginLeft: 10}}>Thông báo</span>
+      <span >Thông báo</span>
       
     </div>
   ) : (

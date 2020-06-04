@@ -159,7 +159,7 @@ function MyPosts(props) {
             <div
               id="like-post"
               key="like"
-              onDoubleClick={() => console.log('đâsđâsd')}
+              // onDoubleClick={() => console.log('đâsđâsd')}
             >
               <Reaction />
             </div>,

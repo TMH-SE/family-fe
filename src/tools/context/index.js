@@ -35,20 +35,19 @@ const ContextWrapper = ({ children, history }) => {
     !!window.localStorage.getItem('access-token')
   )
   const chooseConversation = (idChat, userId) => {
-    console.log(idChat, userId, 'iiiiiiiiiii')
     if (messbox.findIndex(mess => mess.idChat === idChat) === -1) {
       const a = [...messbox]
-      a.push({idChat, userId })
+      a.push({ idChat, userId })
       setMessbox(a)
     }
-    document.getElementById(`input-custom-${idChat}`) && document.getElementById(`input-custom-${idChat}`).focus()
+    document.getElementById(`input-custom-${idChat}`) &&
+      document.getElementById(`input-custom-${idChat}`).focus()
   }
   const onCancelMessbox = idChat => {
     const idx = messbox.findIndex(mess => mess === idChat)
     var arr = [...messbox]
     arr.splice(idx, 1)
     setMessbox([...arr])
-    console.log('bbbbbbbbbbbbbbbbb')
   }
 
   // const getSumComment =idPost => {
@@ -94,7 +93,7 @@ const ContextWrapper = ({ children, history }) => {
         refetchMe: refetch,
         messbox: messbox,
         chooseConversation: chooseConversation,
-        onCancelMessbox: onCancelMessbox,
+        onCancelMessbox: onCancelMessbox
       }}
     >
       {children}

@@ -9,7 +9,6 @@ import { useMutation, useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 
 function Chat(props) {
-  console.log(props)
   const { members, history, isBroken } = props
   const { chooseConversation, me } = useContext(IContext)
   const [createChat] = useMutation(CREATE_CHAT)
@@ -18,12 +17,10 @@ function Chat(props) {
   })
 
   const openChat = async () => {
-    console.log(!loading && !data)
     if (!loading) {
       if (!data.getChatByMembers) {
         await createChat({ variables: { members: members } })
           .then(res => {
-            console.log(res, 'res')
             const a = res.data.members.filter(item => item !== me?._id)
 
             isBroken
@@ -41,7 +38,10 @@ function Chat(props) {
   }
 
   return isBroken ? (
-    <MessageTwoTone style={{ fontSize: 20, marginLeft: 10 }} onClick={() => openChat()} />
+    <MessageTwoTone
+      style={{ fontSize: 20, marginLeft: 10 }}
+      onClick={() => openChat()}
+    />
   ) : (
     <Button type="ghost" icon={<MessageTwoTone />} onClick={() => openChat()}>
       Nhắn tin

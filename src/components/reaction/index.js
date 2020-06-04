@@ -83,7 +83,6 @@ function Reaction(props) {
                   reactions[idx].users.findIndex(user => user === me._id),
                   1
                 )
-                console.log(arr, 'arr')
                 try {
                   await firebase
                     .database()

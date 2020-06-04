@@ -15,7 +15,6 @@ import { useMutation, useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 import * as uuid from 'uuid'
 function Follow(props) {
-  console.log(props)
 
   const { me } = useContext(IContext)
   const [createFollower] = useMutation(CREATE_FOLLOWER)
@@ -49,7 +48,6 @@ function Follow(props) {
           refetch()
         )
   }
-  console.log(data?.checkFollow)
   return data?.checkFollow ? (
     props.isBroken 
     ? 

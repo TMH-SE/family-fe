@@ -109,6 +109,9 @@ ul {
   position: fixed;
   width: 15%;
 }
+.delete-messbox {
+  color: #4b5052bc !important;
+}
 .messenger-main {
   .contentMess-mainLayout {
     display: flex;
@@ -144,7 +147,7 @@ ul {
   -ms-filter: 'progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30)';
   zoom: 1;
   .delete-messbox {
-    color: #6caee0 !important;
+    color: #0b0b0c9d !important;
   }
 }
 
@@ -201,3 +204,12 @@ ul {
   margin-right: 8px;
   color: rgba(0, 0, 0, 0.85);
 }
+.message-list{
+  .ant-card-bordered{
+    border-radius: 20px;
+  }
+  .ant-card-head{
+    background-color: rgba(155, 208, 255, 0.931);
+    border-radius: 10px 10px 0 0;
+  }
+} 
