@@ -15,7 +15,6 @@ import { useMutation, useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 import * as uuid from 'uuid'
 function Follow(props) {
-  console.log(props)
 
   const { me } = useContext(IContext)
   const [createFollower] = useMutation(CREATE_FOLLOWER)
@@ -49,15 +48,14 @@ function Follow(props) {
           refetch()
         )
   }
-  console.log(data?.checkFollow)
   return data?.checkFollow ? (
     props.isBroken 
     ? 
-      <HeartFilled style={{ marginLeft: 10 }} onClick={() => sendNotifollow('unfollow')}/>
+      <HeartFilled style={{ marginLeft: 10, color: 'red', fontSize: 20 }} onClick={() => sendNotifollow('unfollow')}/>
     : 
       <Button
         type="ghost"
-        icon={<HeartFilled />}
+        icon={<HeartFilled style={{ color: 'red'}} />}
         onClick={() => sendNotifollow('unfollow')}
       >
         Đã theo dõi

@@ -39,24 +39,24 @@ function Reaction(props) {
 
   useEffect(() => {
     getReactionPost()
-  }, [])
+  }, [idPost])
   const getReactionPost = () => {
     firebase
       .database()
       .ref(`posts/${idPost}/reactions`)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp =
+        const temp = snapshot.val() &&
           Object.keys(snapshot.val()).map(key => ({
             ...snapshot.val()[key],
-            id: key
+            id: key.toString()
           })) || []
         // temp.sort((a, b) => b.timestamp - a.timestamp)
         setReactions(temp)
         let count = 0
         temp.map(item => {
           if (!item.users) return
-          const idx = item.users.findIndex(user => user === me._id)
+          const idx = item.users.findIndex(user => user === me?._id)
           if (idx !== -1) {
             setChosenEnmoji(item.id)
           }
@@ -83,7 +83,6 @@ function Reaction(props) {
                   reactions[idx].users.findIndex(user => user === me._id),
                   1
                 )
-                console.log(arr, 'arr')
                 try {
                   await firebase
                     .database()

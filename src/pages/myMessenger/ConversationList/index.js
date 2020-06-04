@@ -12,8 +12,6 @@ import ConversationListItem from '../ConversationListItem'
 
 export default function ConversationList(props) {
   const { dataChat } = props
-
-
   return (
     <div className="conversation-list">
       <Toolbar
@@ -29,7 +27,7 @@ export default function ConversationList(props) {
         // loadMore={loadMore}
         dataSource={dataChat}
         renderItem={(data, idx) => (
-          <ConversationListItem key={idx} chat={data}></ConversationListItem>
+          <ConversationListItem key={idx} chat={data} history={props.history}></ConversationListItem>
         )}
       />
     </div>

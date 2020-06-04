@@ -1,42 +1,52 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import firebase from 'firebase/app'
 import Message from './Message'
 import moment from 'moment'
 import './index.scss'
-import { CaretLeftOutlined } from '@ant-design/icons'
-import { Card } from 'antd'
+import { CaretLeftOutlined, CloseCircleFilled } from '@ant-design/icons'
+import { Card, Avatar } from 'antd'
 import * as uuid from 'uuid'
 import { InputCustome } from '@components'
+import { withRouter } from 'react-router-dom'
+import { useQuery } from '@apollo/react-hooks'
+import { IContext } from '@tools'
+import { GET_USER } from '@shared'
 moment().format()
-const MY_USER_ID = 'tuinhune'
-export default function MessageDetail(props) {
+// const MY_USER_ID = 'tuinhune'
+function MessageDetail(props) {
   const [messages, setMessages] = useState([])
-  const { idChat } = props.match.params
+  const {  history } = props
+  const { idChat, userId } = props.match.params
+  const { me, } = useContext(IContext)
+  const { showMoreMess, setShowMoreMess } = useState(10)
   useEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
-  }, [])
-  const getMessages = async () => {
+  }, [idChat])
+  const { data } = useQuery(GET_USER, { variables: { userId } })
+  const [showMore, setShowMore] = useState(10)
+  const getMessages = () => {
     firebase
       .database()
       .ref(`messenger/${idChat}`)
+      .orderByKey()
+      // .limitToLast(100)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = Object.keys(snapshot.val()).map(key => ({
-          ...snapshot.val()[key],
-          id: key
-        }))
-        if (window.UndefinedVariable) {
-          Object.assign(window.UndefinedVariable, {})
-        }
-        temp.sort((a, b) => a.timestamp - b.timestamp)
+        const temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key
+            }))
+          : []
+        // temp.sort((a, b) => a.timestamp - b.timestamp)
         setMessages(temp)
+        const ele = document.getElementsByClassName(
+          `message-list-container ${idChat}`
+        )[0]
+        ele.scrollTop = ele.scrollHeight
       })
-    const ele = await document.getElementsByClassName(
-      `message-list-container ${idChat}`
-    )[0]
-    ele.scrollTop = ele.scrollHeight
   }
 
   const renderMessages = () => {
@@ -48,7 +58,7 @@ export default function MessageDetail(props) {
       const previous = messages[i - 1]
       const current = messages[i]
       const next = messages[i + 1]
-      const isMine = current.author === MY_USER_ID
+      const isMine = current.author === me?._id
       const currentMoment = moment(current.timestamp)
       let prevBySameAuthor = false
       let nextBySameAuthor = false
@@ -98,7 +108,6 @@ export default function MessageDetail(props) {
 
     return tempMessages
   }
-
   const handleSubmit = async (value, imgList) => {
     const chatId = `${idChat}` + '/'
     const message = uuid.v1()
@@ -107,10 +116,9 @@ export default function MessageDetail(props) {
         .database()
         .ref('messenger/' + chatId + message)
         .set({
-          id: uuid.v1(),
           content: { message: value, img: imgList },
-          timestamp: new Date().getTime(),
-          author: 'tuikyne',
+          timestamp: +new Date(),
+          author: me?._id,
           seen: false,
           hideWith: []
         })
@@ -124,21 +132,25 @@ export default function MessageDetail(props) {
     ele.scrollTop = ele.scrollHeight
   }
 
+  const { isBroken } = props
+
   return (
     <div className="message-list">
       <Card
         title={
           <>
-            <span style={{ marginLeft: 5 }}>tuinhune</span>
+            <Avatar src={data?.getUser?.avatar}></Avatar>
+            <span style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</span>
           </>
         }
         className="ant-mess"
         extra={
-          !props.isBroken && (
+          !isBroken && (
             // <div className='delete-messbox'>
-            <CaretLeftOutlined
+            <CloseCircleFilled
               className="delete-messbox"
-              onClick={() => props.history.goBack()}
+              onClick={() => history.goBack()}
+              style={{ color: '#ccc' }}
             />
           )
         }
@@ -160,3 +172,4 @@ export default function MessageDetail(props) {
     </div>
   )
 }
+export default withRouter(MessageDetail)
