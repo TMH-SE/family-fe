@@ -45,7 +45,7 @@ const CommentItem = props => {
             {data?.getUser?.firstname}
           </a>
         }
-        avatar={data?.getUser.avatar || <UserOutlined />}
+        avatar={data?.getUser?.avatar || <UserOutlined />}
         content={
           <>
             <div style={{ display: 'flex', overflowX: 'auto' }}>
