@@ -32,25 +32,25 @@ const data = [
   {
     title: 'Ant Design Title 1',
     groupId: '111',
-    postId: '1'
+    postId: 'post1'
   },
   {
     title: 'Ant Design Title 2',
     groupId: '222',
-    postId: '2'
+    postId: 'post2'
   },
   {
     title: 'Ant Design Title 3',
     groupId: '111',
-    postId: '3'
+    postId: 'post3'
   },
   {
     title: 'Ant Design Title 4',
     groupId: '222',
-    postId: '4'
+    postId: 'post4'
   }
 ]
-function SavedPosts (props) {
+function SavedPosts(props) {
   // const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const [showText, setShowText] = useState(false)
@@ -66,17 +66,17 @@ function SavedPosts (props) {
   }
   const menu = (
     <Menu>
-      <Menu.Item key='0'>
+      <Menu.Item key="0">
         <div onClick={() => setVisibleModalReport(true)}>
-          <FlagOutlined key='flag' /> Báo cáo bài viết
+          <FlagOutlined key="flag" /> Báo cáo bài viết
         </div>
       </Menu.Item>
-      <Menu.Item key='1'>
+      <Menu.Item key="1">
         <div
           onClick={() => notification.success({ message: 'Lưu thành công' })}
         >
           <BookTwoTone />
-           Đã lưu bài viết
+          Đã lưu bài viết
         </div>
       </Menu.Item>
     </Menu>
@@ -127,8 +127,8 @@ function SavedPosts (props) {
             <div style={{ display: 'flex', justifyContent: 'start' }}>
               <Avatar
                 onClick={() => history.push(`/pagegroup/${item.groupId}`)}
-                size='large'
-                src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
+                size="large"
+                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
               />
               <div>
                 <a
@@ -159,23 +159,27 @@ function SavedPosts (props) {
           }
           style={{ maxWidth: '100%', marginTop: 16 }}
           actions={[
-            <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
+            <div
+              id="like-post"
+              key="like"
+              onDoubleClick={() => console.log('đâsđâsd')}
+            >
               <Reaction />
             </div>,
-            <div key='comment'>
+            <div key="comment">
               <CommentOutlined />
               <span style={{ fontWeight: 'bold' }}> 8 </span>
             </div>,
-            <SharePost key='share' />,
+            <SharePost key="share" />,
             <Dropdown
-              key='menu'
+              key="menu"
               overlay={menu}
               trigger={['click']}
-              placement='bottomRight'
+              placement="bottomRight"
             >
               <EllipsisOutlined />
             </Dropdown>,
-            <CommentPost key='commet'></CommentPost>
+            <CommentPost key="commet"></CommentPost>
           ]}
         >
           <Meta
@@ -214,7 +218,10 @@ function SavedPosts (props) {
                     )
                     const a = await document.getElementById(`expand${idx}`)
                     // console.log(a, content)
-                    contentPost[0].setAttribute('style', 'height: auto !important')
+                    contentPost[0].setAttribute(
+                      'style',
+                      'height: auto !important'
+                    )
                     a.setAttribute('style', 'visibility: hidden')
                     await setShowText(false)
                   }}

@@ -8,7 +8,7 @@ import { setConfig } from 'react-hot-loader'
 const Main = hot(App)
 
 setConfig({
-  showReactDomPatchNotification: false,
+  showReactDomPatchNotification: false
 })
 
 ReactDOM.render(<Main />, document.querySelector('#root'))

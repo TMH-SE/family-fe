@@ -1,117 +1,89 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
-import { Row, Col, Divider } from 'antd'
-// import {
-//   CommentOutlined,
-//   FlagOutlined,
-//   LikeTwoTone,
-//   BookOutlined,
-//   EllipsisOutlined
-// } from '@ant-design/icons
-// import { brokenContext } from '../../layouts/MainLayout'
-// import {
-//   SharePost,
-//   CommentPost,
-//   ModalReport,
-//   ModalCreatePost
-// } from '../../components'
-
+import React, { useState } from 'react'
+import { Row, Col, Divider, Tooltip } from 'antd'
+import { EditTwoTone } from '@ant-design/icons'
+import EditUser from './editUser'
+import moment from 'moment'
 const DescriptionItem = ({ title, content }) => (
-  <div className='site-description-item-profile-wrapper'>
-    <p className='site-description-item-profile-p-label'>{title}:</p>
+  <div className="site-description-item-profile-wrapper">
+    <p className="site-description-item-profile-p-label">{title}:</p>
     {content}
   </div>
 )
-function Info (props) {
+function Info(props) {
+  const { userInfo } = props
+  const [visible, setVisible] = useState(false)
+  console.log(userInfo, 'userÌno')
   return (
     <>
-      <p
-        className='site-description-item-profile-p'
-        style={{ marginBottom: 24 }}
-      >
-        User Profile
-      </p>
-      <p className='site-description-item-profile-p'>Personal</p>
       <Row>
-        <Col span={12}>
-          <DescriptionItem title='Full Name' content='Lily' />
+        <Col span={3}>
+          <p
+            className="site-description-item-profile-p"
+            style={{ marginBottom: 24 }}
+          >
+            User Profile
+          </p>
         </Col>
         <Col span={12}>
-          <DescriptionItem title='Account' content='AntDesign@example.com' />
+          <Tooltip title="Chỉnh sửa thông tin">
+            <EditTwoTone onClick={() => setVisible(true)} />
+          </Tooltip>
         </Col>
       </Row>
+
       <Row>
         <Col span={12}>
-          <DescriptionItem title='City' content='HangZhou' />
-        </Col>
-        <Col span={12}>
-          <DescriptionItem title='Country' content='China🇨🇳' />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <DescriptionItem title='Birthday' content='February 2,1900' />
-        </Col>
-        <Col span={12}>
-          <DescriptionItem title='Website' content='-' />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
           <DescriptionItem
-            title='Message'
-            content='Make things as simple as possible but no simpler.'
+            title="Họ tên"
+            content={`${userInfo?.firstname} ${userInfo?.lastname}`}
           />
         </Col>
-      </Row>
-      <Divider />
-      <p className='site-description-item-profile-p'>Company</p>
-      <Row>
         <Col span={12}>
-          <DescriptionItem title='Position' content='Programmer' />
-        </Col>
-        <Col span={12}>
-          <DescriptionItem title='Responsibilities' content='Coding' />
+          <DescriptionItem title="Tài khoản" content={userInfo?.email} />
         </Col>
       </Row>
       <Row>
         <Col span={12}>
-          <DescriptionItem title='Department' content='XTech' />
-        </Col>
-        <Col span={12}>
-          <DescriptionItem title='Supervisor' content={<a>Lin</a>} />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
           <DescriptionItem
-            title='Skills'
-            content='C / C + +, data structures, software engineering, operating systems, computer networks, databases, compiler theory, computer architecture, Microcomputer Principle and Interface Technology, Computer English, Java, ASP, etc.'
-          />
-        </Col>
-      </Row>
-      <Divider />
-      <p className='site-description-item-profile-p'>Contacts</p>
-      <Row>
-        <Col span={12}>
-          <DescriptionItem title='Email' content='AntDesign@example.com' />
-        </Col>
-        <Col span={12}>
-          <DescriptionItem title='Phone Number' content='+86 181 0000 0000' />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <DescriptionItem
-            title='Github'
+            title="Ngày sinh"
             content={
-              <a href='http://github.com/ant-design/ant-design/'>
-                github.com/ant-design/ant-design/
-              </a>
+              userInfo?.birthday
+                ? new Date(userInfo?.birthday).toLocaleDateString()
+                : '-'
             }
           />
         </Col>
+        <Col span={12}>
+          <DescriptionItem
+            title="Giới tính"
+            content={ !userInfo?.gender ? '-' : userInfo?.gender === 'FEMALE' ? 'Nữ' : userInfo?.gender ==='MALE' ? 'Nam' : 'Khác' }
+          />
+        </Col>
       </Row>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem title="Email" content={userInfo?.email} />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem
+            title="Số điện thoại"
+            content={userInfo?.phoneNumber}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <DescriptionItem
+            title="Tham gia ngày"
+            content={userInfo?.createdAt}
+          />
+        </Col>
+      </Row>
+      <EditUser
+        visible={visible}
+        onCancel={() => setVisible(!visible)}
+      ></EditUser>
     </>
   )
 }

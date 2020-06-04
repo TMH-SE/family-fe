@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { Modal, Button, Select, Form } from 'antd'
+import { Modal, Select, Form } from 'antd'
 import 'antd/dist/antd.css'
 import { Editor } from '../../components'
 import './index.css'

@@ -21,7 +21,7 @@ import {
   ModalReport
   // ModalCreatePost
 } from '../../../components'
-import Reaction from '../../../components/reaction'
+import { Reaction } from '@components'
 
 const { Meta } = Card
 // var moment = require('moment')
@@ -47,7 +47,7 @@ const data = [
     postId: '4'
   }
 ]
-function MyPosts (props) {
+function MyPosts(props) {
   const { history } = props
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const [showText, setShowText] = useState(false)
@@ -62,17 +62,17 @@ function MyPosts (props) {
   }
   const menu = (
     <Menu>
-      <Menu.Item key='0'>
+      <Menu.Item key="0">
         <div onClick={() => setVisibleModalReport(true)}>
-          <FlagOutlined key='flag' /> Báo cáo bài viết
+          <FlagOutlined key="flag" /> Báo cáo bài viết
         </div>
       </Menu.Item>
-      <Menu.Item key='1'>
+      <Menu.Item key="1">
         <div
           onClick={() => notification.success({ message: 'Lưu thành công' })}
         >
           <BookOutlined />
-           Đã lưu bài viết
+          Đã lưu bài viết
         </div>
       </Menu.Item>
     </Menu>
@@ -123,8 +123,8 @@ function MyPosts (props) {
             <div style={{ display: 'flex', justifyContent: 'start' }}>
               <Avatar
                 onClick={() => history.push(`/pagegroup/${item.groupId}`)}
-                size='large'
-                src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
+                size="large"
+                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
               />
               <div>
                 <a
@@ -147,31 +147,36 @@ function MyPosts (props) {
             </div>
           }
           extra={
-            <Button disabled
-            //   style={{ color: '#fff' }}
+            <Button
+              disabled
+              //   style={{ color: '#fff' }}
             >
               Đã tham gia
             </Button>
           }
           style={{ maxWidth: '100%', marginTop: 16 }}
           actions={[
-            <div id='like-post' key='like' onDoubleClick={() => console.log('đâsđâsd')}>
+            <div
+              id="like-post"
+              key="like"
+              onDoubleClick={() => console.log('đâsđâsd')}
+            >
               <Reaction />
             </div>,
-            <div key='comment'>
+            <div key="comment">
               <CommentOutlined />
               <span style={{ fontWeight: 'bold' }}> 8 </span>
             </div>,
-            <SharePost key='share' />,
+            <SharePost key="share" />,
             <Dropdown
-              key='menu'
+              key="menu"
               overlay={menu}
               trigger={['click']}
-              placement='bottomRight'
+              placement="bottomRight"
             >
               <EllipsisOutlined />
             </Dropdown>,
-            <CommentPost key='commet'></CommentPost>
+            <CommentPost key="commet"></CommentPost>
           ]}
         >
           <Meta
@@ -210,7 +215,10 @@ function MyPosts (props) {
                     )
                     const a = await document.getElementById(`expand${idx}`)
                     // console.log(a, content)
-                    contentPost[0].setAttribute('style', 'height: auto !important')
+                    contentPost[0].setAttribute(
+                      'style',
+                      'height: auto !important'
+                    )
                     a.setAttribute('style', 'visibility: hidden')
                     await setShowText(false)
                   }}

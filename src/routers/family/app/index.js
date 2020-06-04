@@ -6,15 +6,15 @@ const FamilyAppRoutes = ({ isAuth }) => {
   const authRoutes = [
     {
       exact: true,
-      path: '/pagegroup/:groupId',
-      component: 'pageGroup',
-      title: 'Cộng đồng'
-    },
-    {
-      exact: true,
       path: '/createpost',
       component: 'createPost',
       title: 'Tạo bài viết'
+    },
+    {
+      exact: true,
+      path: '/pagegroup/:groupId',
+      component: 'pageGroup',
+      title: 'Cộng đồng'
     },
     {
       exact: true,
@@ -27,7 +27,7 @@ const FamilyAppRoutes = ({ isAuth }) => {
       path: '/:userId/messenger/:idChat',
       component: 'messageDetail',
       title: 'Chat'
-    }
+    },
   ]
 
   const commonRoutes = [
@@ -45,15 +45,21 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
-      path: '/:userId/:type',
-      component: 'profile',
-      title: 'Trang cá nhân'
+      path: '/pagegroup/:groupId',
+      component: 'pageGroup',
+      title: 'Cộng đồng'
     },
     {
       exact: false,
       path: '/postdetail/:postId',
       component: 'postDetail',
       title: 'Chi tiết bài viết'
+    },
+    {
+      exact: true,
+      path: '/:userId/:type',
+      component: 'profile',
+      title: 'Trang cá nhân'
     }
   ]
 

@@ -38,8 +38,9 @@ const linkSplit = split(
 const errorMiddleware = onError(({ graphQLErrors, networkError, response }) => {
   if (graphQLErrors) {
     if (response) {
-      console.log(graphQLErrors)
-      response.errors = graphQLErrors[0]
+      graphQLErrors.map(({ message, code }) => {
+        console.log(`${code}: ${message}`)
+      })
     }
   }
   if (networkError) {

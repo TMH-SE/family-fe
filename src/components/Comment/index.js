@@ -1,149 +1,259 @@
 /* eslint-disable react/prop-types */
-import React, { createElement, useState } from 'react'
-import { Comment, Avatar, Form, List, Tooltip, Modal } from 'antd'
+import React, { useState, useEffect, useContext } from 'react'
+import { Comment, Avatar, List, Modal } from 'antd'
 import moment from 'moment'
-import {
-  DislikeOutlined,
-  LikeOutlined,
-  DislikeFilled,
-  LikeFilled
-} from '@ant-design/icons'
-import './index.css'
-import InputCustome from '../inputCustome'
+import firebase from 'firebase/app'
+import * as uuid from 'uuid'
+import './index.scss'
+import { InputCustome, ModalPreviewImg } from '@components'
+import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
+import reactStringReplace from 'react-string-replace'
+import { IContext } from '@tools'
+import { GET_USER } from '@shared'
+import CommentItem from './CommentItem'
 
-const CommentList = ({ comments }) => {
-  const [likes, setLikes] = useState(0)
-  const [dislikes, setDislikes] = useState(0)
-  const [action, setAction] = useState(null)
+const CommentList = ({ comments, showMore, idPost }) => {
+  const history = useHistory()
+  const { me } = useContext(IContext)
+  const [rep, setRep] = useState({})
 
-  const like = () => {
-    setLikes(1)
-    setDislikes(0)
-    setAction('liked')
+  const [showMoreRep, setShowMoreRep] = useState({ idParent: null, rows: 0 })
+  const [arrTag, setArrTag] = useState([])
+  let lessComment = []
+  lessComment = comments.slice(comments.length - showMore, comments.length - 1)
+
+  const onAdd = mentions => {
+    setArrTag(mentions)
   }
-
-  const dislike = () => {
-    setLikes(0)
-    setDislikes(1)
-    setAction('disliked')
+  const replyTo = repTo => {
+    setRep(repTo)
   }
+  const sendNotiTagReply = async (userId, postId) => {
+    const notificationId = uuid.v1()
+    arrTag &&
+      arrTag.map(async item => {
+        try {
+          await firebase
+            .database()
+            .ref('notifications/' + item.id + '/' + notificationId)
+            .set({
+              action: 'tag',
+              reciever: item.id,
+              link: `/postdetail/${postId}`,
+              content: `${me?.firstname} đã nhắc đến bạn trong bình luận`,
+              seen: false
+            })
+        } catch (err) {
+          console.log(err)
+        }
+      })
+  }
+  const reply = async (value, img) => {
+    const cmt = (await comments.filter(item => item.id === rep.commentId)[0]
+      .replies)
+      ? comments.filter(item => item.id === rep.commentId)[0].replies
+      : []
+    const cmtMention = (await comments.filter(
+      item => item.id === rep.commentId
+    )[0].mention)
+      ? comments.filter(item => item.id === rep.commentId)[0].mention
+      : []
 
-  const actions = [
-    <span key='comment-basic-like'>
-      <Tooltip title='Like'>
-        {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
-          onClick: like
-        })}
-      </Tooltip>
-      <span className='comment-action'>{likes}</span>
-    </span>,
-    <span key='comment-basic-dislike'>
-      <Tooltip title='Dislike'>
-        {React.createElement(
-          action === 'disliked' ? DislikeFilled : DislikeOutlined,
-          {
-            onClick: dislike
-          }
-        )}
-      </Tooltip>
-      <span className='comment-action'>{dislikes}</span>
-    </span>,
-    <span key='comment-basic-reply-to'>Reply to</span>
-  ]
+    const mentions =
+      cmtMention.findIndex(item => item.id === me?._id) === -1
+        ? [
+            ...cmtMention,
+            {
+              id: `${me?._id}`,
+              name: `${me?.firstname}`
+            }
+          ]
+        : [...cmtMention]
+    // lessCommentRep = cmt.slice(cmt.length - showMoreRep, cmt.length - 1)
+    const repValue = [
+      ...cmt,
+      {
+        content: { message: value, img: img && img },
+        timestamp: new Date().getTime(),
+        author: me?._id
+        // photo: me?.avatar
+      }
+    ]
+    try {
+      await firebase
+        .database()
+        .ref(`posts/${idPost}/comments/` + rep.commentId)
+        .update({
+          mention: mentions,
+          replies: repValue
+        })
+    } catch (error) {
+      console.log(error)
+    }
+    await sendNotiTagReply(value, idPost)
+    setRep({})
+  }
   return (
-    <List
-      dataSource={comments}
-      // header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
-      itemLayout='horizontal'
-      renderItem={(props) => <Comment actions={actions} {...props} />}
-    />
+    <>
+      {' '}
+      <List
+        dataSource={comments.length < showMore ? comments : lessComment}
+        // header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
+        itemLayout="horizontal"
+        renderItem={comment => (
+          <>
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              idParent={comment.id}
+              replyTo={replyTo}
+              type="parent"
+            ></CommentItem>
+            {comment.replies && comment.replies.length - 1 > showMoreRep.rows && (
+              <a
+                style={{ textAlign: 'left', marginLeft: '10%' }}
+                onClick={() =>
+                  setShowMoreRep({
+                    idParent: comment.id,
+                    rows:
+                      comment.id === showMoreRep.idParent
+                        ? showMoreRep.rows + 2
+                        : 2
+                  })
+                }
+              >
+                Xem thêm{' '}
+                {comment.id === showMoreRep.idParent
+                  ? comment.replies.length - showMoreRep.rows
+                  : comment.replies.length - 1}{' '}
+                câu trả lời
+              </a>
+            )}
+            {rep.commentId === comment.id && (
+              <Comment
+                className={`rep-input ${comment.id}`}
+                avatar={<Avatar src={me?.avatar} alt="Han Solo" />}
+                content={
+                  <InputCustome
+                    replyAuthor={rep && rep.author}
+                    idElement={comment.id}
+                    onSubmit={reply}
+                    placeholder="Nhập bình luận"
+                    mentions={comment.mention}
+                    onAdd={onAdd}
+                    // value={value}
+                  />
+                }
+              />
+            )}
+            {comment.replies &&
+              comment.replies
+                .sort((a, b) => b.timestamp - a.timestamp)
+                .slice(
+                  0,
+                  comment.id === showMoreRep?.idParent ? showMoreRep.rows : 1
+                )
+                .map((reply, idx) => (
+                  <CommentItem
+                    key={idx}
+                    comment={reply}
+                    idParent={comment.id}
+                    replyTo={replyTo}
+                    type="reply"
+                  />
+                ))}
+          </>
+        )}
+      />
+    </>
   )
 }
 
-const Editor = ({ onChange, onSubmit, idElement, value }) => (
-  <div>
-    <Form.Item>
-      {/* <TextArea
-        placeholder='Nhap binh luan'
-        autoSize={{ minRows: 1, maxRows: 3 }}
-        onChange={onChange}
-        value={value}
-        onKeyUp={(event) => onSubmit(event)}
-      /> */}
-      <InputCustome
-        idElement={idElement}
-        placeholder='Nhap binh luan'
-        onChange={onChange}
-        onSubmit={onSubmit}
-      >
-      </InputCustome>
-    </Form.Item>
-  </div>
-)
-
-function CommentPost (props) {
+function CommentPost(props) {
   const [comments, setComments] = useState([])
-  // const [value, setValue] = useState('')
-  const [previewImg, setPreviewImg] = useState(false)
-  const handleSubmit = (value, imgList) => {
-    setComments(
-      comments.concat([
-        {
-          author: 'Han Solo',
-          avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-          content: <>
-            <div style={{ display: 'flex', overflowX: 'auto' }}>
-              {imgList.map((srcImg, idx) => {
-                return <div className='img-cmt' key={idx} style={{ display: 'flex', height: 65, width: 65, margin: '5px 0 0 5px' }}>
-                  <img
-                    style={{ height: 60, width: 60, objectFit: 'cover' }}
-                    src={srcImg}
-                    onClick={() => setPreviewImg(true)}
-                  />
-                  <Modal
-                    visible={previewImg}
-                    footer={null}
-                    onCancel={() => setPreviewImg(false)}
-                  >
-                    <img alt="example" style={{ width: '100%' }} src={srcImg} />
-                  </Modal>
-                </div>
-              })}
-            </div>
-            <p>{value.trim()}</p>
-          </>,
-          datetime: moment().fromNow()
-        }
-      ])
-    )
-  }
+  const [showMore, setShowMore] = useState(3)
+  const [user, setUser] = useState(null)
+  const { me } = useContext(IContext)
+  const { idPost } = props
+  useEffect(() => {
+    getComment()
+  }, [])
+  // const [getUser, { loading, data }] = useLazyQuery(GET_USER);
 
-  // const handleChange = (text) => {
-  //   console.log(text, 'custom')
-  //   // setValue(text.target)
+  // if (loading) return <p>Loading ...</p>;
+
+  // if (data && data.getUser) {
+  //   console.log(data, 'data')
+  //   // setUser(data.getUser);
   // }
-  // console.log(comments, 'comme')
 
+  const getComment = () => {
+    firebase
+      .database()
+      .ref(`posts/${idPost}/comments`)
+      .limitToLast(showMore + 1)
+      .on('value', snapshot => {
+        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+        const temp = Object.keys(snapshot.val()).map(key => ({
+          ...snapshot.val()[key],
+          id: key
+        }))
+
+        temp.sort((a, b) => b.timestamp - a.timestamp)
+        setComments(temp)
+      })
+  }
+  const handleSubmit = async (value, img) => {
+    const postId = idPost
+    const commentId = uuid.v1()
+    const mentions = [
+      {
+        id: `${me?._id}`,
+        name: `${me?.firstname}`
+      }
+    ]
+    try {
+      await firebase
+        .database()
+        .ref(`posts/${postId}/comments/` + commentId)
+        .set({
+          content: { message: value, img: img },
+          timestamp: new Date().getTime(),
+          author: me?._id,
+          // photo: me?.avatar,
+          mention: mentions,
+          replies: []
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  // const history = useHistory()
   return (
     <div>
-      {comments.length > 0 && <CommentList comments={comments} />}
       <Comment
-        avatar={
-          <Avatar
-            src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
-            alt='Han Solo'
-          />
-        }
+        className={`cmt-input ${props.idPost}`}
+        avatar={<Avatar src={me?.avatar} alt="Han Solo" />}
         content={
-          <Editor
+          <InputCustome
             idElement={props.idPost}
             onSubmit={handleSubmit}
-            //   submitting={submitting}
+            placeholder="Nhập bình luận"
             // value={value}
           />
         }
       />
+      {comments.length > 0 && (
+        <CommentList
+          showMore={showMore}
+          idPost={props.idPost}
+          comments={comments}
+        />
+      )}
+      {comments.length > showMore && (
+        <a onClick={() => setShowMore(showMore + 3)}>Xem thêm </a>
+      )}
     </div>
   )
 }

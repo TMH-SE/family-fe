@@ -1,43 +1,37 @@
-import React, { useState, useEffect } from 'react'
+/* eslint-disable object-curly-spacing */
+/* eslint-disable react/prop-types */
+import React from 'react'
 import ConversationSearch from '../ConversationSearch'
+import Toolbar from '../../messageDetail/Toolbar'
+import ToolbarButton from '../../messageDetail/ToolbarButton'
+
+import './index.scss'
+import { List} from 'antd'
+
 import ConversationListItem from '../ConversationListItem'
-import Toolbar from '../Toolbar'
-import ToolbarButton from '../ToolbarButton'
-import axios from 'axios'
 
-export default function ConversationList (props) {
-  const [conversations, setConversations] = useState([])
-  useEffect(() => {
-    getConversations()
-  }, [])
+export default function ConversationList(props) {
+  const { dataChat } = props
 
-  const getConversations = () => {
-    axios.get('https://randomuser.me/api/?results=20').then((response) => {
-      const newConversations = response.data.results.map((result) => {
-        return {
-          photo: result.picture.large,
-          name: `${result.name.first} ${result.name.last}`,
-          text:
-            'Hello world! This is a long message that needs to be truncated.'
-        }
-      })
-      setConversations([...conversations, ...newConversations])
-    })
-  }
 
   return (
-    <div className='conversation-list'>
+    <div className="conversation-list">
       <Toolbar
-        title='Messenger'
-        leftItems={[<ToolbarButton key='cog' icon='ion-ios-cog' />]}
+        title="Messenger"
+        leftItems={[<ToolbarButton key="cog" icon="ion-ios-cog" />]}
         rightItems={[
-          <ToolbarButton key='add' icon='ion-ios-add-circle-outline' />
+          <ToolbarButton key="add" icon="ion-ios-add-circle-outline" />
         ]}
       />
       <ConversationSearch />
-      {conversations.map((conversation) => (
-        <ConversationListItem key={conversation.name} data={conversation} />
-      ))}
+      <List
+        itemLayout="horizontal"
+        // loadMore={loadMore}
+        dataSource={dataChat}
+        renderItem={(data, idx) => (
+          <ConversationListItem key={idx} chat={data}></ConversationListItem>
+        )}
+      />
     </div>
   )
 }

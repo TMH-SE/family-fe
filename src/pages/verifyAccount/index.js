@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import gql from 'graphql-tag'
 import { withRouter } from 'react-router-dom'
-import { useQuery } from '@apollo/react-hooks'
-import { Result, Button, Typography } from 'antd'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { Result, Button, Typography, Form, Modal, Input } from 'antd'
 import { LoadingOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import ModalResend from './modalResend'
+import { IContext } from '@tools'
 
 const { Paragraph, Text } = Typography
 
@@ -16,15 +18,17 @@ const VERIFY_ACCOUNT = gql`
 `
 
 const index = ({ history, match }) => {
+  const { refetchMe } = useContext(IContext)
+  const [visible, setVisible] = useState(false)
   const {
     params: { verifyToken }
   } = match
-  const { data, loading } = useQuery(VERIFY_ACCOUNT, {
+  const { data, error, loading } = useQuery(VERIFY_ACCOUNT, {
     variables: {
       verifyToken
     }
   })
-  console.log(data)
+  
   return loading ? (
     <Result
       icon={<LoadingOutlined />}
@@ -43,6 +47,7 @@ const index = ({ history, match }) => {
               data?.verifyAccount?.accessToken
             )
             history.push('/homepage')
+            refetchMe()
           }}
           key="home"
         >
@@ -55,10 +60,16 @@ const index = ({ history, match }) => {
       status="error"
       title="Xác Minh Tài Khoản Thất Bại"
       extra={[
-        <Button onClick={() => history.push('/login')} type="primary" key="console">
+        <Button
+          onClick={() => history.push('/login')}
+          type="primary"
+          key="console"
+        >
           Đăng nhập
         </Button>,
-        <Button key="buy">Gửi lại mail xác minh</Button>
+        <Button onClick={() => setVisible(true)} key="buy">
+          Gửi lại mail xác minh
+        </Button>
       ]}
     >
       <div className="desc">
@@ -69,18 +80,17 @@ const index = ({ history, match }) => {
               fontSize: 16
             }}
           >
-            Xác minh tài khoản thất bại có thể vì những lý do sau:
+            Xác minh tài khoản thất bại có thể vì lý do sau:
           </Text>
         </Paragraph>
-        <Paragraph>
-          <CloseCircleOutlined style={{ color: 'red' }} /> Tài khoản đã được xác
-          minh
-        </Paragraph>
-        <Paragraph>
-          <CloseCircleOutlined style={{ color: 'red' }} /> Email xác minh đã hết
-          hạn
-        </Paragraph>
+        {error.graphQLErrors.map(({ message }, index) => (
+          <Paragraph key={index}>
+            <CloseCircleOutlined style={{ color: 'red' }} />
+            <Text style={{ marginLeft: 5 }}>{message}</Text>
+          </Paragraph>
+        ))}
       </div>
+      <ModalResend history={history} visible={visible} onCancel={() => setVisible(false)} />
     </Result>
   )
 }

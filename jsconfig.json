@@ -13,7 +13,8 @@
       "@routers/*": ["./src/routers/*"],
       "@tools": ["./src/tools/index"],
       "@tools/*": ["./src/tools/*"],
-      "@utils": ["./src/utils/index"]
+      "@utils": ["./src/utils/index"],
+      "@shared": ["./src/shared/index"]
     }
   },
   "exclude": ["node_modules", "public"],

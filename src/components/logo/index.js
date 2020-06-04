@@ -24,10 +24,15 @@ const Logo = ({ size, onClick, isBroken }) => {
   }
   return (
     <h1
-      style={{ width: '90%', color: '#0098da', ...style[size] }}
+      style={{
+        width: isBroken ? '25%' : '60%',
+        color: '#0098da',
+        ...style[size]
+      }}
       onClick={onClick}
-      className='myLogo'>
-      <img height='100%' src={logoImgSrc} />
+      className="myLogo"
+    >
+      <img height="100%" src={logoImgSrc} />
       {!isBroken && <span style={{ marginLeft: space[size] }}>Family</span>}
     </h1>
   )
