@@ -269,12 +269,16 @@ module.exports = () => {
         template: path.resolve(__dirname, './public/index.html'),
         favicon: path.resolve(__dirname, './public/favicon.ico')
       }),
-      new Dotenv({
-        path: devMode ? './.env' : './.env.production',
-        safe: true,
-        systemvars: true,
-        silent: true
-      }),
+      ...(devMode
+        ? [
+            new Dotenv({
+              path: './.env',
+              safe: true,
+              systemvars: true,
+              silent: true
+            })
+          ]
+        : []),
       new WebpackPwaManifest({
         filename: 'manifest.json',
         crossorigin: 'use-credentials',
