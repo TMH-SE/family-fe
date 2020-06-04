@@ -10,8 +10,8 @@ import * as uuid from 'uuid'
 import { InputCustome } from '@components'
 import Message from '../Message'
 import { IContext } from '@tools'
-import { useQuery } from '@apollo/react-hooks'
-import { GET_USER } from '@shared'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { GET_USER, UPDATE_CHAT, GET_CHAT_BY_USER } from '@shared'
 moment().format()
 
 export default function MessageList(props) {
@@ -25,13 +25,15 @@ export default function MessageList(props) {
     document.getElementById(`input-custom-${idChat}`).focus()
   }, [idChat])
   const { data } = useQuery(GET_USER, { variables: { userId } })
+  // const { refetch } = useQuery(GET_CHAT_BY_USER, { variables: { userId:  me?._id } })
+  const [updateChat] = useMutation(UPDATE_CHAT)
   const [showMore, setShowMore] = useState(10)
   const getMessages = () => {
     firebase
       .database()
       .ref(`messenger/${idChat}`)
-      .orderByKey()
-      .limitToLast(100)
+      // .orderByKey()
+      // .limitToLast(100)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = snapshot.val()
@@ -40,7 +42,7 @@ export default function MessageList(props) {
               id: key
             }))
           : []
-        // temp.sort((a, b) => a.timestamp - b.timestamp)
+        temp.sort((a, b) => a.timestamp - b.timestamp)
         setMessages(temp)
         const ele = document.getElementsByClassName(
           `message-list-container ${idChat}`
@@ -110,8 +112,7 @@ export default function MessageList(props) {
   }
   const handleSubmit = async (value, imgList) => {
     const chatId = `${idChat}` + '/'
-    const message = uuid.v1()
-    console.log(value, 'value')
+    const message = +new Date()
     try {
       await firebase
         .database()
@@ -126,9 +127,11 @@ export default function MessageList(props) {
     } catch (error) {
       console.log(error)
     }
+    // props.refetch()
     const ele = document.getElementsByClassName(
       `message-list-container ${idChat}`
     )[0]
+    await updateChat({variables: { chatId: idChat }})
     // console.log(ele, 'elemu')
     ele.scrollTop = ele.scrollHeight
   }
@@ -160,6 +163,7 @@ export default function MessageList(props) {
         actions={[
           <InputCustome
             idElement={idChat}
+            type='chat'
             onSubmit={handleSubmit}
             placeholder="Nhạp tin nhắn"
             key="input"

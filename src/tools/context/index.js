@@ -35,13 +35,13 @@ const ContextWrapper = ({ children, history }) => {
     !!window.localStorage.getItem('access-token')
   )
   const chooseConversation = (idChat, userId) => {
+
     if (messbox.findIndex(mess => mess.idChat === idChat) === -1) {
       const a = [...messbox]
-      a.push({ idChat, userId })
+      a.push({idChat, userId })
       setMessbox(a)
     }
-    document.getElementById(`input-custom-${idChat}`) &&
-      document.getElementById(`input-custom-${idChat}`).focus()
+    document.getElementById(`input-custom-${idChat}`) && document.getElementById(`input-custom-${idChat}`).focus()
   }
   const onCancelMessbox = idChat => {
     const idx = messbox.findIndex(mess => mess === idChat)
@@ -93,7 +93,7 @@ const ContextWrapper = ({ children, history }) => {
         refetchMe: refetch,
         messbox: messbox,
         chooseConversation: chooseConversation,
-        onCancelMessbox: onCancelMessbox
+        onCancelMessbox: onCancelMessbox,
       }}
     >
       {children}

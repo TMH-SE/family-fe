@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect, useEffect } from 'react'
 import firebase from 'firebase/app'
 import {
   Card,
@@ -44,7 +44,7 @@ export const Post = props => {
       </Menu.Item>
     </Menu>
   )
-  useLayoutEffect(() => {
+  useEffect(() => {
     getSum(item.postId)
   }, [item.postId])
   const getSum = idPost => {

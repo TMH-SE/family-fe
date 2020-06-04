@@ -24,7 +24,7 @@ export default function Message(props) {
     >
       {showTimestamp && <div className="timestamp">{friendlyTimestamp}</div>}
 
-      {data.content.img && (
+      {data?.content?.img && (
         <div className="bubble-container">
           <div className="imgBubble">
             <img
@@ -40,7 +40,7 @@ export default function Message(props) {
           </div>
         </div>
       )}
-      {data.content.message.trim() && (
+      {data?.content?.message.trim() && (
         <div className="bubble-container">
           <div className="bubble" title={friendlyTimestamp}>
             {data.content.message}

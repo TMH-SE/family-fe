@@ -19,11 +19,14 @@ export default function ConversationListItem(props) {
   })
   useEffect(() => {
     getConversation()
-  }, [_id])
+    data && props.addSearch({...props.chat, name: data?.getUser?.firstname})
+  }, [_id, data])
 
   const selectHandler = () => {
     isBroken
-      ? props.history.push(`/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`)
+      ? props.history.push(
+          `/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`
+        )
       : chooseConversation(_id, members.filter(item => item !== me?._id)[0])
     firebase
       .database()
@@ -46,7 +49,6 @@ export default function ConversationListItem(props) {
               id: key
             }))
           : []
-        // temp.sort((a, b) => a.timestamp - b.timestamp)
         setConversation({
           user: data?.getUser,
           lastMess: temp[0]
@@ -55,35 +57,53 @@ export default function ConversationListItem(props) {
   }
   //   const { author, content, seen } = conversation && conversation.lastMess
   //   const seen = conversation.lastMess && conversation.lastMess.seen ?  conversation.lastMess.seen : conversation.lastMess.author === me?._id
-  return (
-    conversation && (
-      <List.Item onClick={() => selectHandler()}>
-        <Skeleton avatar title={false} loading={conversation.loading} active>
-          <List.Item.Meta
-            avatar={
-              <Badge
-                dot={
-                  conversation.lastMess.author !== me?._id &&
-                  !conversation.lastMess.seen
-                }
-              >
-                <Avatar size={42} src={data?.getUser?.avatar} />
-              </Badge>
-            }
-            title={data?.getUser?.firstname}
-            description={
-              conversation.lastMess.content?.message.trim()
-                ? conversation.lastMess.content?.message
-                : conversation.lastMess.author === me?._id
-                ? ' Bạn đã gửi 1 hình'
-                : data?.getUser.firstname + ' đã gửi cho bạn 1 hình '
-            }
-          />
-        </Skeleton>
-        {/* <ConversationListItem
+  return conversation && conversation.lastMess ? (
+    <List.Item onClick={() => selectHandler()}>
+      <Skeleton avatar title={false} loading={conversation.loading} active>
+        <List.Item.Meta
+          avatar={
+            <Badge
+              dot={
+                conversation.lastMess.author !== me?._id &&
+                !conversation.lastMess.seen
+              }
+            >
+              <Avatar size={42} src={data?.getUser?.avatar} />
+            </Badge>
+          }
+          title={data?.getUser?.firstname}
+          description={
+            conversation.lastMess.content?.message.trim()
+              ? conversation.lastMess?.content?.message
+              : conversation.lastMess?.author === me?._id
+              ? ' Bạn đã gửi 1 hình'
+              : data?.getUser?.firstname + ' đã gửi cho bạn 1 hình '
+          }
+        />
+      </Skeleton>
+      {/* <ConversationListItem
       key={conversation.name}
         data={conversation} /> */}
-      </List.Item>
-    )
+    </List.Item>
+  ) : (
+    <List.Item onClick={() => {
+      isBroken
+      ? props.history.push(
+          `/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`
+        )
+      : chooseConversation(_id, members.filter(item => item !== me?._id)[0])
+      
+    }}>
+        <List.Item.Meta
+          avatar={
+              <Avatar size={42} src={data?.getUser?.avatar} />
+          }
+          title={data?.getUser?.firstname}
+          description='Bắt đầu cuộc trò chuyện'
+        />
+      {/* <ConversationListItem
+      key={conversation.name}
+        data={conversation} /> */}
+    </List.Item>
   )
 }

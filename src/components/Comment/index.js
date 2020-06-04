@@ -136,6 +136,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
               idParent={comment.id}
               replyTo={replyTo}
               type="parent"
+              history={history}
             ></CommentItem>
             {comment.replies && comment.replies.length - 1 > showMoreRep.rows && (
               <a
@@ -188,6 +189,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
                     idParent={comment.id}
                     replyTo={replyTo}
                     type="reply"
+                    history={history}
                   />
                 ))}
           </>
@@ -211,6 +213,7 @@ function CommentPost(props) {
     firebase
       .database()
       .ref(`posts/${idPost}/comments`)
+      .orderByKey()
       .limitToLast(showMore + 1)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';

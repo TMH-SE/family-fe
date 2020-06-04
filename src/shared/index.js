@@ -59,6 +59,11 @@ export const CREATE_CHAT = gql`
     }
   }
 `
+export const UPDATE_CHAT = gql`
+  mutation updateChat($chatId: String) {
+    updateChat(chatId: $chatId)
+  }
+`
 export const GET_CHAT_BY_MEMBERS = gql`
   query getChatByMembers($members: [String]) {
     getChatByMembers(members: $members) {

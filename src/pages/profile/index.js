@@ -128,7 +128,7 @@ function Profile(props) {
     ))
   const uploadButtonAvt =
     isMe &&
-    (!img.avatar ? (
+    (!img?.avatar ? (
       <div
         className="avatar-uploader"
         style={{ position: 'absolute', bottom: 5, right: 5 }}
@@ -248,8 +248,8 @@ function Profile(props) {
         userId: userId,
         editUser: {
           coverPhoto:
-            type === 'coverPhoto' ? img.coverPhoto : data?.getUser.coverPhoto,
-          avatar: type === 'avatar' ? img.avatar : data?.getUser.avatar
+            type === 'coverPhoto' ? img?.coverPhoto : data?.getUser?.coverPhoto,
+          avatar: type === 'avatar' ? img?.avatar : data?.getUser?.avatar
         }
       }
     })
@@ -331,17 +331,17 @@ function Profile(props) {
                   marginRight: 30
                 }}
               >
-                {(data?.getUser.avatar || img.avatar) && (
+                {(data?.getUser?.avatar || img?.avatar) && (
                   <Avatar
                     className="img-avt"
                     style={{ border: '2px solid black', objectFit: 'cover' }}
                     shape="circle"
                     size={130}
-                    src={img.avatar || data?.getUser.avatar}
+                    src={img?.avatar || data?.getUser?.avatar}
                     onClick={() => {
                       setPreviewImg({
                         isShow: true,
-                        imgSrc: img.avatar || data?.getUser.avatar
+                        imgSrc: img?.avatar || data?.getUser?.avatar
                       })
                     }}
                   />

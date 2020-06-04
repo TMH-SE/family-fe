@@ -22,7 +22,7 @@ function Follow(props) {
     const { userId, followerId } = props.follower
   const { data, loading, refetch } = useQuery(CHECK_FOLLOW, {
     variables: { id: props.follower },
-    fetchPolicy: 'no-cache'
+    // fetchPolicy: 'no-cache'
   })
   const sendNotifollow = async type => {
     const notificationId = uuid.v1()

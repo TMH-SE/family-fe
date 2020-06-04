@@ -21,7 +21,8 @@ function Chat(props) {
       if (!data.getChatByMembers) {
         await createChat({ variables: { members: members } })
           .then(res => {
-            const a = res.data.members.filter(item => item !== me?._id)
+            console.log(res, 'res')
+            const a = res.data.createChat.members.filter(item => item !== me?._id)
 
             isBroken
               ? history.push(`/${a[0]}/messenger/${res.data._id}`)

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react'
 import { Popover, Tooltip } from 'antd'
 import { Emoji } from 'emoji-mart'
 import { LikeOutlined } from '@ant-design/icons'
@@ -37,7 +37,7 @@ function Reaction(props) {
   const { idPost } = props
   const { me } = useContext(IContext)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     getReactionPost()
   }, [idPost])
   const getReactionPost = () => {

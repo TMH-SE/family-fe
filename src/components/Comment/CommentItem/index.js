@@ -8,7 +8,7 @@ import { UserOutlined } from '@ant-design/icons'
 
 const CommentItem = props => {
   const { author } = props.comment
-  const { comment, replyTo, type, idParent } = props
+  const { comment, replyTo, type, idParent, history } = props
   const { loading, data } = useQuery(GET_USER, {
     variables: { userId: author }
   })
@@ -38,13 +38,13 @@ const CommentItem = props => {
         ]}
         author={
           <a
-            onClick={() => history.push(`/${comment.author.id}/info`)}
+            onClick={() => history.push(`/${comment.author}/info`)}
             style={{ color: 'black', fontSize: 14 }}
           >
             {data?.getUser?.firstname}
           </a>
         }
-        avatar={data?.getUser.avatar || <UserOutlined />}
+        avatar={data?.getUser?.avatar || <UserOutlined />}
         content={
           <>
             <div style={{ display: 'flex', overflowX: 'auto' }}>

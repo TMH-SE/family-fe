@@ -53,8 +53,9 @@ const index = ({ children }) => {
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
   // const [messbox, setMessbox] = useState([])
-  const { data } = useQuery(GET_CHAT_BY_USER, {
-    variables: { userId: me?._id }
+  const { data, refetch } = useQuery(GET_CHAT_BY_USER, {
+    variables: { userId: me?._id },
+    fetchPolicy: "no-cache"
   })
   const [notifications, setNotifications] = useState([])
 
@@ -343,6 +344,7 @@ const index = ({ children }) => {
                     style={{ display: 'flex', flexDirection: 'column' }}
                   >
                     <MessageList
+                    refetch={refetch}
                       idx={idx}
                       onCancelMessbox={() => onCancelMessbox(mess.idChat)}
                       chatBox={mess}
