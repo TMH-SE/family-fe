@@ -307,7 +307,7 @@ module.exports = () => {
               maximumFileSizeToCacheInBytes: 50000000
             })
           ]),
-      new webpack.ProgressPlugin(handler),
+      ...(devMode ? [new webpack.ProgressPlugin(handler)] : []),
       ...(devMode
         ? [
             new BundleAnalyzerPlugin({
