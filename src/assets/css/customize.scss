@@ -1,0 +1,41 @@
+.myLogo {
+  padding: 0;
+  margin: 0;
+  font-family: 'Concert One', cursive;
+  font-weight: 800;
+  cursor: pointer;
+  img {
+    position: relative;
+    top: -1.5px;
+  }
+}
+
+.ck-content {
+  height: 55vh;
+}
+
+// menu
+
+.ant-menu-horizontal > .ant-menu-item:hover,
+.ant-menu-horizontal > .ant-menu-submenu:hover,
+.ant-menu-horizontal > .ant-menu-item-active,
+.ant-menu-horizontal > .ant-menu-submenu-active,
+.ant-menu-horizontal > .ant-menu-item-open,
+.ant-menu-horizontal > .ant-menu-submenu-open,
+.ant-menu-horizontal > .ant-menu-item-selected,
+.ant-menu-horizontal > .ant-menu-submenu-selected {
+  color: #1890ff;
+  // border-bottom: 2px solid #1890ff !important;
+  // border-bottom: none !important;
+}
+
+.ant-menu-horizontal > .ant-menu-overflowed-submenu,
+.ant-menu-horizontal > .ant-menu-overflowed-submenu:hover {
+  color: rgba($color: #000000, $alpha: .65) !important;
+  border-top: none;
+}
+
+.ant-menu-horizontal > .ant-menu-item,
+.ant-menu-horizontal > .ant-menu-submenu {
+  border-bottom: none !important;
+}
