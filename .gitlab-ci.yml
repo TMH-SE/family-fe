@@ -4,6 +4,8 @@ stages:
     - test
 
 deloytest:
+    only:
+        - master
     stage: test
     script:
         - echo $DEPLOY_SERVER
