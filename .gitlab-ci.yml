@@ -1,11 +1,11 @@
-image node:latest
+image: node:latest
 
 stages:
-  - test
+  - deloyTest
 
-deloytest:
+deployFamilyTest:
   only:
     - master
-  stage: test
+  stage: deloyTest
   script:
     - echo $DEPLOY_SERVER
