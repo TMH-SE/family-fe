@@ -93,8 +93,10 @@ export default function MessageList(props) {
           endsSequence = false
         }
       }
+      
       tempMessages.push(
         <Message
+          isLast={messageCount -1 === i}
           key={i}
           isMine={isMine}
           startsSequence={startsSequence}

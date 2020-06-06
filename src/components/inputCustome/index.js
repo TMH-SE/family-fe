@@ -151,10 +151,10 @@ function InputCustome(props) {
               `contentMess-box ${props.idElement}`
             )[0]
             a && a.classList.add('focus')
-    //           const ele = document.getElementsByClassName(
-    //   `message-list-container ${props.idElement}`
-    // )[0]
-    // ele.scrollTop = ele.scrollHeight
+              const ele = document.getElementsByClassName(
+      `message-list-container ${props.idElement}`
+    )[0]
+    ele.scrollTop = ele.scrollHeight
           }}
           onBlur={() => {
             const a = document.getElementsByClassName(

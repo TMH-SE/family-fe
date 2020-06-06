@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Avatar, Menu, Button, Upload, message, notification } from 'antd'
 import { withRouter } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -28,7 +28,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
 import './index.scss'
 import { IContext } from '@tools'
-
+import noAvatar from '@assets/images/noavata.jpg'
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
@@ -37,6 +37,9 @@ function Profile(props) {
   const { loading, error, data, refetch } = useQuery(GET_USER, {
     variables: { userId: userId }
   })
+  useEffect(() => {
+    if (data && !data.getUser.avatar) data.getUser.avatar = noAvatar
+  }, [data])
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
@@ -376,66 +379,76 @@ function Profile(props) {
                     {`${data?.getUser.firstname} ${data?.getUser.lastname}`}
                   </p>
                   <div>
-                    {
-                      !isMe && 
-                        <div style={{ marginTop: 5 }}> 
-                          <Follow isBroken={isBroken} follower={{userId: userId, followerId: me?._id}}/>
-                          <Chat members={[me?._id, userId]} history={history} isBroken={isBroken}></Chat>
-                        </div>
-                    }
+                    {!isMe && (
+                      <div style={{ marginTop: 5 }}>
+                        <Follow
+                          isBroken={isBroken}
+                          follower={{ userId: userId, followerId: me?._id }}
+                        />
+                        <Chat
+                          members={[me?._id, userId]}
+                          history={history}
+                          isBroken={isBroken}
+                        ></Chat>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <Menu
-                  selectedKeys={[type]}
-                  //   onSelect={(e) => {
-                  //     // setKeyMenu(e.key)
-                  //     // console.log(keyMenu)
-                  //   }
-                  //   }
-                  style={{
-                    marginTop: -30,
-                    // color: 'black',
-                    fontSize: 15,
-                    fontWeight: 550,
-                    width: isBroken ? '60vw' : '35vw',
-                    backgroundColor: 'initial'
-                  }}
-                  overflowedIndicator={<EllipsisOutlined color="black" />}
-                  mode="horizontal"
-                >
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/info`)}
-                    key="info"
+                {isMe && (
+                  <Menu
+                    selectedKeys={[type]}
+                    //   onSelect={(e) => {
+                    //     // setKeyMenu(e.key)
+                    //     // console.log(keyMenu)
+                    //   }
+                    //   }
+                    style={{
+                      marginTop: -30,
+                      // color: 'black',
+                      fontSize: 15,
+                      fontWeight: 550,
+                      width: isBroken ? '60vw' : '35vw',
+                      backgroundColor: 'initial'
+                    }}
+                    overflowedIndicator={<EllipsisOutlined color="black" />}
+                    mode="horizontal"
                   >
-                    Thông tin
-                  </Menu.Item>
-                  {isBroken && (
                     <Menu.Item
-                      onClick={() => history.push(`/${userId}/messenger`)}
-                      key="mail"
+                      onClick={() => history.push(`/${userId}/info`)}
+                      key="info"
                     >
-                      Tin nhắn
+                      Thông tin
                     </Menu.Item>
-                  )}
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/savedposts`)}
-                    key="savedposts"
-                  >
-                    Bài viết đã lưu
-                  </Menu.Item>
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/myposts`)}
-                    key="myposts"
-                  >
-                    Bài viết của tôi
-                  </Menu.Item>
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/joinedGroup`)}
-                    key="joinedGroup"
-                  >
-                    Cộng đồng đã tham gia
-                  </Menu.Item>
-                </Menu>
+                    {isBroken && (
+                      <Menu.Item
+                        onClick={() => history.push(`/${userId}/messenger`)}
+                        key="mail"
+                      >
+                        Tin nhắn
+                      </Menu.Item>
+                    )}
+                    {isMe && (
+                      <Menu.Item
+                        onClick={() => history.push(`/${userId}/savedposts`)}
+                        key="savedposts"
+                      >
+                        Bài viết đã lưu
+                      </Menu.Item>
+                    )}
+                    <Menu.Item
+                      onClick={() => history.push(`/${userId}/myposts`)}
+                      key="myposts"
+                    >
+                      Bài viết của tôi
+                    </Menu.Item>
+                    <Menu.Item
+                      onClick={() => history.push(`/${userId}/joinedGroup`)}
+                      key="joinedGroup"
+                    >
+                      Cộng đồng đã tham gia
+                    </Menu.Item>
+                  </Menu>
+                )}
               </div>
             </div>
           </div>
@@ -448,7 +461,7 @@ function Profile(props) {
           padding: type === 'info' && 16
         }}
       >
-        {type === 'info' && <Info userInfo={data?.getUser} />}
+        {type === 'info' && <Info userInfo={data?.getUser} isMe={isMe} />}
         {type === 'messenger' && <MyMessenger userInfo={data?.getUser} />}
         {type === 'myposts' && (
           <MyPosts history={history} userInfo={data?.getUser} />

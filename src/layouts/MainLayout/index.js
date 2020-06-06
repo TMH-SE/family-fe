@@ -268,7 +268,7 @@ const index = ({ children }) => {
                   </>
                 )
               ) : (
-                <Button type="primary" onClick={() => history.push('./login')}>
+                <Button type="primary" onClick={() => history.push('/login')}>
                   {' '}
                   Đăng nhập{' '}
                 </Button>

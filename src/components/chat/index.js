@@ -23,7 +23,7 @@ function Chat(props) {
           .then(res => {
             console.log(res, 'res')
             const a = res.data.createChat.members.filter(item => item !== me?._id)
-
+            console.log(res.data, 'res create')
             isBroken
               ? history.push(`/${a[0]}/messenger/${res.data._id}`)
               : chooseConversation(res.data._id, a[0])

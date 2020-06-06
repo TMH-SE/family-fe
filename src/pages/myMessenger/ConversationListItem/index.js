@@ -8,6 +8,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import { IContext } from '@tools'
 import { brokenContext } from '../../../layouts/MainLayout'
+import { CheckOutlined } from '@ant-design/icons'
 
 export default function ConversationListItem(props) {
   const { _id, members } = props.chat
@@ -86,24 +87,25 @@ export default function ConversationListItem(props) {
         data={conversation} /> */}
     </List.Item>
   ) : (
-    <List.Item onClick={() => {
-      isBroken
-      ? props.history.push(
-          `/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`
-        )
-      : chooseConversation(_id, members.filter(item => item !== me?._id)[0])
+    <div></div>
+    // <List.Item onClick={() => {
+    //   isBroken
+    //   ? props.history.push(
+    //       `/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`
+    //     )
+    //   : chooseConversation(_id, members.filter(item => item !== me?._id)[0])
       
-    }}>
-        <List.Item.Meta
-          avatar={
-              <Avatar size={42} src={data?.getUser?.avatar} />
-          }
-          title={data?.getUser?.firstname}
-          description='Bắt đầu cuộc trò chuyện'
-        />
-      {/* <ConversationListItem
-      key={conversation.name}
-        data={conversation} /> */}
-    </List.Item>
+    // }}>
+    //     <List.Item.Meta
+    //       avatar={
+    //           <Avatar size={42} src={data?.getUser?.avatar} />
+    //       }
+    //       title={data?.getUser?.firstname}
+    //       description='Bắt đầu cuộc trò chuyện'
+    //     />
+    //   {/* <ConversationListItem
+    //   key={conversation.name}
+    //     data={conversation} /> */}
+    // </List.Item>
   )
 }

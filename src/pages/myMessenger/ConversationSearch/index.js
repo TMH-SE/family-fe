@@ -12,11 +12,6 @@ export default function ConversationSearch(props) {
         prefix={<SearchOutlined />}
         placeholder="Tìm kiếm"
       ></Input>
-      {/* <input
-          type='search'
-          className='conversation-search-input'
-          placeholder='Search Messages'
-        /> */}
     </div>
   )
 }

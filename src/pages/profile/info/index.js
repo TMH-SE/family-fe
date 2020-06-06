@@ -11,8 +11,10 @@ const DescriptionItem = ({ title, content }) => (
   </div>
 )
 function Info(props) {
-  const { userInfo } = props
+  const { userInfo, isMe } = props
+  console.log(isMe, 'isMe')
   const [visible, setVisible] = useState(false)
+  console.log(userInfo, 'uêrr')
   return (
     <>
       <Row>
@@ -24,11 +26,13 @@ function Info(props) {
             User Profile
           </p>
         </Col>
-        <Col span={12}>
-          <Tooltip title="Chỉnh sửa thông tin">
-            <EditTwoTone onClick={() => setVisible(true)} />
-          </Tooltip>
-        </Col>
+        {isMe && (
+          <Col span={12}>
+            <Tooltip title="Chỉnh sửa thông tin">
+              <EditTwoTone onClick={() => setVisible(true)} />
+            </Tooltip>
+          </Col>
+        )}
       </Row>
 
       <Row>
@@ -56,7 +60,15 @@ function Info(props) {
         <Col span={12}>
           <DescriptionItem
             title="Giới tính"
-            content={ !userInfo?.gender ? '-' : userInfo?.gender === 'FEMALE' ? 'Nữ' : userInfo?.gender ==='MALE' ? 'Nam' : 'Khác' }
+            content={
+              !userInfo?.gender
+                ? '-'
+                : userInfo?.gender === 'FEMALE'
+                ? 'Nữ'
+                : userInfo?.gender === 'MALE'
+                ? 'Nam'
+                : 'Khác'
+            }
           />
         </Col>
       </Row>

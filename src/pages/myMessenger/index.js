@@ -9,6 +9,7 @@ import { useQuery } from '@apollo/react-hooks'
 
 const MyMessenger = (props) => {
   const { me } = useContext(IContext)
+  
   const { data } = useQuery(GET_CHAT_BY_USER, {
     variables: { userId: me?._id }
   })
