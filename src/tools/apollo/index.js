@@ -9,7 +9,6 @@ import { onError } from 'apollo-link-error'
 
 const domain = window.location.host
 const endPoint = process.env.GRAPHQL_END_POINT
-
 const urn = process.env.GRAPHQL_URN || `${domain}/${endPoint}`
 
 const httpLink = new HttpLink({
