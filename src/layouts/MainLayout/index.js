@@ -53,10 +53,10 @@ const index = ({ children }) => {
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
   // const [messbox, setMessbox] = useState([])
-  const { data, refetch } = useQuery(GET_CHAT_BY_USER, {
-    variables: { userId: me?._id },
-    fetchPolicy: "no-cache"
-  })
+  // const { data, refetch } = useQuery(GET_CHAT_BY_USER, {
+  //   variables: { userId: me?._id },
+  //   fetchPolicy: "no-cache"
+  // })
   const [notifications, setNotifications] = useState([])
 
   useEffect(() => {
@@ -327,7 +327,7 @@ const index = ({ children }) => {
         {!isBroken && isAuth ? (
           <Sider width="18%">
             <div className="sidebarMess-mainLayout">
-              <ConversationList dataChat={data?.getChatByUser} />
+              <ConversationList />
             </div>
           </Sider>
         ) : (
@@ -344,7 +344,7 @@ const index = ({ children }) => {
                     style={{ display: 'flex', flexDirection: 'column' }}
                   >
                     <MessageList
-                    refetch={refetch}
+                      // refetch={refetch}
                       idx={idx}
                       onCancelMessbox={() => onCancelMessbox(mess.idChat)}
                       chatBox={mess}

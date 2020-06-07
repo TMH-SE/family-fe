@@ -67,7 +67,7 @@ function PostDetail(props) {
       .ref(`posts/${postId}/comments`)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = snapshot.val() && Object.keys(snapshot.val()).length
+        const temp = snapshot.val() && Object.keys(snapshot.val())?.length
         setSum(temp)
       })
   }

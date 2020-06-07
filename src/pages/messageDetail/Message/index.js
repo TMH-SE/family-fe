@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import moment from 'moment'
 import './Message.css'
 import { ModalPreviewImg } from '@components'
@@ -14,6 +14,13 @@ export default function Message(props) {
     isShow: false,
     imgSrc: ''
   })
+  useEffect(() => {
+    const ele = document.getElementsByClassName(
+      `message-list-container ${props.idChat}`
+    )[0]
+    ele.scrollTop = ele.scrollHeight
+  }, [props.isLast])
+
   return (
     <div
       className={[
@@ -39,7 +46,7 @@ export default function Message(props) {
               }}
             />
           </div>
-          {props.isLast && <CheckOutlined />}
+          {/* {props.isLast && <CheckOutlined />} */}
         </div>
       )}
       {data?.content?.message.trim() && (

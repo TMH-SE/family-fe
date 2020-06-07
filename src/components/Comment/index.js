@@ -48,7 +48,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
   const [showMoreRep, setShowMoreRep] = useState({ idParent: null, rows: 0 })
   const [arrTag, setArrTag] = useState([])
   let lessComment = []
-  lessComment = comments.slice(comments.length - showMore, comments.length - 1)
+  lessComment = comments.slice(comments?.length - showMore, comments?.length - 1)
 
   const onAdd = mentions => {
     setArrTag(mentions)
@@ -97,7 +97,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
             }
           ]
         : [...cmtMention]
-    // lessCommentRep = cmt.slice(cmt.length - showMoreRep, cmt.length - 1)
+    // lessCommentRep = cmt.slice(cmt?.length - showMoreRep, cmt?.length - 1)
     const repValue = [
       ...cmt,
       {
@@ -125,8 +125,8 @@ const CommentList = ({ comments, showMore, idPost }) => {
     <>
       {' '}
       <List
-        dataSource={comments.length < showMore ? comments : lessComment}
-        // header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
+        dataSource={comments?.length < showMore ? comments : lessComment}
+        // header={`${comments?.length} ${comments?.length > 1 ? 'replies' : 'reply'}`}
         itemLayout="horizontal"
         renderItem={comment => (
           <>
@@ -138,7 +138,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
               type="parent"
               history={history}
             ></CommentItem>
-            {comment.replies && comment.replies.length - 1 > showMoreRep.rows && (
+            {comment.replies && comment.replies?.length - 1 > showMoreRep.rows && (
               <a
                 style={{ textAlign: 'left', marginLeft: '10%' }}
                 onClick={() =>
@@ -153,8 +153,8 @@ const CommentList = ({ comments, showMore, idPost }) => {
               >
                 Xem thêm{' '}
                 {comment.id === showMoreRep.idParent
-                  ? comment.replies.length - showMoreRep.rows
-                  : comment.replies.length - 1}{' '}
+                  ? comment.replies?.length - showMoreRep.rows
+                  : comment.replies?.length - 1}{' '}
                 câu trả lời
               </a>
             )}
@@ -230,7 +230,7 @@ function CommentPost(props) {
   }
   const handleSubmit = async (value, img) => {
     const postId = idPost
-    const commentId = uuid.v1()
+    const commentId = +new Date()
     const mentions = [
       {
         id: `${me?._id}`,
@@ -269,14 +269,14 @@ function CommentPost(props) {
           />
         }
       />
-      {comments.length > 0 && (
+      {comments?.length > 0 && (
         <CommentList
           showMore={showMore}
           idPost={props.idPost}
           comments={comments}
         />
       )}
-      {comments.length > showMore && (
+      {comments?.length > showMore && (
         <a onClick={() => setShowMore(showMore + 3)}>Xem thêm </a>
       )}
     </div>

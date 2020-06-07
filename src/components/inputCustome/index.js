@@ -152,9 +152,9 @@ function InputCustome(props) {
             )[0]
             a && a.classList.add('focus')
               const ele = document.getElementsByClassName(
-      `message-list-container ${props.idElement}`
-    )[0]
-    ele.scrollTop = ele.scrollHeight
+              `message-list-container ${props.idElement}`
+            )[0]
+            ele.scrollTop = ele.scrollHeight
           }}
           onBlur={() => {
             const a = document.getElementsByClassName(
@@ -192,7 +192,7 @@ function InputCustome(props) {
         <Menu mode="horizontal" style={{ lineHeight: 0 }}>
           <Menu.Item key="mail">
             <Popover
-              placement="bottomRight"
+              placement="topLeft"
               // content={<a onClick>Close</a>}
               title={<Picker onSelect={e => addEmoji(e)} />}
               trigger="click"

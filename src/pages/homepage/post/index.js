@@ -53,7 +53,7 @@ export const Post = props => {
       .database()
       .ref(`posts/${idPost}/comments`)
       .on('value', snapshot => {
-        sumTemp = snapshot.val() ? Object.keys(snapshot.val()).length : 0
+        sumTemp = snapshot.val() ? Object.keys(snapshot.val())?.length : 0
         setSum(sumTemp)
       })
   }

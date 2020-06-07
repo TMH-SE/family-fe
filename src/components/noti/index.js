@@ -37,7 +37,7 @@ const Noti = props => {
     <div onClick={() => history.push('/notify')}>
       <Badge
         dot
-        count={notifications.filter(item => item.seen === false).length}
+        count={notifications.filter(item => item.seen === false)?.length}
       >
         <BellOutlined  />
         </Badge>
@@ -51,7 +51,7 @@ const Noti = props => {
         className="noti-popover"
         visible={visible}
         content={
-          notifications.length === 0 ? (
+          notifications?.length === 0 ? (
             <p>Chưa có thông báo nào</p>
           ) : (
             notifications.map((noti, idx) => (
@@ -90,7 +90,7 @@ const Noti = props => {
             <Badge
               size={1}
               overflowCount={9}
-              count={notifications.filter(item => item.seen === false).length}
+              count={notifications.filter(item => item.seen === false)?.length}
             >
               <BellOutlined />
             </Badge>

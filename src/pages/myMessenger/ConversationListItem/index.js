@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useLayoutEffect } from 'react'
 import firebase from 'firebase/app'
 import './ConversationListItem.css'
 import { useHistory } from 'react-router-dom'
@@ -11,101 +11,68 @@ import { brokenContext } from '../../../layouts/MainLayout'
 import { CheckOutlined } from '@ant-design/icons'
 
 export default function ConversationListItem(props) {
-  const { _id, members } = props.chat
-  const { me, chooseConversation } = useContext(IContext)
+
+  const { id, members, lastMess } = props.chat
+  const { me, chooseConversation  } = useContext(IContext)
   const isBroken = useContext(brokenContext)
-  const [conversation, setConversation] = useState(null)
   const { data } = useQuery(GET_USER, {
     variables: { userId: members.filter(item => item !== me?._id)[0] }
   })
-  useEffect(() => {
-    getConversation()
+  useLayoutEffect(() => {
     data && props.addSearch({...props.chat, name: data?.getUser?.firstname})
-  }, [_id, data])
-
+  }, [data])
   const selectHandler = () => {
     isBroken
       ? props.history.push(
-          `/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`
+          `/${members.filter(item => item !== me?._id)[0]}/messenger/${id}`
         )
-      : chooseConversation(_id, members.filter(item => item !== me?._id)[0])
+      : chooseConversation(id, members.filter(item => item !== me?._id)[0])
     firebase
       .database()
-      .ref('messenger/' + _id)
-      .child(conversation.lastMess.id)
+      .ref(`messenger/${id}`)
+      .child('lastMess')
       .update({ seen: true })
     getConversation()
+    
   }
-  const getConversation = () => {
-    firebase
-      .database()
-      .ref(`messenger/${_id}`)
-      .orderByKey()
-      .limitToLast(1)
-      .on('value', snapshot => {
-        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = snapshot.val()
-          ? Object.keys(snapshot.val()).map(key => ({
-              ...snapshot.val()[key],
-              id: key
-            }))
-          : []
-        setConversation({
-          user: data?.getUser,
-          lastMess: temp[0]
-        })
-      })
-  }
-  //   const { author, content, seen } = conversation && conversation.lastMess
-  //   const seen = conversation.lastMess && conversation.lastMess.seen ?  conversation.lastMess.seen : conversation.lastMess.author === me?._id
-  return conversation && conversation.lastMess ? (
+
+  return lastMess ? (
     <List.Item onClick={() => selectHandler()}>
-      <Skeleton avatar title={false} loading={conversation.loading} active>
         <List.Item.Meta
           avatar={
             <Badge
               dot={
-                conversation.lastMess.author !== me?._id &&
-                !conversation.lastMess.seen
+                lastMess.author !== me?._id &&
+                !lastMess.seen
               }
             >
               <Avatar size={42} src={data?.getUser?.avatar} />
             </Badge>
           }
           title={data?.getUser?.firstname}
-          description={
-            conversation.lastMess.content?.message.trim()
-              ? conversation.lastMess?.content?.message
-              : conversation.lastMess?.author === me?._id
-              ? ' Bạn đã gửi 1 hình'
-              : data?.getUser?.firstname + ' đã gửi cho bạn 1 hình '
-          }
+          description={lastMess.content.message || lastMess}
         />
-      </Skeleton>
+    </List.Item>
+  ) : (
+    // <div></div>
+    <List.Item onClick={() => {
+      isBroken
+      ? props.history.push(
+          `/${members.filter(item => item !== me?._id)[0]}/messenger/${id}`
+        )
+      : chooseConversation(id, members.filter(item => item !== me?._id)[0])
+      
+    }}>
+        <List.Item.Meta
+          avatar={
+              <Avatar size={42} src={data?.getUser?.avatar} />
+          }
+          title={data?.getUser?.firstname}
+          description='Bắt đầu cuộc trò chuyện'
+        />
       {/* <ConversationListItem
       key={conversation.name}
         data={conversation} /> */}
     </List.Item>
-  ) : (
-    <div></div>
-    // <List.Item onClick={() => {
-    //   isBroken
-    //   ? props.history.push(
-    //       `/${members.filter(item => item !== me?._id)[0]}/messenger/${_id}`
-    //     )
-    //   : chooseConversation(_id, members.filter(item => item !== me?._id)[0])
-      
-    // }}>
-    //     <List.Item.Meta
-    //       avatar={
-    //           <Avatar size={42} src={data?.getUser?.avatar} />
-    //       }
-    //       title={data?.getUser?.firstname}
-    //       description='Bắt đầu cuộc trò chuyện'
-    //     />
-    //   {/* <ConversationListItem
-    //   key={conversation.name}
-    //     data={conversation} /> */}
-    // </List.Item>
   )
 }

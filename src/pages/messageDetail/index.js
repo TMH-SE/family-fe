@@ -51,7 +51,7 @@ function MessageDetail(props) {
 
   const renderMessages = () => {
     let i = 0
-    const messageCount = messages.length
+    const messageCount = messages?.length
     const tempMessages = []
 
     while (i < messageCount) {

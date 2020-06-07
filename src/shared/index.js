@@ -50,38 +50,6 @@ export const UPDATE_USER_INFO = gql`
     updateUserInfo(userId: $userId, userInfo: $userInfo)
   }
 `
-export const CREATE_CHAT = gql`
-  mutation createChat($members: [String]) {
-    createChat(members: $members) {
-      _id
-      members
-      isBlock
-    }
-  }
-`
-export const UPDATE_CHAT = gql`
-  mutation updateChat($chatId: String) {
-    updateChat(chatId: $chatId)
-  }
-`
-export const GET_CHAT_BY_MEMBERS = gql`
-  query getChatByMembers($members: [String]) {
-    getChatByMembers(members: $members) {
-      _id
-      members
-      isBlock
-    }
-  }
-`
-export const GET_CHAT_BY_USER = gql`
-  query getChatByUser($userId: String) {
-    getChatByUser(userId: $userId) {
-      _id
-      members
-      isBlock
-    }
-  }
-`
 export const CHECK_FOLLOW = gql`
   query checkFollow($id: FollowerInput) {
     checkFollow(id: $id)
