@@ -29,7 +29,7 @@ export default function MessageList(props) {
     firebase
       .database()
       .ref(`messenger/${idChat}/listmessages`)
-      // .orderByKey()
+      .orderByKey()
       // .limitToLast(100)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
@@ -39,7 +39,7 @@ export default function MessageList(props) {
               id: key
             }))
           : []
-        temp.sort((a, b) => a.timestamp - b.timestamp)
+        // temp.sort((a, b) => a.timestamp - b.timestamp)
         setMessages(temp)
       })
   }

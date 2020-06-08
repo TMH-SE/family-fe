@@ -6,15 +6,18 @@
     // padding-bottom: 10px;
     
   }
-  .message-list{
+  .message-list-phone .ant-mess-phone{
     .ant-card-body{
     padding: 0 !important;
-    // background-color: #e6f4ff
+    height: 50%
   }
   .ant-card-head{
     padding-left: 5px !important;
-    // background-color: #e6f4ff
+    background-color: #e6f4ff
   }
+  // .ant-mess-phone .ant-card-bordered{
+  //   height: 80vh;
+  // }
   
   }
   

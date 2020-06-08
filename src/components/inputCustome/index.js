@@ -36,6 +36,7 @@ function InputCustome(props) {
   })
 
   const [text, setText] = useState('')
+  const [plainText, setPlainText] = useState('')
   useEffect(() => {
     setText(
       props.replyAuthor
@@ -91,7 +92,6 @@ function InputCustome(props) {
       return
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
       getBase64(info.file.originFileObj, async imageUrl => {
         const url = await uploadImg(imageUrl)
         setImage({
@@ -102,18 +102,36 @@ function InputCustome(props) {
       document.getElementById(`input-custom-${props.idElement}`).focus()
     }
   }
+  const escapeHtml = text => {
+    var map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }
+    return text.replace(/[&<>"']/g, function (m) {
+      return map[m]
+    })
+  }
 
   const handleSubmit = event => {
     if (event.shiftKey && event.keyCode === 13) {
       event.stopPropagation()
     } else if (event.keyCode === 13) {
       if (text.trim() || image.srcImg) {
-        props.onSubmit(text, image.srcImg)
+        let newPlain = plainText
+        arrMentions.map(mention => {
+          newPlain = escapeHtml(plainText).replace(mention.display, `<a href='${window.location.origin}/${mention.id}/info'>${mention.display}</a>`)
+        })
+        console.log(newPlain, 'new')
+        props.onSubmit(newPlain, image.srcImg)
         setText('')
         setImage({ ...image, srcImg: '' })
       }
     }
   }
+
   return (
     <div className="input-custome" style={{ width: '100%' }}>
       {/* <div> */}
@@ -151,10 +169,10 @@ function InputCustome(props) {
               `contentMess-box ${props.idElement}`
             )[0]
             a && a.classList.add('focus')
-              const ele = document.getElementsByClassName(
-              `message-list-container ${props.idElement}`
-            )[0]
-            ele.scrollTop = ele.scrollHeight
+            // const ele = document.getElementsByClassName(
+            //   `message-list-container ${props.idElement}`
+            // )[0]
+            // ele.scrollTop = ele.scrollHeight
           }}
           onBlur={() => {
             const a = document.getElementsByClassName(
@@ -171,6 +189,7 @@ function InputCustome(props) {
           // autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(event, newValue, newPlainTextValue, mentions) => {
             setText(newValue)
+            setPlainText(newPlainTextValue)
             setArrMentions(mentions)
             props.onAdd && props.onAdd(arrMentions)
           }}

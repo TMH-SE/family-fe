@@ -6,10 +6,10 @@ import ConversationList from './ConversationList'
 
 const MyMessenger = props => {
   return (
-    <>
-      <ConversationList></ConversationList>
+    <div>
+      <ConversationList history={props.history} name='conversation-list-phone'></ConversationList>
       {/* <Messenger></Messenger> */}
-    </>
+    </div>
   )
 }
 

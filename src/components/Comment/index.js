@@ -206,7 +206,7 @@ function CommentPost(props) {
 
   const { me, isAuth } = useContext(IContext)
   const { idPost } = props
-  useEffect(() => {
+  useLayoutEffect(() => {
     getComment()
   }, [idPost])
   const getComment = () => {

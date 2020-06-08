@@ -44,7 +44,7 @@ export const Post = props => {
       </Menu.Item>
     </Menu>
   )
-  useEffect(() => {
+  useLayoutEffect(() => {
     getSum(item.postId)
   }, [item.postId])
   const getSum = idPost => {

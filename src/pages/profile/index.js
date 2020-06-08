@@ -29,6 +29,7 @@ import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
 import './index.scss'
 import { IContext } from '@tools'
 import noAvatar from '@assets/images/noavata.jpg'
+import ImgCrop from 'antd-img-crop'
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
@@ -129,6 +130,7 @@ function Profile(props) {
         </Button>
       </div>
     ))
+
   const uploadButtonAvt =
     isMe &&
     (!img?.avatar ? (
@@ -136,17 +138,19 @@ function Profile(props) {
         className="avatar-uploader"
         style={{ position: 'absolute', bottom: 5, right: 5 }}
       >
-        <Upload
-          name="avatar"
-          listType="picture-card"
-          className="icon-avt-uploader"
-          showUploadList={false}
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          beforeUpload={beforeUpload}
-          onChange={info => handleChangeAvatar(info)}
-        >
-          <CameraFilled style={{ fontSize: 23 }} />
-        </Upload>
+        <ImgCrop rotate shape="round">
+          <Upload
+            name="avatar"
+            listType="picture-card"
+            className="icon-avt-uploader"
+            showUploadList={false}
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            beforeUpload={beforeUpload}
+            onChange={info => handleChangeAvatar(info)}
+          >
+            <CameraFilled style={{ fontSize: 23 }} />
+          </Upload>
+        </ImgCrop>
       </div>
     ) : (
       <div
@@ -279,8 +283,8 @@ function Profile(props) {
   return (
     <>
       {type !== 'messenger' && (
-        <>
-          <div className="cover-uploader">
+        <div>
+          <div>
             <div
               style={{
                 position: 'relative',
@@ -304,14 +308,26 @@ function Profile(props) {
                 />
               )}
               {loadingImg.coverPhoto && (
-                <LoadingOutlined
+                <div
+                  className="btn-saveCover"
                   style={{
-                    fontSize: 30,
                     position: 'absolute',
-                    top: 'calc(50% - 15px)',
-                    left: 'calc(50% - 15px)'
+                    width: '100%',
+                    height: '100%',
+                    top: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.7)'
                   }}
-                />
+                >
+                  <LoadingOutlined
+                    style={{
+                      fontSize: 30,
+                      color: '#fff'
+                    }}
+                  />
+                </div>
               )}
               {uploadButtonCover}
             </div>
@@ -351,15 +367,28 @@ function Profile(props) {
                 )}
                 {uploadButtonAvt}
                 {loadingImg.avatar && (
-                  <LoadingOutlined
+                  <div
+                    className="btn-saveAvt"
                     style={{
-                      fontSize: 30,
+                      fontSize: 25,
+                      borderRadius: '50%',
                       position: 'absolute',
-                      top: 'calc(50% - 15px)',
-                      left: 'calc(50% - 15px)',
-                      color: '#fff'
+                      width: '100%',
+                      height: '100%',
+                      top: 0,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'rgba(0,0,0,0.6)'
                     }}
-                  />
+                  >
+                    <LoadingOutlined
+                      style={{
+                        fontSize: 30,
+                        color: '#fff'
+                      }}
+                    />
+                  </div>
                 )}
               </div>
               <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
@@ -453,7 +482,7 @@ function Profile(props) {
             </div>
           </div>
           <br />{' '}
-        </>
+        </div>
       )}
       <div
         style={{

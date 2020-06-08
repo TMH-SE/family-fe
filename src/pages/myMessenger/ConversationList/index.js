@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable react/prop-types */
-import React, { useContext, useState, useLayoutEffect, useEffect } from 'react'
+import React, { useContext, useState, useLayoutEffect } from 'react'
 import ConversationSearch from '../ConversationSearch'
 import Toolbar from '../../messageDetail/Toolbar'
 import ToolbarButton from '../../messageDetail/ToolbarButton'
@@ -53,7 +53,7 @@ export default function ConversationList(props) {
     console.log(dataChatConver, dataChat, 'chat')
   }
   return (
-    <div className="conversation-list">
+    <div className={props.name || 'conversation-list'}>
       <Toolbar
         title="Messenger"
         leftItems={[<ToolbarButton key="cog" icon="ion-ios-cog" />]}
