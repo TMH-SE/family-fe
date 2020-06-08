@@ -8,8 +8,7 @@ import { getMainDefinition } from 'apollo-utilities'
 import { onError } from 'apollo-link-error'
 
 const domain = window.location.host
-const endPoint = `${process.env.END_POINT}`
-
+const endPoint = process.env.GRAPHQL_END_POINT
 const urn = process.env.GRAPHQL_URN || `${domain}/${endPoint}`
 
 const httpLink = new HttpLink({
@@ -38,8 +37,10 @@ const linkSplit = split(
 const errorMiddleware = onError(({ graphQLErrors, networkError, response }) => {
   if (graphQLErrors) {
     if (response) {
-      console.log(graphQLErrors)
-      response.errors = graphQLErrors[0]
+      graphQLErrors.map(({ message, code }) => {
+        console.log(`${code}: ${message}`)
+      })
+      response.errors = graphQLErrors
     }
   }
   if (networkError) {

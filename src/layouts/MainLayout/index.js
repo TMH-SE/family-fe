@@ -269,8 +269,7 @@ const index = ({ children }) => {
                 )
               ) : (
                 <Button type="primary" onClick={() => history.push('/login')}>
-                  {' '}
-                  Đăng nhập{' '}
+                  Đăng nhập
                 </Button>
               )}
               {/* <Switch onChange={ () => myTheme?.toggleTheme()} /> */}

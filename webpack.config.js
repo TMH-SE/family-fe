@@ -73,7 +73,7 @@ module.exports = () => {
     mode: process.env.NODE_ENV,
     entry: path.resolve(__dirname, './src/index.js'),
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, 'build'),
       filename: 'static/js/[id]_[hash].bundle.js',
       chunkFilename: 'static/js/chunk/[chunkhash].bundle.js',
       publicPath: '/'
@@ -243,8 +243,10 @@ module.exports = () => {
     },
     devtool: 'cheap-module-eval-source-map',
     devServer: {
-      historyApiFallback: true, // set for react-router-dom
-      contentBase: './dist',
+      historyApiFallback: {
+        disableDotRule: true
+      },
+      contentBase: './build',
       // host: '0.0.0.0',
       port: process.env.PORT || 8000,
       hot: true,
@@ -264,14 +266,19 @@ module.exports = () => {
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, './public/index.html')
+        template: path.resolve(__dirname, './public/index.html'),
+        favicon: path.resolve(__dirname, './public/favicon.ico')
       }),
-      new Dotenv({
-        path: devMode ? './.env' : './.env.production',
-        safe: true,
-        systemvars: true,
-        silent: true
-      }),
+      ...(devMode
+        ? [
+            new Dotenv({
+              path: './.env',
+              safe: true,
+              systemvars: true,
+              silent: true
+            })
+          ]
+        : []),
       new WebpackPwaManifest({
         filename: 'manifest.json',
         crossorigin: 'use-credentials',
@@ -300,7 +307,7 @@ module.exports = () => {
               maximumFileSizeToCacheInBytes: 50000000
             })
           ]),
-      new webpack.ProgressPlugin(handler),
+      ...(devMode ? [new webpack.ProgressPlugin(handler)] : []),
       ...(devMode
         ? [
             new BundleAnalyzerPlugin({

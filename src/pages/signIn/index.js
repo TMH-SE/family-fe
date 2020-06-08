@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useContext } from 'react'
-import { Row, Col, Form, Input, Button, Divider } from 'antd'
+import { Row, Col, Form, Input, Button, Divider, notification } from 'antd'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 import {
@@ -12,6 +12,14 @@ import {
 import { SdkUtils } from '@utils'
 import { MinimalLayout } from '@layouts'
 import { IContext } from '@tools'
+
+const SIGN_IN = gql`
+  mutation signIn($email: String, $password: String) {
+    signIn(email: $email, password: $password) {
+      accessToken
+    }
+  }
+`
 
 const SIGN_IN_FACEBOOK = gql`
   mutation signInWithFacebook($facebookAuthData: FacebookAuthData) {
@@ -30,9 +38,30 @@ const SIGN_IN_GOOGLE = gql`
 `
 
 const SignIn = () => {
-  const { authenticate } = useContext(IContext)
+  const { authenticate, history } = useContext(IContext)
+  const [signIn] = useMutation(SIGN_IN)
   const [signInWithFacebook] = useMutation(SIGN_IN_FACEBOOK)
   const [signInWithGoogle] = useMutation(SIGN_IN_GOOGLE)
+  const login = async values => {
+    signIn({
+      variables: {
+        ...values
+      }
+    }).then(
+      ({
+        data: {
+          signIn: { accessToken }
+        }
+      }) => {
+        authenticate(accessToken)
+      }
+    ).catch(({ graphQLErrors }) => {
+      notification.error({
+        message: graphQLErrors[0].message,
+        placement: 'bottomRight'
+      })
+    })
+  }
   const loginFB = async () => {
     const { accessToken, userID } = await SdkUtils.loginFB()
     signInWithFacebook({
@@ -67,21 +96,28 @@ const SignIn = () => {
   }
   return (
     <MinimalLayout>
-      <Form>
-        <Form.Item>
+      <Form onFinish={login}>
+        <Form.Item name="email">
           <Input prefix={<MailOutlined />} placeholder="Email" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item name="password">
           <Input.Password prefix={<LockOutlined />} placeholder="Password" />
         </Form.Item>
         <Row justify="space-between" gutter={8}>
           <Col span={12}>
-            <Button style={{ marginBottom: 10 }} block type="primary">
+            <Button
+              htmlType="submit"
+              style={{ marginBottom: 10 }}
+              block
+              type="primary"
+            >
               Login
             </Button>
           </Col>
           <Col span={12}>
-            <Button block>Sign up</Button>
+            <Button danger block onClick={() => history.push('/register')}>
+              Sign up
+            </Button>
           </Col>
         </Row>
       </Form>

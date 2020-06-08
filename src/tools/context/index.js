@@ -52,21 +52,24 @@ const ContextWrapper = ({ children, history }) => {
     setMessbox([...arr])
   }
   const { data, refetch } = useQuery(GET_ME, {
-    skip: !isAuth,
-    fetchPolicy: 'no-cache'
+    skip: !isAuth
   })
   const authenticate = token => {
     window.localStorage.setItem('access-token', token)
     setIsAuth(true)
     history.push('/')
-    refetch()
+    refetch().then(() => {
+      notification.success({
+        message: 'Đăng nhập thành công',
+        placement: 'bottomRight'
+      })
+    })
   }
   const logout = () => {
     window.localStorage.clear()
     SdkUtils.logoutFB()
     SdkUtils.loginGoogle()
     setIsAuth(false)
-    refetch()
   }
   // const { data: dataChat, refetch: refetchDataChat } = useQuery(GET_CHAT_BY_USER, {
   //   variables: { userId: data?.me?._id },
@@ -79,6 +82,7 @@ const ContextWrapper = ({ children, history }) => {
         authenticate,
         logout,
         me: data?.me,
+        history,
         refetchMe: refetch,
         messbox: messbox,
         chooseConversation: chooseConversation,

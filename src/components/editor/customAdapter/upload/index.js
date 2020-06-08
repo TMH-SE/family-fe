@@ -4,8 +4,8 @@ const CustomUploadAdapterPlugin = (editor) => {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     return new CloudinaryImageUploadAdapter(
       loader,
-      process.env.CLOUD_NAME,
-      process.env.UPLOAD_PRESET
+      process.env.CLOUDINARY_NAME,
+      process.env.CLOUDINARY_UPLOAD_PRESET
     )
   }
 }

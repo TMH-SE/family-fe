@@ -16,11 +16,11 @@ const components = [
   'carousel',
   'result',
   'auto-complete',
-  'select'
+  'select',
+  'date-picker',
+  'input-number'
 ]
 
-const styles = components.map((component) =>
-  import(`antd/es/${component}/style`)
-)
+const styles = components.map(component => import(`antd/es/${component}/style`))
 
 export default { ...styles }

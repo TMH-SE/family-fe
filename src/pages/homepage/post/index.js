@@ -82,13 +82,10 @@ export const Post = props => {
                 Chăm sóc bé từ 0-12 tháng tuổi
               </a>
               <p style={{ color: '#9b9b9b', fontSize: 12 }}>
-                Đăng bởi{' '}
+                Đăng bởi
                 <span style={{ color: '#003b70' }}>
-                  <a onClick={() => history.push('/tuinhune/info')}>
-                    {' '}
-                    Tuinhune
-                  </a>{' '}
-                </span>{' '}
+                  <a onClick={() => history.push('/tuinhune/info')}>Tuinhune</a>
+                </span>
                 - {new Date().toLocaleString()}
               </p>
             </div>

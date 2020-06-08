@@ -263,7 +263,7 @@ function CommentPost(props) {
         content={
           <InputCustome
             idElement={props.idPost}
-            onSubmit={isAuth ? handleSubmit : history.push('/login')}
+            onSubmit={isAuth ? handleSubmit : () => history.push('/login')}
             placeholder="Nhập bình luận"
             // value={value}
           />

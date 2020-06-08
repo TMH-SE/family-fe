@@ -1,7 +1,8 @@
 import gql from 'graphql-tag'
-const CLOUDINARY_UPLOAD_PRESET = 'graduation-pj'
-const CLOUDINARY_UPLOAD_URL =
-  'https://api.cloudinary.com/v1_1/nhuht/image/upload'
+const CLOUDINARY_UPLOAD_PRESET =
+  process.env.CLOUDINARY_UPLOAD_PRESET || 'graduation-pj'
+const CLOUDINARY_NAME = process.env.CLOUDINARY_NAME || 'nhuht'
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`
 export const uploadImg = async file => {
   const data = {
     method: 'POST',
