@@ -269,7 +269,7 @@ module.exports = () => {
       }),
       new Dotenv({
         path: devMode ? './.env' : './.env.production',
-        safe: true,
+        safe: devMode ? '.env.example' : '.env.production.example',
         systemvars: true,
         silent: true
       }),
