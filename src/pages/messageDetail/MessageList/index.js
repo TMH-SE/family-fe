@@ -7,7 +7,7 @@ import { CloseCircleFilled } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
 import * as uuid from 'uuid'
 
-import { InputCustome } from '@components'
+import { InputCustomize } from '@components'
 import Message from '../Message'
 import { IContext } from '@tools'
 import { useQuery } from '@apollo/react-hooks'
@@ -158,12 +158,12 @@ export default function MessageList(props) {
         // </div>}
         // style={{ 10 }}
         actions={[
-          <InputCustome
+          <InputCustomize
             idElement={idChat}
             onSubmit={handleSubmit}
             placeholder="Nhạp tin nhắn"
             key="input"
-          ></InputCustome>
+          />
         ]}
       >
         <div className={`message-list-container ${idChat}`}>

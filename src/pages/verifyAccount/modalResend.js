@@ -14,11 +14,11 @@ const ModalResend = ({ history, visible, onCancel }) => {
   const [loadingConfirm, setLoadingConfirm] = useState(false)
   const [result, setResult] = useState(null)
   const [resendConfirmMail] = useMutation(RE_SEND_CONFIRM_MAIL)
-  const resendMail = () => {
+  const resendMail = ({ email }) => {
     setLoadingConfirm(true)
     resendConfirmMail({
       variables: {
-        email: form.getFieldValue('email')
+        email
       }
     }).then(({ data: { resendConfirmMail } }) => {
       if (resendConfirmMail) {
@@ -50,7 +50,7 @@ const ModalResend = ({ history, visible, onCancel }) => {
       onCancel={onCancel}
       title="Gửi lại mail xác minh"
       okButtonProps={{ htmlType: 'submit', hidden: !!result }}
-      onOk={resendMail}
+      onOk={() => form.submit()}
       cancelText={!!result ? 'Close' : 'Cancel'}
       afterClose={() => {
         setLoadingConfirm(false)
@@ -62,11 +62,15 @@ const ModalResend = ({ history, visible, onCancel }) => {
       }}
     >
       {result || (
-        <Form form={form} layout="vertical">
+        <Form onFinish={resendMail} form={form} layout="vertical">
           <Form.Item rules={[
             {
               required: true,
               message: 'Vui lòng nhập email của bạn'
+            },
+            {
+              type: 'email',
+              message: 'Email này không hợp lệ'
             }
           ]} name="email" label="Email">
             <Input />

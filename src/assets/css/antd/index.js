@@ -18,7 +18,11 @@ const components = [
   'auto-complete',
   'select',
   'date-picker',
-  'input-number'
+  'input-number',
+  'tag',
+  'upload',
+  'message',
+  'notification'
 ]
 
 const styles = components.map(component => import(`antd/es/${component}/style`))

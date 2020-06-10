@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useContext } from 'react'
-import { Row, Col, Form, Input, Button, Divider, notification } from 'antd'
+import { Row, Col, Form, Input, Button, Divider } from 'antd'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 import {
@@ -12,6 +12,7 @@ import {
 import { SdkUtils } from '@utils'
 import { MinimalLayout } from '@layouts'
 import { IContext } from '@tools'
+import { notificationError } from '@shared'
 
 const SIGN_IN = gql`
   mutation signIn($email: String, $password: String) {
@@ -55,12 +56,7 @@ const SignIn = () => {
       }) => {
         authenticate(accessToken)
       }
-    ).catch(({ graphQLErrors }) => {
-      notification.error({
-        message: graphQLErrors[0].message,
-        placement: 'bottomRight'
-      })
-    })
+    ).catch(notificationError)
   }
   const loginFB = async () => {
     const { accessToken, userID } = await SdkUtils.loginFB()

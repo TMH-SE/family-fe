@@ -9,6 +9,24 @@ const AdminAuthRoutes = ({ isAuth }) => {
       path: '/dashboard',
       component: 'dashboard',
       title: 'Dashboard Admin'
+    },
+    {
+      exact: true,
+      path: '/posts',
+      component: 'posts',
+      title: 'Manage Posts'
+    },
+    {
+      exact: true,
+      path: '/members',
+      component: 'members',
+      title: 'Manage Members'
+    },
+    {
+      exact: true,
+      path: '/communities',
+      component: 'communities',
+      title: 'Manage Communities'
     }
   ]
   return (
