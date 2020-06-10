@@ -9,8 +9,9 @@ import {
   AreaChartOutlined
 } from '@ant-design/icons'
 import logoImgSrc from '@assets/images/logo.png'
+import { withRouter } from 'react-router-dom'
 
-const AdminLayout = ({ children }) => {
+const AdminLayout = ({ children, history }) => {
   const info = (
     <Menu>
       <Menu.Item disabled style={{}}>
@@ -59,28 +60,27 @@ const AdminLayout = ({ children }) => {
         <Layout.Sider>
           <Menu
             mode="inline"
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
+            defaultSelectedKeys={[window.location.pathname.split('/')[1]]}
             style={{ height: '100%' }}
           >
-            <Menu.Item key="1" icon={<AreaChartOutlined />}>
+            <Menu.Item key="dashboard" onClick={() => history.push('/dashboard')} icon={<AreaChartOutlined />}>
               Tổng quát
             </Menu.Item>
-            <Menu.Item key="2" icon={<ReadOutlined />}>
+            <Menu.Item key="posts" onClick={() => history.push('/posts')} icon={<ReadOutlined />}>
               Bài viết
             </Menu.Item>
-            <Menu.Item key="3" icon={<UserOutlined />}>
+            <Menu.Item key="members" onClick={() => history.push('/members')} icon={<UserOutlined />}>
               Thành viên
             </Menu.Item>
-            <Menu.Item key="4" icon={<GlobalOutlined />}>
+            <Menu.Item key="communities" onClick={() => history.push('/communities')} icon={<GlobalOutlined />}>
               Cộng đồng
             </Menu.Item>
           </Menu>
         </Layout.Sider>
-        <Layout.Content style={{ overflow: 'auto' }}>{children}</Layout.Content>
+        <Layout.Content style={{ overflow: 'auto', padding: '10px 25px' }}>{children}</Layout.Content>
       </Layout>
     </>
   )
 }
 
-export default AdminLayout
+export default withRouter(AdminLayout)

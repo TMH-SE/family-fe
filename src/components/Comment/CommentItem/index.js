@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Comment } from 'antd'
-import { InputCustome, ModalPreviewImg } from '@components'
+import { InputCustomize, ModalPreviewImg } from '@components'
 import { useLazyQuery, useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import moment from 'moment'

@@ -24,8 +24,9 @@ deployFamilyTest:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - npm i
-    - echo $GRAPHQL_END_POINT
-    - GRAPHQL_END_POINT=graphqlhrm npm run build
+    - cat $TEST_FAMILY_CLIENT > .env.production
+    - cat .env.production
+    - npm run build
     - rsync -aO -e "ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" build/ ${DEPLOY_USER}@${DEPLOY_SERVER}:/home/${DEPLOY_USER}/services/test-family-fe/build --delete
     - ssh -o "StrictHostKeyChecking=no" ${DEPLOY_USER}@${DEPLOY_SERVER} 'bash scripts/test-family-fe.sh'
 

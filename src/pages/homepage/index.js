@@ -25,11 +25,11 @@ import {
   HighLightPost,
   SharePost,
   CommentPost,
-  ModalReport,
-  ModalCreatePost
+  ModalReport
 } from '@components'
 import { IContext } from '@tools'
 import { Post } from './post'
+import ModalCreatePost from './modalCreatePost'
 // import { SumComment } from '../../components/Comment'
 // 
 const { Meta } = Card
@@ -57,7 +57,7 @@ const data = [
   }
 ]
 
-const HomePage = props => {
+const HomePage = ({ history }) => {
   const isBroken = useContext(brokenContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   // const [visibleModalReport, setVisibleModalReport] = useState(false)
@@ -65,11 +65,7 @@ const HomePage = props => {
 
   // const nameEl = showText ? 'expand' : 'collapse'
   const { me } = useContext(IContext)
-  
-  const handleOk = () => {
-    setVisibleModalCreate(false)
-    // setVisibleModalReport(false)
-  }
+
   const handleCancel = () => {
     setVisibleModalCreate(false)
     // setVisibleModalReport(false)
@@ -79,7 +75,7 @@ const HomePage = props => {
     <>
       <h3>Tạo bài viết</h3>
       <Input.TextArea
-        onClick={() => setVisibleModalCreate(!visibleModalCreate)}
+        onClick={() => isBroken ? history.push('/createpost') : setVisibleModalCreate(!visibleModalCreate)}
         style={{ margin: '0 auto', marginBottom: 10 }}
         placeholder={`${me?.firstname} ơi, hôm nay bạn cần chia sẻ gì ?`}
         autoSize={{ minRows: 3, maxRows: 5 }}
@@ -96,9 +92,8 @@ const HomePage = props => {
       <ModalCreatePost
         isBroken={isBroken}
         handleCancel={handleCancel}
-        handleOk={handleOk}
         visible={visibleModalCreate}
-      ></ModalCreatePost>
+      />
     </>
   )
 }

@@ -5,7 +5,7 @@ import moment from 'moment'
 import firebase from 'firebase/app'
 import * as uuid from 'uuid'
 import './index.scss'
-import { InputCustome, ModalPreviewImg } from '@components'
+import { InputCustomize, ModalPreviewImg } from '@components'
 import { useHistory, Redirect } from 'react-router-dom'
 // import { useHistory } from 'react-router-dom'
 import reactStringReplace from 'react-string-replace'
@@ -162,7 +162,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
                 className={`rep-input ${comment.id}`}
                 avatar={<Avatar src={me?.avatar} alt="Han Solo" />}
                 content={
-                  <InputCustome
+                  <InputCustomize
                     replyAuthor={rep && rep.author}
                     idElement={comment.id}
                     onSubmit={reply}
@@ -258,7 +258,7 @@ function CommentPost(props) {
         className={`cmt-input ${props.idPost}`}
         avatar={<Avatar src={me?.avatar} alt="Han Solo" />}
         content={
-          <InputCustome
+          <InputCustomize
             idElement={props.idPost}
             onSubmit={isAuth ? handleSubmit : () => history.push('/login')}
             placeholder="Nhập bình luận"
