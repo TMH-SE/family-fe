@@ -12,7 +12,7 @@ import reactStringReplace from 'react-string-replace'
 import { IContext } from '@tools'
 import { GET_USER } from '@shared'
 import CommentItem from './CommentItem'
-import { CommentOutlined } from '@ant-design/icons'
+import { CommentOutlined, FolderOpenFilled } from '@ant-design/icons'
 
 // export const SumComment = (props) => {
 //   const { getSumComment } = useContext(IContext)
@@ -42,19 +42,20 @@ import { CommentOutlined } from '@ant-design/icons'
 // }
 const CommentList = ({ comments, showMore, idPost }) => {
   const history = useHistory()
-  const { me, isAuth } = useContext(IContext)
+  const { me, isAuth, openLoginModal } = useContext(IContext)
   const [rep, setRep] = useState({})
 
   const [showMoreRep, setShowMoreRep] = useState({ idParent: null, rows: 0 })
   const [arrTag, setArrTag] = useState([])
   let lessComment = []
-  lessComment = comments.slice(comments?.length - showMore, comments?.length - 1)
+  // lessComment = comments.slice(comments?.length - showMore, comments?.length)
+  lessComment = comments.slice(0, comments?.length - showMore -1 )
 
   const onAdd = mentions => {
     setArrTag(mentions)
   }
   const replyTo = repTo => {
-    isAuth ? setRep(repTo) : history.push('/login')
+    setRep(repTo)
   }
   const sendNotiTagReply = async (userId, postId) => {
     const notificationId = uuid.v1()
@@ -125,7 +126,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
     <>
       {' '}
       <List
-        dataSource={comments?.length < showMore ? comments : lessComment}
+        dataSource={comments?.length <= showMore ? comments : lessComment}
         // header={`${comments?.length} ${comments?.length > 1 ? 'replies' : 'reply'}`}
         itemLayout="horizontal"
         renderItem={comment => (
@@ -134,7 +135,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
               key={comment.id}
               comment={comment}
               idParent={comment.id}
-              replyTo={replyTo}
+              replyTo={ isAuth ? replyTo : () => openLoginModal()}
               type="parent"
               history={history}
             ></CommentItem>
@@ -166,7 +167,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
                   <InputCustome
                     replyAuthor={rep && rep.author}
                     idElement={comment.id}
-                    onSubmit={reply}
+                    onSubmit={isAuth ? reply : () => openLoginModal() }
                     placeholder="Nhập bình luận"
                     mentions={comment.mention}
                     onAdd={onAdd}
@@ -202,9 +203,9 @@ const CommentList = ({ comments, showMore, idPost }) => {
 function CommentPost(props) {
   const history = useHistory()
   const [comments, setComments] = useState([])
-  const [showMore, setShowMore] = useState(3)
+  const [showMore, setShowMore] = useState(1)
 
-  const { me, isAuth } = useContext(IContext)
+  const { me, isAuth, openLoginModal } = useContext(IContext)
   const { idPost } = props
   useLayoutEffect(() => {
     getComment()
@@ -214,7 +215,6 @@ function CommentPost(props) {
       .database()
       .ref(`posts/${idPost}/comments`)
       .orderByKey()
-      .limitToLast(showMore + 1)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = snapshot.val()
@@ -223,9 +223,7 @@ function CommentPost(props) {
               id: key
             }))
           : []
-
-        temp.sort((a, b) => b.timestamp - a.timestamp)
-        setComments(temp)
+        setComments(temp.reverse())
       })
   }
   const handleSubmit = async (value, img) => {
@@ -237,7 +235,6 @@ function CommentPost(props) {
         name: `${me?.firstname}`
       }
     ]
-    console.log(value, 'value')
     try {
       await firebase
         .database()
@@ -263,7 +260,7 @@ function CommentPost(props) {
         content={
           <InputCustome
             idElement={props.idPost}
-            onSubmit={isAuth ? handleSubmit : () => history.push('/login')}
+            onSubmit={isAuth ? handleSubmit : () => openLoginModal()}
             placeholder="Nhập bình luận"
             // value={value}
           />

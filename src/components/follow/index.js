@@ -15,13 +15,12 @@ import { useMutation, useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 import * as uuid from 'uuid'
 function Follow(props) {
-
-  const { me } = useContext(IContext)
+  const { me, isAuth, openLoginModal } = useContext(IContext)
   const [createFollower] = useMutation(CREATE_FOLLOWER)
   const [deleteFollower] = useMutation(DELETE_FOLLOWER)
-    const { userId, followerId } = props.follower
+  const { userId, followerId } = props.follower
   const { data, loading, refetch } = useQuery(CHECK_FOLLOW, {
-    variables: { id: props.follower },
+    variables: { id: props.follower }
     // fetchPolicy: 'no-cache'
   })
   const sendNotifollow = async type => {
@@ -49,25 +48,32 @@ function Follow(props) {
         )
   }
   return data?.checkFollow ? (
-    props.isBroken 
-    ? 
-      <HeartFilled style={{ marginLeft: 10, color: 'red', fontSize: 20 }} onClick={() => sendNotifollow('unfollow')}/>
-    : 
+    props.isBroken ? (
+      <HeartFilled
+        style={{ marginLeft: 10, color: 'red', fontSize: 20 }}
+        onClick={() => sendNotifollow('unfollow')}
+      />
+    ) : (
       <Button
         type="ghost"
-        icon={<HeartFilled style={{ color: 'red'}} />}
+        icon={<HeartFilled style={{ color: 'red' }} />}
         onClick={() => sendNotifollow('unfollow')}
       >
         Đã theo dõi
       </Button>
     )
-    : ( props.isBroken ? 
-    <HeartTwoTone style={{ marginLeft: 10 }} onClick={() => sendNotifollow('follow')} />
-         : 
+  ) : props.isBroken ? (
+    <HeartTwoTone
+      style={{ marginLeft: 10, fontSize: 20 }}
+      onClick={() => isAuth ? sendNotifollow('follow') : openLoginModal()}
+    />
+  ) : (
     <Button
       type="ghost"
       icon={<HeartTwoTone />}
-      onClick={() => sendNotifollow('follow')}
+      onClick={() => {
+        isAuth ? sendNotifollow('follow') : openLoginModal()
+      }}
     >
       Theo dõi
     </Button>

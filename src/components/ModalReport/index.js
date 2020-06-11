@@ -42,7 +42,6 @@ function ModalReport (props) {
     lineHeight: '30px'
   }
   const onChange = (e) => {
-    console.log('radio checked', e.target.value)
     setValue(e.target.value)
   }
   return (

@@ -43,6 +43,9 @@
 }
 .ant-comment-content{
     text-align: left;
+    .ant-comment-content-detail {
+        padding-top: 5px;
+    }
 }
 .ant-form-item textarea.ant-input{
     overflow: hidden;

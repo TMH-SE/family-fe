@@ -334,7 +334,7 @@ function Profile(props) {
           </div>
           <div
             style={{
-              backgroundColor: '#fff',
+              backgroundColor: 'rgba(255,255,255,0.7)',
               width: '100%',
               display: 'flex',
               marginTop: -95,
@@ -402,14 +402,15 @@ function Profile(props) {
                     style={{
                       fontWeight: 'bolder',
                       fontSize: 20,
-                      color: 'black'
+                      color: 'black',
+                      textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
                     }}
                   >
                     {`${data?.getUser.firstname} ${data?.getUser.lastname}`}
                   </p>
                   <div>
                     {!isMe && (
-                      <div style={{ marginTop: 5 }}>
+                      <div >
                         <Follow
                           isBroken={isBroken}
                           follower={{ userId: userId, followerId: me?._id }}
@@ -486,7 +487,7 @@ function Profile(props) {
       )}
       <div
         style={{
-          backgroundColor: type === 'info' ? '#fff' : 'aliceblue',
+          backgroundColor: type === 'info' ? 'rgba(255,255,255,0.7)' : 'aliceblue',
           padding: type === 'info' && 16
         }}
       >

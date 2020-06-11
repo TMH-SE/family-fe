@@ -42,23 +42,23 @@ function PageGroup(props) {
   }
   return (
     <>
-      <div>
+      <div style={{ height: 250, width: '100%', backgroundColor: 'rgba(255,255,255,0.9)' }}>
         <img
           className="cover-img"
           style={{ objectFit: 'cover', height: 250, width: '100%' }}
           alt="example"
-          src="https://scontent.fsgn2-2.fna.fbcdn.net/v/t1.0-9/92522573_1498212850342148_3908204202505011200_n.jpg?_nc_cat=100&_nc_sid=85a577&_nc_ohc=Hs7CLNZhiVYAX8UfzYa&_nc_ht=scontent.fsgn2-2.fna&oh=bd39d3ac8da082083ba12c10e4b8870a&oe=5EDC49A8"
+          src="https://lh3.googleusercontent.com/proxy/65vMMvMedyDZ0SjedcJjXsXwbrLCH5dQGkDneXyN3T8_-yE1D7BHJhMtKe7fMzD3wm_GQ69LAs7SZkJmo2o7b9a1UYqg--eghQDlhX3quyuKat7emMaPDGKJ"
         />
       </div>
-      <div style={{ display: 'flex', marginTop: -60, backgroundColor: '#fff' }}>
+      <div style={{ display: 'flex', marginTop: -60, backgroundColor: 'rgba(255,255,255,0.6)' }}>
         <Avatar
           style={{ border: '2px solid black', marginLeft: 10 }}
           shape="circle"
           size={120}
-          src="https://scontent.fsgn2-3.fna.fbcdn.net/v/t1.0-9/42509129_1029389683910372_8485576172426493952_n.jpg?_nc_cat=106&_nc_sid=dd9801&_nc_ohc=3By-MUAxPSkAX-vnCzn&_nc_ht=scontent.fsgn2-3.fna&oh=de4871077a93092c361bb222770ed707&oe=5EDD69A3"
+          src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-9/s960x960/69272993_1239809152868423_6499525428661714944_o.jpg?_nc_cat=109&_nc_sid=85a577&_nc_ohc=tSCx-LjvabMAX953Agg&_nc_ht=scontent.fsgn2-4.fna&_nc_tp=7&oh=e7472be498c88e4fe4340d6e2118a970&oe=5F04C183"
         />
         <div style={{ marginLeft: 10 }}>
-          <p style={{ fontWeight: 'bolder', fontSize: 20, color: '#fff' }}>
+          <p style={{ fontWeight: 'bolder', fontSize: 20, color: '#fff', textShadow: '0px 2px 2px rgba(0, 0, 0, 0.8)' }}>
             Chăm sóc bé sinh non
           </p>
           <p
@@ -66,7 +66,8 @@ function PageGroup(props) {
               marginTop: -15,
               fontWeight: 'bolder',
               color: '#fff',
-              fontSize: 12
+              fontSize: 12,
+              textShadow: '0px 2px 2px rgba(0, 0, 0, 0.8)'
             }}
           >
             {' '}
@@ -81,7 +82,6 @@ function PageGroup(props) {
       </div>
       <br />
       {data.map((item, idx) => {
-        // const sumCmt = getSumComment(item.postId)
         return <Post key={idx} item={item} idx={idx}></Post>
       })}
 
@@ -90,11 +90,6 @@ function PageGroup(props) {
         handleCancel={handleCancel}
         handleOk={handleOk}
       ></ModalReport>
-      {/* <ModalCreatePost
-        handleCancel={handleCancel}
-        handleOk={handleOk}
-        visible={visibleModalCreate}
-      ></ModalCreatePost> */}
     </>
   )
 }

@@ -18,7 +18,6 @@ export default function ConversationList(props) {
   const [dataChatConver, setdataChatConver] = useState([])
 
   useLayoutEffect(() => {
-    console.log(me, 'me')
     firebase
       .database()
       .ref(`messenger/`)
@@ -50,7 +49,6 @@ export default function ConversationList(props) {
     const idx = dataChatConver.findIndex(item => item?._id === dataChat?._id)
     a.length < dataChat?.length && a.push(dataChat)
     dataChatConver[idx] = { ...dataChatConver[idx], name: dataChat.name }
-    console.log(dataChatConver, dataChat, 'chat')
   }
   return (
     <div className={props.name || 'conversation-list'}>

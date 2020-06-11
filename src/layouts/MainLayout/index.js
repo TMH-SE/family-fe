@@ -11,7 +11,8 @@ import {
   Button,
   Tooltip,
   Badge,
-  Popover
+  Popover,
+  Modal
   // Switch
 } from 'antd'
 import {
@@ -29,7 +30,7 @@ import {
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
-import { Logo, HighLightGroup, Noti } from '@components'
+import { Logo, HighLightGroup, Noti, Login } from '@components'
 import './mainlayout.scss'
 // import InputCustome from '../../components/inputCustome'
 
@@ -43,12 +44,13 @@ import MessageList from '@pages/messageDetail/MessageList'
 import reactStringReplace from 'react-string-replace'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_CHAT_BY_USER } from '@shared'
+import SignIn from '@pages/signIn'
 const { Header, Content, Sider } = Layout
 
 export const brokenContext = React.createContext(null)
 // const MY_USER_ID =
 const index = ({ children }) => {
-  const { logout, me, isAuth, messbox, onCancelMessbox } = useContext(IContext)
+  const { logout, me, isAuth, messbox, onCancelMessbox, showLogin, closeLoginModal } = useContext(IContext)
 
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -64,21 +66,22 @@ const index = ({ children }) => {
   }, [me])
   const getNotification = () => {
     let temp
-    firebase.database().ref('notifications/' + me?._id).orderByKey().limitToLast(10).on('value', (snapshot) => {
-      temp = snapshot.val() && Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+    firebase
+      .database()
+      .ref('notifications/' + me?._id)
+      .orderByKey()
+      .limitToLast(10)
+      .on('value', snapshot => {
+        temp =
+          snapshot.val() &&
+          Object.keys(snapshot.val()).map(key => ({
+            ...snapshot.val()[key],
+            id: key
+          }))
 
-      setNotifications(temp)
-
-    })
+        setNotifications(temp)
+      })
   }
-  // const chooseConvention = convention => {
-  //   if (messbox.findIndex(mess => mess.idChat === convention.idChat) === -1) {
-  //     const a = [...messbox]
-  //     a.push(convention)
-  //     setMessbox(a)
-  //   }
-  //   document.getElementById(`input-custom-${convention.idChat}`).focus()
-  // }
   const history = useHistory()
   const menu = (
     <Menu>
@@ -111,12 +114,6 @@ const index = ({ children }) => {
       </Menu.Item>
     </Menu>
   )
-  // const onCancelMessbox = idChat => {
-  //   const idx = messbox.findIndex(mess => mess.idChat === idChat)
-  //   var arr = [...messbox]
-  //   arr.splice(idx, 1)
-  //   setMessbox([...arr])
-  // }
 
   return (
     <Layout>
@@ -183,7 +180,7 @@ const index = ({ children }) => {
               marginRight: 10
             }}
           >
-            <Menu
+            { isAuth && <Menu
               style={{
                 backgroundColor: 'initial',
                 width: isBroken ? 50 : 120
@@ -215,7 +212,7 @@ const index = ({ children }) => {
               <Menu.Item>
                 <Noti history={history} isBroken={isBroken} />
               </Menu.Item>
-            </Menu>
+            </Menu>}
             <div>
               {isAuth ? (
                 isBroken ? (
@@ -351,26 +348,13 @@ const index = ({ children }) => {
                   </div>
                 )
               })}
-              {/* <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
-              <MessageList />
-            </div> */}
             </div>
           </div>
         )}
-        {/* {isBroken && (
-          <Drawer
-            drawerStyle={{ transition: 'all 0.2s' }}
-            width='80%'
-            placement='left'
-            closable={false}
-            bodyStyle={{ padding: 0 }}
-            visible={visible}
-            getContainer={false}
-          >
-            <HighLightGroup></HighLightGroup>
-          </Drawer>
-        )} */}
       </Layout>
+      <Modal visible={showLogin} title="Đăng nhập" footer={null} centered onCancel={closeLoginModal}>
+        <Login></Login>
+      </Modal>
     </Layout>
   )
 }

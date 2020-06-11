@@ -32,8 +32,7 @@ const ContextWrapper = ({ children, history }) => {
   const [isAuth, setIsAuth] = useState(
     !!window.localStorage.getItem('access-token')
   )
-  const [dataChat, setDataChat] = useState([])
-  const [checkChat, setCheckChat] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
   const chooseConversation = (idChat, userId) => {
     console.log('messbox')
     if (messbox.findIndex(mess => mess.idChat === idChat) === -1) {
@@ -46,7 +45,6 @@ const ContextWrapper = ({ children, history }) => {
   }
   const onCancelMessbox = idChat => {
     const idx = messbox.findIndex(mess => mess.idChat === idChat)
-    console.log(idx, 'aaa')
     var arr = [...messbox]
     arr.splice(idx, 1)
     setMessbox([...arr])
@@ -57,7 +55,7 @@ const ContextWrapper = ({ children, history }) => {
   const authenticate = token => {
     window.localStorage.setItem('access-token', token)
     setIsAuth(true)
-    history.push('/')
+    showLogin ? setShowLogin(false) : history.push('/')
     refetch().then(() => {
       notification.success({
         message: 'Đăng nhập thành công',
@@ -71,10 +69,12 @@ const ContextWrapper = ({ children, history }) => {
     SdkUtils.loginGoogle()
     setIsAuth(false)
   }
-  // const { data: dataChat, refetch: refetchDataChat } = useQuery(GET_CHAT_BY_USER, {
-  //   variables: { userId: data?.me?._id },
-  //   // fetchPolicy: "no-cache",
-  // })
+const openLoginModal= () => {
+  setShowLogin(true)
+}
+const closeLoginModal= () => {
+  setShowLogin(false)
+}
   return (
     <IContext.Provider
       value={{
@@ -87,7 +87,9 @@ const ContextWrapper = ({ children, history }) => {
         messbox: messbox,
         chooseConversation: chooseConversation,
         onCancelMessbox: onCancelMessbox,
-        dataChat: dataChat
+        showLogin: showLogin,
+        openLoginModal: openLoginModal,
+        closeLoginModal: closeLoginModal
       }}
     >
       {children}

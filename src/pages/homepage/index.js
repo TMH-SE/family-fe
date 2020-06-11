@@ -64,7 +64,7 @@ const HomePage = props => {
   // const [showText, setShowText] = useState(false)
 
   // const nameEl = showText ? 'expand' : 'collapse'
-  const { me } = useContext(IContext)
+  const { me, isAuth } = useContext(IContext)
   
   const handleOk = () => {
     setVisibleModalCreate(false)
@@ -77,13 +77,13 @@ const HomePage = props => {
 
   return (
     <>
-      <h3>Tạo bài viết</h3>
+      {isAuth && <><h3>Tạo bài viết</h3>
       <Input.TextArea
         onClick={() => setVisibleModalCreate(!visibleModalCreate)}
         style={{ margin: '0 auto', marginBottom: 10 }}
         placeholder={`${me?.firstname} ơi, hôm nay bạn cần chia sẻ gì ?`}
         autoSize={{ minRows: 3, maxRows: 5 }}
-      />
+      /></>}
       <h3>Bài viết từ FAMILY</h3>
       <HighLightPost isBroken={isBroken}></HighLightPost>
 

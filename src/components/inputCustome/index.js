@@ -124,7 +124,6 @@ function InputCustome(props) {
         arrMentions.map(mention => {
           newPlain = escapeHtml(plainText).replace(mention.display, `<a href='${window.location.origin}/${mention.id}/info'>${mention.display}</a>`)
         })
-        console.log(newPlain, 'new')
         props.onSubmit(newPlain, image.srcImg)
         setText('')
         setImage({ ...image, srcImg: '' })

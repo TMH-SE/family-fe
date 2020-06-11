@@ -156,7 +156,7 @@ function MessageDetail(props) {
         extra={
             <ArrowLeftOutlined
               className="delete-messbox"
-              onClick={() => props.history.push(`/${me?._id}/messenger`)}
+              onClick={() => props.history.goBack()}
               style={{ color: '#ccc', fontSize: 20 }}
             />
         }

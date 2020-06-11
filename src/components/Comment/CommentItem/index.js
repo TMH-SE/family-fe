@@ -28,7 +28,7 @@ const CommentItem = props => {
               // setArrTag([{id: comment.author.id, display: comment.author.name }])
               replyTo({
                 commentId: idParent,
-                author: { id: comment.author, name: data?.getUser.firstname }
+                author: { id: comment?.author, name: data?.getUser.firstname }
               })
             }}
             key="comment-basic-reply-to"
@@ -38,7 +38,7 @@ const CommentItem = props => {
         ]}
         author={
           <a
-            onClick={() => history.push(`/${comment.author}/info`)}
+            onClick={() => history.push(`/${comment?.author}/info`)}
             style={{ color: 'black', fontSize: 14 }}
           >
             {data?.getUser?.firstname}
@@ -48,7 +48,7 @@ const CommentItem = props => {
         content={
           <>
             <div style={{ display: 'flex', overflowX: 'auto' }}>
-              {comment.content.img && (
+              {comment?.content?.img && (
                 <div className="img-cmt" style={{ display: 'flex' }}>
                   <img
                     style={{
@@ -57,11 +57,11 @@ const CommentItem = props => {
                       objectFit: 'cover',
                       borderRadius: 15
                     }}
-                    src={comment.content.img}
+                    src={comment?.content?.img}
                     onClick={() => {
                       setPreviewImg({
                         isShow: true,
-                        imgSrc: comment.content.img
+                        imgSrc: comment?.content?.img
                       })
                     }}
                   />
@@ -70,7 +70,7 @@ const CommentItem = props => {
             </div>
             <p
               dangerouslySetInnerHTML={{
-                __html: comment.content.message.trim()
+                __html: comment?.content?.message.trim()
               }}
               style={{ display: 'inline' }}
               className="rep-content"
@@ -78,7 +78,7 @@ const CommentItem = props => {
             {/* <p>{comment.content.message.trim()}</p> */}
           </>
         }
-        datetime={moment(comment.timestamp).fromNow()}
+        datetime={moment(comment?.timestamp).fromNow()}
       />
       <ModalPreviewImg
         previewImg={previewImg}
