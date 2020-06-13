@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useLayoutEffect } from 'react'
+import React, { useContext, useLayoutEffect, useEffect } from 'react'
 import firebase from 'firebase/app'
 import './ConversationListItem.css'
 import { List, Skeleton, Badge, Avatar } from 'antd'
@@ -15,9 +15,10 @@ export default function ConversationListItem(props) {
   const { data } = useQuery(GET_USER, {
     variables: { userId: members.filter(item => item !== me?._id)[0] }
   })
-  useLayoutEffect(() => {
+  useEffect(() => {
     data && props.addSearch({ ...props.chat, name: data?.getUser?.firstname })
   }, [data])
+
   const selectHandler = () => {
     isBroken
       ? props.history.push(

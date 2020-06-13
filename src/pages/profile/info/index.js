@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { Row, Col, Divider, Tooltip } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import EditUser from './editUser'
-import moment from 'moment'
 const DescriptionItem = ({ title, content }) => (
   <div className="site-description-item-profile-wrapper">
     <p className="site-description-item-profile-p-label">{title}:</p>

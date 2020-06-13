@@ -7,7 +7,7 @@ import './index.scss'
 import { CaretLeftOutlined, CloseCircleFilled, BackwardFilled, FastBackwardOutlined, StepBackwardOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
 import * as uuid from 'uuid'
-import { InputCustome } from '@components'
+import { InputCustomize } from '@components'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
@@ -16,9 +16,11 @@ moment().format()
 // const MY_USER_ID = 'tuinhune'
 function MessageDetail(props) {
   const [messages, setMessages] = useState([])
+  const { history } = props
   const { idChat, userId } = props.match.params
-  const { me  } = useContext(IContext)
-  useLayoutEffect(() => {
+  const { me } = useContext(IContext)
+  const { showMoreMess, setShowMoreMess } = useState(10)
+  useEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
   }, [idChat])
@@ -161,13 +163,13 @@ function MessageDetail(props) {
             />
         }
         actions={[
-          <InputCustome
+          <InputCustomize
             idElement={idChat}
             type="chat"
             onSubmit={handleSubmit}
             placeholder="Nhạp tin nhắn"
             key="input"
-          ></InputCustome>
+          />
         ]}
       >
         <div className={`message-list-container ${idChat}`}>

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 // import { brokenContext } from '../../layouts/MainLayout'
 import { IContext } from '@tools'
 import firebase from 'firebase/app'
 import { BellOutlined } from '@ant-design/icons'
-import { Tooltip, Popover, Badge, Button, notification } from 'antd'
+import { Tooltip, Popover, Badge, Button } from 'antd'
 import './index.scss'
 
 const Noti = props => {
@@ -39,16 +38,15 @@ const Noti = props => {
         dot
         count={notifications.filter(item => item.seen === false)?.length}
       >
-        <BellOutlined  />
-        </Badge>
-      <span >Thông báo</span>
-      
+        <BellOutlined />
+      </Badge>
+      <span>Thông báo</span>
     </div>
   ) : (
     <Tooltip title="Thông báo" placement="bottomRight">
       <Popover
         placement="bottomLeft"
-        className="noti-popover"
+        id='noti-popover'
         visible={visible}
         content={
           notifications?.length === 0 ? (

@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
-import { Comment, Avatar } from 'antd'
-import { InputCustome, ModalPreviewImg } from '@components'
-import { useLazyQuery, useQuery } from '@apollo/react-hooks'
+import { Comment } from 'antd'
+import { ModalPreviewImg } from '@components'
+import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import moment from 'moment'
-import { UserOutlined } from '@ant-design/icons'
 import noAvatar from '@assets/images/noavata.jpg'
 const CommentItem = props => {
   const { author } = props.comment
   const { comment, replyTo, type, idParent, history } = props
-  const { loading, data } = useQuery(GET_USER, {
+  const { data } = useQuery(GET_USER, {
     variables: { userId: author }
   })
   const [previewImg, setPreviewImg] = useState({

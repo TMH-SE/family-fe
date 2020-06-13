@@ -59,7 +59,10 @@ const link = ApolloLink.from([errorMiddleware, linkSplit])
 
 const Client = new ApolloClient({
   link: authLink.concat(link),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({
+    addTypename: false
+
+  })
 })
 
 export { Client }

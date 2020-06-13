@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable react/prop-types */
-import React, { useContext, useState, useLayoutEffect } from 'react'
+import React, { useContext, useState, useLayoutEffect, useEffect } from 'react'
 import ConversationSearch from '../ConversationSearch'
 import Toolbar from '../../messageDetail/Toolbar'
 import ToolbarButton from '../../messageDetail/ToolbarButton'
@@ -17,7 +17,7 @@ export default function ConversationList(props) {
   const [searchdataChat, setSearchdataChat] = useState(null)
   const [dataChatConver, setdataChatConver] = useState([])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     firebase
       .database()
       .ref(`messenger/`)
@@ -44,11 +44,11 @@ export default function ConversationList(props) {
     })
     data.trim() === '' ? setSearchdataChat(null) : setSearchdataChat(res)
   }
-  const addSearch = dataChat => {
+  const addSearch = data => {
     const a = [...dataChatConver] || []
-    const idx = dataChatConver.findIndex(item => item?._id === dataChat?._id)
+    const idx = dataChatConver.findIndex(item => item?._id === data?._id)
     a.length < dataChat?.length && a.push(dataChat)
-    dataChatConver[idx] = { ...dataChatConver[idx], name: dataChat.name }
+    dataChatConver[idx] = { ...dataChatConver[idx], name: data.name }
   }
   return (
     <div className={props.name || 'conversation-list'}>

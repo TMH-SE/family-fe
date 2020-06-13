@@ -10,9 +10,22 @@ import React, { useContext } from 'react'
 //   LockOutlined
 // } from '@ant-design/icons'
 // import { SdkUtils } from '@utils'
-import { MinimalLayout } from '@layouts'
+// import { MinimalLayout } from '@layouts'
 // import { IContext } from '@tools'
 import { Login } from '@components'
+// import { Row, Col, Form, Input, Button, Divider } from 'antd'
+// import gql from 'graphql-tag'
+// import { useMutation } from '@apollo/react-hooks'
+// import {
+//   GoogleOutlined,
+//   FacebookFilled,
+//   MailOutlined,
+//   LockOutlined
+// } from '@ant-design/icons'
+import { SdkUtils } from '@utils'
+import { MinimalLayout } from '@layouts'
+import { IContext } from '@tools'
+import { notificationError } from '@shared'
 
 // const SIGN_IN = gql`
 //   mutation signIn($email: String, $password: String) {

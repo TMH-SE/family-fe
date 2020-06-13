@@ -1,42 +1,26 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
-import { Card, Avatar, Dropdown, Typography, Menu, notification } from 'antd'
-import { Reaction, SharePost, CommentPost, ModalReport } from '@components'
+import { Card, Avatar, Typography } from 'antd'
 import {
-  CommentOutlined,
-  EllipsisOutlined,
-  FlagOutlined,
-  BookOutlined
-} from '@ant-design/icons'
+  Reaction,
+  SharePost,
+  CommentPost,
+  SaveAndReport
+} from '@components'
+import { CommentOutlined } from '@ant-design/icons'
 import { Meta } from 'antd/lib/list/Item'
 import { useHistory } from 'react-router-dom'
-// import { brokenContext } from '../../../layouts/MainLayout'
 
 export const Post = props => {
   const [showText, setShowText] = useState(false)
+  // const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const [visibleModalReport, setVisibleModalReport] = useState(false)
+  // const [visibleModalReport, setVisibleModalReport] = useState(false)
   const { item, idx } = props
   const history = useHistory()
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        <div onClick={() => setVisibleModalReport(true)}>
-          <FlagOutlined key="flag" /> Báo cáo bài viết
-        </div>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <div
-          onClick={() => notification.success({ message: 'Lưu thành công' })}
-        >
-          <BookOutlined />
-          Lưu bài viết
-        </div>
-      </Menu.Item>
-    </Menu>
-  )
-  useLayoutEffect(() => {
+
+  useEffect(() => {
     getSum(item.postId)
   }, [idx])
   const getSum = idPost => {
@@ -48,12 +32,6 @@ export const Post = props => {
         sumTemp = snapshot.val() && Object.keys(snapshot.val())?.length
         setSum(sumTemp)
       })
-  }
-  const handleOk = () => {
-    setVisibleModalReport(false)
-  }
-  const handleCancel = () => {
-    setVisibleModalReport(false)
   }
   return (
     <>
@@ -97,14 +75,7 @@ export const Post = props => {
             <span style={{ fontWeight: 'bold' }}>{sum} </span>
           </div>,
           <SharePost key="share" />,
-          <Dropdown
-            key="menu"
-            overlay={menu}
-            trigger={['click']}
-            placement="bottomRight"
-          >
-            <EllipsisOutlined />
-          </Dropdown>,
+          <SaveAndReport key='saveandreport' postId={item.postId} postItem={item}/>,
           <CommentPost idPost={item.postId} key="commet"></CommentPost>
         ]}
       >
@@ -156,11 +127,12 @@ export const Post = props => {
         />
       </Card>
 
-      <ModalReport
+      {/* <ModalReport
         visible={visibleModalReport}
         handleCancel={handleCancel}
         handleOk={handleOk}
-      ></ModalReport>
+        postId={item?._id}
+      ></ModalReport> */}
     </>
   )
 }

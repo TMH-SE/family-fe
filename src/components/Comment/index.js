@@ -1,18 +1,13 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext, useLayoutEffect } from 'react'
-import { Comment, Avatar, List, Modal } from 'antd'
-import moment from 'moment'
+import React, { useState, useContext, useLayoutEffect } from 'react'
+import { Comment, Avatar, List } from 'antd'
 import firebase from 'firebase/app'
 import * as uuid from 'uuid'
 import './index.scss'
-import { InputCustome, ModalPreviewImg } from '@components'
-import { useHistory, Redirect } from 'react-router-dom'
-// import { useHistory } from 'react-router-dom'
-import reactStringReplace from 'react-string-replace'
+import { InputCustomize } from '@components'
+import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
-import { GET_USER } from '@shared'
 import CommentItem from './CommentItem'
-import { CommentOutlined, FolderOpenFilled } from '@ant-design/icons'
 
 // export const SumComment = (props) => {
 //   const { getSumComment } = useContext(IContext)
@@ -49,7 +44,8 @@ const CommentList = ({ comments, showMore, idPost }) => {
   const [arrTag, setArrTag] = useState([])
   let lessComment = []
   // lessComment = comments.slice(comments?.length - showMore, comments?.length)
-  lessComment = comments.slice(0, comments?.length - showMore -1 )
+  lessComment =
+    showMore < comments.length ? comments.slice(0, showMore) : comments
 
   const onAdd = mentions => {
     setArrTag(mentions)
@@ -129,79 +125,81 @@ const CommentList = ({ comments, showMore, idPost }) => {
         dataSource={comments?.length <= showMore ? comments : lessComment}
         // header={`${comments?.length} ${comments?.length > 1 ? 'replies' : 'reply'}`}
         itemLayout="horizontal"
-        renderItem={comment => (
-          <>
-            <CommentItem
-              key={comment.id}
-              comment={comment}
-              idParent={comment.id}
-              replyTo={ isAuth ? replyTo : () => openLoginModal()}
-              type="parent"
-              history={history}
-            ></CommentItem>
-            {comment.replies && comment.replies?.length - 1 > showMoreRep.rows && (
-              <a
-                style={{ textAlign: 'left', marginLeft: '10%' }}
-                onClick={() =>
-                  setShowMoreRep({
-                    idParent: comment.id,
-                    rows:
-                      comment.id === showMoreRep.idParent
-                        ? showMoreRep.rows + 2
-                        : 2
-                  })
-                }
-              >
-                Xem thêm{' '}
-                {comment.id === showMoreRep.idParent
-                  ? comment.replies?.length - showMoreRep.rows
-                  : comment.replies?.length - 1}{' '}
-                câu trả lời
-              </a>
-            )}
-            {rep.commentId === comment.id && (
-              <Comment
-                className={`rep-input ${comment.id}`}
-                avatar={<Avatar src={me?.avatar} alt="Han Solo" />}
-                content={
-                  <InputCustome
-                    replyAuthor={rep && rep.author}
-                    idElement={comment.id}
-                    onSubmit={isAuth ? reply : () => openLoginModal() }
-                    placeholder="Nhập bình luận"
-                    mentions={comment.mention}
-                    onAdd={onAdd}
-                    // value={value}
-                  />
-                }
-              />
-            )}
-            {comment.replies &&
-              comment.replies
-                .sort((a, b) => b.timestamp - a.timestamp)
-                .slice(
-                  0,
-                  comment.id === showMoreRep?.idParent ? showMoreRep.rows : 1
-                )
-                .map((reply, idx) => (
-                  <CommentItem
-                    key={idx}
-                    comment={reply}
-                    idParent={comment.id}
-                    replyTo={replyTo}
-                    type="reply"
-                    history={history}
-                  />
-                ))}
-          </>
-        )}
+        renderItem={comment => {
+          return (
+            <>
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+                idParent={comment.id}
+                replyTo={isAuth ? replyTo : () => openLoginModal()}
+                type="parent"
+                history={history}
+              ></CommentItem>
+              {rep.commentId === comment.id && (
+                <Comment
+                  className={`rep-input ${comment.id}`}
+                  avatar={<Avatar src={me?.avatar} alt="Han Solo" />}
+                  content={
+                    <InputCustomize
+                      replyAuthor={rep && rep.author}
+                      idElement={comment.id}
+                      onSubmit={isAuth ? reply : () => openLoginModal()}
+                      placeholder="Nhập bình luận"
+                      mentions={comment.mention}
+                      onAdd={onAdd}
+                      // value={value}
+                    />
+                  }
+                />
+              )}
+               {comment.replies &&
+                comment.replies?.length - 1 > showMoreRep.rows && (
+                  <a
+                    style={{ textAlign: 'left', marginLeft: '10%' }}
+                    onClick={() =>
+                      setShowMoreRep({
+                        idParent: comment.id,
+                        rows:
+                          comment.id === showMoreRep.idParent
+                            ? showMoreRep.rows + 1
+                            : 1
+                      })
+                    }
+                  >
+                    Xem thêm{' '}
+                    {comment.id === showMoreRep.idParent
+                      ? comment.replies?.length - showMoreRep.rows - 1
+                      : comment.replies?.length - 1}{' '}
+                    câu trả lời
+                  </a>
+                )}
+              {comment.replies &&
+                comment.replies
+                  .sort((a, b) => a.timestamp - b.timestamp)
+                  .slice(
+                    comment.id === showMoreRep?.idParent ? comment.replies.length - showMoreRep.rows -1 : comment.replies.length -1,
+                    comment.replies.length
+                  )
+                  .map((reply, idx) => (
+                    <CommentItem
+                      key={idx}
+                      comment={reply}
+                      idParent={comment.id}
+                      replyTo={replyTo}
+                      type="reply"
+                      history={history}
+                    />
+                  ))}
+            </>
+          )
+        }}
       />
     </>
   )
 }
 
 function CommentPost(props) {
-  const history = useHistory()
   const [comments, setComments] = useState([])
   const [showMore, setShowMore] = useState(1)
 
@@ -258,7 +256,7 @@ function CommentPost(props) {
         className={`cmt-input ${props.idPost}`}
         avatar={<Avatar src={me?.avatar} alt="Han Solo" />}
         content={
-          <InputCustome
+          <InputCustomize
             idElement={props.idPost}
             onSubmit={isAuth ? handleSubmit : () => openLoginModal()}
             placeholder="Nhập bình luận"
@@ -274,7 +272,7 @@ function CommentPost(props) {
         />
       )}
       {comments?.length > showMore && (
-        <a onClick={() => setShowMore(showMore + 3)}>Xem thêm </a>
+        <a onClick={() => setShowMore(showMore + 2)}>Xem thêm </a>
       )}
     </div>
   )

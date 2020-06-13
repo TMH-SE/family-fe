@@ -5,16 +5,10 @@ import {
   Avatar,
   Typography,
   Button,
-  Menu,
-  Dropdown,
-  notification,
   Tooltip
 } from 'antd'
 import {
   CommentOutlined,
-  FlagOutlined,
-  BookOutlined,
-  EllipsisOutlined,
   LeftOutlined
 } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
@@ -23,7 +17,7 @@ import {
   Reaction,
   SharePost,
   CommentPost,
-  ModalReport
+  SaveAndReport
 } from '@components'
 
 const { Meta } = Card
@@ -31,33 +25,9 @@ const { Meta } = Card
 
 function PostDetail(props) {
   const [sum, setSum] = useState(false)
-  const [visibleModalReport, setVisibleModalReport] = useState(false)
-  const handleOk = () => {
-    setVisibleModalReport(false)
-  }
-  const handleCancel = () => {
-    setVisibleModalReport(false)
-  }
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        <div onClick={() => setVisibleModalReport(true)}>
-          <FlagOutlined key="flag" /> Báo cáo bài viết
-        </div>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <div
-          onClick={() => notification.success({ message: 'Lưu thành công' })}
-        >
-          <BookOutlined />
-          Lưu bài viết
-        </div>
-      </Menu.Item>
-    </Menu>
-  )
+
   const { history } = props
   const { postId } = props.match.params
- 
    useEffect(() => {
     getSumComment()
    }, [postId])
@@ -116,14 +86,7 @@ function PostDetail(props) {
             <span style={{ fontWeight: 'bold' }}> {sum} </span>
           </div>,
           <SharePost key="share" />,
-          <Dropdown
-            key="menu"
-            overlay={menu}
-            trigger={['click']}
-            placement="bottomRight"
-          >
-            <EllipsisOutlined />
-          </Dropdown>,
+          // <SaveAndReport key='shareandreport' postId={postId} />,
           <CommentPost
             idPost={props.match.params.postId}
             key="commet"
@@ -208,11 +171,12 @@ function PostDetail(props) {
           }
         />
       </Card>
-      <ModalReport
+      {/* <ModalReport
         visible={visibleModalReport}
         handleCancel={handleCancel}
         handleOk={handleOk}
-      ></ModalReport>
+        postId={postId}
+      ></ModalReport> */}
     </>
   )
 }

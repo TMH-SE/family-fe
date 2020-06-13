@@ -51,6 +51,17 @@ const SdkUtils = {
       })
     })
   },
+  shareFB() {
+    FB.ui(
+      {
+        method: 'share',
+        display: 'popup'
+        // href: 'http://localhost/8080',
+      },
+      // callback
+      function(response) {}
+    )
+  },
   async logoutFB() {
     FB.logout()
   },

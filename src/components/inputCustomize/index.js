@@ -16,7 +16,7 @@ import './index.scss'
 import { MentionsInput, Mention } from 'react-mentions'
 import { uploadImg } from '@shared'
 
-function InputCustome(props) {
+function InputCustomize(props) {
   const mentionData = []
   props.mentions &&
     props.mentions.map((item, idx) => {
@@ -47,17 +47,6 @@ function InputCustome(props) {
       document.getElementById(`input-custom-${props.idElement}`).focus()
     // props.onAdd && props.onAdd([{ id: props.replyAuthor.id, display: props.replyAuthor.name }])
   }, [props.replyAuthor])
-  const propsUpload = {
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    listType: 'picture-cards'
-    // defaultFileList: [...fileList]
-  }
-
-  function getBase64(img, callback) {
-    const reader = new FileReader()
-    reader.addEventListener('load', () => callback(reader.result))
-    reader.readAsDataURL(img)
-  }
 
   const deleteImg = () => {
     setImage({ ...image, srcImg: '' })
@@ -86,21 +75,28 @@ function InputCustome(props) {
     }
     return isJpgOrPng && isLt2M
   }
-  const handleChange = async info => {
-    if (info.file.status === 'uploading') {
-      setImage({ ...image, loading: true })
-      return
-    }
-    if (info.file.status === 'done') {
-      getBase64(info.file.originFileObj, async imageUrl => {
-        const url = await uploadImg(imageUrl)
-        setImage({
-          srcImg: url,
-          loading: false
-        })
+  // const handleChange = async info => {
+    // if (info.file.status === 'uploading') {
+    //   setImage({ ...image, loading: true })
+    //   return
+    // }
+    // if (info.file.status === 'done') {
+    //   getBase64(info.file.originFileObj, async imageUrl => {
+    //     const url = await uploadImg(imageUrl)
+    //     setImage({
+    //       srcImg: url,
+    //       loading: false
+    //     })
+
+  const handleUpload = file => {
+    setImage({ ...image, loading: true })
+    uploadImg(file).then(url => {
+      setImage({
+        srcImg: url,
+        loading: false
       })
       document.getElementById(`input-custom-${props.idElement}`).focus()
-    }
+    })
   }
   const escapeHtml = text => {
     var map = {
@@ -227,9 +223,8 @@ function InputCustome(props) {
           </Menu.Item>
           <Menu.Item key="app">
             <Upload
-              {...propsUpload}
+              action={handleUpload}
               beforeUpload={beforeUpload}
-              onChange={info => handleChange(info)}
             >
               <FileImageTwoTone />
             </Upload>
@@ -239,4 +234,4 @@ function InputCustome(props) {
     </div>
   )
 }
-export default InputCustome
+export default InputCustomize

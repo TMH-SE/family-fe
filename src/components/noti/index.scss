@@ -6,3 +6,7 @@
     cursor: pointer;
     background-color: #ccc !important;
   }
+  .ant-popover-inner-content {
+    max-height: 50vh;
+    overflow-y: scroll;
+}
