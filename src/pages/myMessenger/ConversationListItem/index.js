@@ -2,7 +2,6 @@
 import React, { useEffect, useContext, useState } from 'react'
 import firebase from 'firebase/app'
 import './ConversationListItem.css'
-import { useHistory } from 'react-router-dom'
 import { List, Skeleton, Badge, Avatar } from 'antd'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
@@ -58,13 +57,13 @@ export default function ConversationListItem(props) {
   return (
     conversation && (
       <List.Item onClick={() => selectHandler()}>
-        <Skeleton avatar title={false} loading={conversation.loading} active>
+        <Skeleton avatar title={false} loading={conversation?.loading} active>
           <List.Item.Meta
             avatar={
               <Badge
                 dot={
-                  conversation.lastMess.author !== me?._id &&
-                  !conversation.lastMess.seen
+                  conversation?.lastMess?.author !== me?._id &&
+                  !conversation?.lastMess?.seen
                 }
               >
                 <Avatar size={42} src={data?.getUser?.avatar} />
@@ -72,11 +71,11 @@ export default function ConversationListItem(props) {
             }
             title={data?.getUser?.firstname}
             description={
-              conversation.lastMess.content?.message.trim()
-                ? conversation.lastMess.content?.message
-                : conversation.lastMess.author === me?._id
+              conversation?.lastMess?.content?.message.trim()
+                ? conversation?.lastMess?.content?.message
+                : conversation?.lastMess?.author === me?._id
                 ? ' Bạn đã gửi 1 hình'
-                : data?.getUser.firstname + ' đã gửi cho bạn 1 hình '
+                : data?.getUser?.firstname + ' đã gửi cho bạn 1 hình '
             }
           />
         </Skeleton>

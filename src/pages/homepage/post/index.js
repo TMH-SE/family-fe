@@ -7,7 +7,8 @@ import {
   Dropdown,
   Typography,
   Menu,
-  notification
+  notification,
+  Space
 } from 'antd'
 import { Reaction, SharePost, CommentPost, ModalReport } from '@components'
 import {
@@ -16,9 +17,7 @@ import {
   FlagOutlined,
   BookOutlined
 } from '@ant-design/icons'
-import { Meta } from 'antd/lib/list/Item'
 import { useHistory } from 'react-router-dom'
-// import { brokenContext } from '../../../layouts/MainLayout'
 
 export const Post = props => {
   const [showText, setShowText] = useState(false)
@@ -30,17 +29,18 @@ export const Post = props => {
   const menu = (
     <Menu>
       <Menu.Item key="0">
-        <div onClick={() => setVisibleModalReport(true)}>
-          <FlagOutlined key="flag" /> Báo cáo bài viết
-        </div>
+        <Space onClick={() => setVisibleModalReport(true)}>
+          <FlagOutlined key="flag" />
+          <span>Báo cáo bài viết</span>
+        </Space>
       </Menu.Item>
       <Menu.Item key="1">
-        <div
+        <Space
           onClick={() => notification.success({ message: 'Lưu thành công' })}
         >
           <BookOutlined />
-          Lưu bài viết
-        </div>
+          <span>Lưu bài viết</span>
+        </Space>
       </Menu.Item>
     </Menu>
   )
@@ -66,29 +66,45 @@ export const Post = props => {
   return (
     <>
       <Card
-        // key={key}
+        key={item?._id}
+        cover={<img alt={`thumbnail-${item?.title}`} src={item?.thumbnail} />}
         title={
           <div style={{ display: 'flex', justifyContent: 'start' }}>
             <Avatar
-              onClick={() => history.push(`/pagegroup/${item.groupId}`)}
+              onClick={() =>
+                history.push(
+                  item?.community
+                    ? `/pagegroup/${item?.community?._id}`
+                    : `/${item?.createdBy?._id}/info`
+                )
+              }
               size="large"
-              src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+              src={item?.community?.avatar || item?.createdBy?.avatar}
             />
-            <div>
-              <a
+            <Space size={0} direction="vertical">
+              <Button
+                type="link"
                 onClick={() => history.push(`/pagegroup/${item.groupId}`)}
                 style={{ fontWeight: 'bolder', color: 'black' }}
               >
-                Chăm sóc bé từ 0-12 tháng tuổi
-              </a>
-              <p style={{ color: '#9b9b9b', fontSize: 12 }}>
-                Đăng bởi
-                <span style={{ color: '#003b70' }}>
-                  <a onClick={() => history.push('/tuinhune/info')}>Tuinhune</a>
-                </span>
-                - {new Date().toLocaleString()}
-              </p>
-            </div>
+                {item?.community?.name ||
+                  `${item?.createdBy?.firstname} ${item?.createdBy?.lastname}`}
+              </Button>
+              <Space style={{ color: '#9b9b9b', fontSize: 12 }}>
+                {item?.community && (
+                  <>
+                    <span>Đăng bởi</span>
+                    <span style={{ color: '#003b70' }}>
+                      <a onClick={() => history.push('/tuinhune/info')}>
+                        Tuinhune
+                      </a>
+                    </span>
+                    <span>-</span>
+                  </>
+                )}
+                <span>{new Date(item?.createdAt).toLocaleString()}</span>
+              </Space>
+            </Space>
           </div>
         }
         extra={
@@ -100,11 +116,8 @@ export const Post = props => {
         }
         style={{ maxWidth: '100%', marginTop: 16 }}
         actions={[
-          <div id="like-post" key="like">
-            <Reaction idPost={item.postId} />
-          </div>,
-          // <Sum idPost ={item.postId} ></Sum>,
-          <div
+          <Reaction id="like-post" key="like" idPost={item.postId} />,
+          <Space
             key="comment"
             onClick={() =>
               document.getElementById(`input-custom-${item.postId}`).focus()
@@ -116,7 +129,7 @@ export const Post = props => {
               }
             />
             <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
-          </div>,
+          </Space>,
           <SharePost key="share" />,
           <Dropdown
             key="menu"
@@ -126,36 +139,24 @@ export const Post = props => {
           >
             <EllipsisOutlined />
           </Dropdown>,
-          <CommentPost idPost={item.postId} key="commet"></CommentPost>
+          <CommentPost idPost={item.postId} key="comment"></CommentPost>
         ]}
       >
-        <Meta
+        <Card.Meta
           title={
-            <a onClick={() => history.push(`/postdetail/${item.postId}`)}>
-              <Typography.Title level={2}>
-                Giảm nóng cho bé mùa hè
-              </Typography.Title>
-            </a>
+            <h1
+              style={{ whiteSpace: 'normal', cursor: 'pointer' }}
+              onClick={() => history.push(`/postdetail/${item.postId}`)}
+            >
+              {item?.title}
+            </h1>
           }
           description={
             <div>
-              <p
-                // id={showText ? `expand${key}` : 'collapse'}
+              <div
                 className={`content ${nameEl}${idx}}`}
-              >
-                Một trong những ngộ nhận sai lầm về giữ ấm bé yêu là ủ ấm bé.
-                Bằng cách mặc thật nhiều quần áo thật dày, thật kín. Đây là cách
-                giữ ấm không đúng, không khoa học. Bé sẽ bị nóng, ra nhiều mồ
-                hôi và nhiễm lạnh ngược lại, dễ dẫn đến viêm phổi nếu mẹ mặc quá
-                nhiều áo quần. Nhiều khi mẹ ủ ấm quá mức sẽ khiến bé bị đột tử
-                do bị bí hơi nữa đấy. Chọn quần áo khi ngủ cho con sao cho thoải
-                mái nhất, an toàn nhất là đã giúp bé được ủ ấm thân nhiệt rồi.
-                Nếu mẹ sợ bé lạnh, hãy đắp thêm một lớp chăn lưới mỏng, nhẹ,
-                loại dùng cho trẻ sơ sinh là bé vừa ấm áp vừa thoáng khí, thoát
-                mồ hôi. Mẹ nên tránh đồ ngủ có dây buộc, những họa tiết phụ kiện
-                trang trí khác có thể quấn cổ bé, làm bé không thở được. Nguồn:
-                internet
-              </p>
+                dangerouslySetInnerHTML={{ __html: item?.content }}
+              />
               <a
                 id={`${nameEl}${idx}}`}
                 onClick={async () => {
@@ -170,7 +171,7 @@ export const Post = props => {
                   await setShowText(false)
                 }}
               >
-                See more{' '}
+                See more
               </a>
               <div></div>
             </div>
