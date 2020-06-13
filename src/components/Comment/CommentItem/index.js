@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Comment } from 'antd'
-import { InputCustomize, ModalPreviewImg } from '@components'
-import { useLazyQuery, useQuery } from '@apollo/react-hooks'
+import { ModalPreviewImg } from '@components'
+import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import moment from 'moment'
 import { UserOutlined } from '@ant-design/icons'
@@ -9,7 +9,7 @@ import { UserOutlined } from '@ant-design/icons'
 const CommentItem = props => {
   const { author } = props.comment
   const { comment, replyTo, type, idParent } = props
-  const { loading, data } = useQuery(GET_USER, {
+  const { data } = useQuery(GET_USER, {
     variables: { userId: author }
   })
   const [previewImg, setPreviewImg] = useState({
@@ -55,7 +55,8 @@ const CommentItem = props => {
                       height: 160,
                       width: 160,
                       objectFit: 'cover',
-                      borderRadius: 15
+                      borderRadius: 15,
+                      marginTop: 5
                     }}
                     src={comment.content.img}
                     onClick={() => {
@@ -72,7 +73,7 @@ const CommentItem = props => {
               dangerouslySetInnerHTML={{
                 __html: comment.content.message.trim()
               }}
-              style={{ display: 'inline' }}
+              style={{ margin: 5 }}
               className="rep-content"
             />
             {/* <p>{comment.content.message.trim()}</p> */}

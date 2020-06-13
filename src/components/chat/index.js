@@ -1,7 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useState, useContext } from 'react'
-import Modal from 'antd/lib/modal/Modal'
-import firebase from 'firebase/app'
+import React, { useContext } from 'react'
 import { Button } from 'antd'
 import { MessageTwoTone } from '@ant-design/icons'
 import { CREATE_CHAT, GET_CHAT_BY_MEMBERS } from '@shared'

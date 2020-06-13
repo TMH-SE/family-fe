@@ -31,7 +31,6 @@ import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { Logo, HighLightGroup, Noti } from '@components'
 import './mainlayout.scss'
-// import InputCustome from '../../components/inputCustome'
 
 import { IContext } from '@tools'
 import ConversationList from '@pages/myMessenger/ConversationList'
@@ -63,12 +62,21 @@ const index = ({ children }) => {
   }, [me])
   const getNotification = () => {
     let temp
-    firebase.database().ref('notifications/' + me?._id).orderByKey().limitToLast(10).on('value', (snapshot) => {
-      temp = snapshot.val() && Object.keys(snapshot.val()).map(key => ({ ...snapshot.val()[key], id: key }))
+    firebase
+      .database()
+      .ref('notifications/' + me?._id)
+      .orderByKey()
+      .limitToLast(10)
+      .on('value', snapshot => {
+        temp =
+          snapshot.val() &&
+          Object.keys(snapshot.val()).map(key => ({
+            ...snapshot.val()[key],
+            id: key
+          }))
 
-      setNotifications(temp)
-
-    })
+        setNotifications(temp)
+      })
   }
   // const chooseConvention = convention => {
   //   if (messbox.findIndex(mess => mess.idChat === convention.idChat) === -1) {

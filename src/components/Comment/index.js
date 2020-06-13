@@ -1,18 +1,12 @@
-/* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext, useLayoutEffect } from 'react'
-import { Comment, Avatar, List, Modal } from 'antd'
-import moment from 'moment'
+import React, { useState, useEffect, useContext } from 'react'
+import { Comment, Avatar, List } from 'antd'
 import firebase from 'firebase/app'
 import * as uuid from 'uuid'
 import './index.scss'
-import { InputCustomize, ModalPreviewImg } from '@components'
-import { useHistory, Redirect } from 'react-router-dom'
-// import { useHistory } from 'react-router-dom'
-import reactStringReplace from 'react-string-replace'
+import { InputCustomize } from '@components'
+import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
-import { GET_USER } from '@shared'
 import CommentItem from './CommentItem'
-import { CommentOutlined } from '@ant-design/icons'
 
 // export const SumComment = (props) => {
 //   const { getSumComment } = useContext(IContext)
@@ -123,7 +117,6 @@ const CommentList = ({ comments, showMore, idPost }) => {
   }
   return (
     <>
-      {' '}
       <List
         dataSource={comments.length < showMore ? comments : lessComment}
         // header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
@@ -136,7 +129,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
               idParent={comment.id}
               replyTo={replyTo}
               type="parent"
-            ></CommentItem>
+            />
             {comment.replies && comment.replies.length - 1 > showMoreRep.rows && (
               <a
                 style={{ textAlign: 'left', marginLeft: '10%' }}

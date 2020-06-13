@@ -4,7 +4,7 @@ import firebase from 'firebase/app'
 import Message from './Message'
 import moment from 'moment'
 import './index.scss'
-import { CaretLeftOutlined, CloseCircleFilled } from '@ant-design/icons'
+import { CloseCircleFilled } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
 import * as uuid from 'uuid'
 import { InputCustomize } from '@components'
@@ -158,9 +158,11 @@ function MessageDetail(props) {
         // style={{ 10 }}
         actions={[
           <InputCustomize
+            minRows={1}
+            maxRows={4}
             idElement={idChat}
             onSubmit={handleSubmit}
-            placeholder="Nhạp tin nhắn"
+            placeholder="Nhập tin nhắn"
             key="input"
           />
         ]}

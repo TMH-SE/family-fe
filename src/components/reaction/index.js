@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useContext } from 'react'
-import { Popover, Tooltip } from 'antd'
+import { Popover, Tooltip, Space } from 'antd'
 import { Emoji } from 'emoji-mart'
 import { LikeOutlined } from '@ant-design/icons'
 import firebase from 'firebase/app'
@@ -46,11 +46,13 @@ function Reaction(props) {
       .ref(`posts/${idPost}/reactions`)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = snapshot.val() &&
-          Object.keys(snapshot.val()).map(key => ({
-            ...snapshot.val()[key],
-            id: key.toString()
-          })) || []
+        const temp =
+          (snapshot.val() &&
+            Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key.toString()
+            }))) ||
+          []
         // temp.sort((a, b) => b.timestamp - a.timestamp)
         setReactions(temp)
         let count = 0
@@ -125,42 +127,44 @@ function Reaction(props) {
         </Tooltip>
       ))}
     >
-      {chosenmoji ? (
-        <Emoji
-          onClick={async () => {
-            const idx = reactions.findIndex(
-              reaction => reaction.id === chosenmoji
-            )
-            const arr = reactions[idx].users
-            arr.splice(
-              reactions[idx].users.findIndex(user => user === me._id),
-              1
-            )
-            try {
-              await firebase
-                .database()
-                .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
-                .update({
-                  count: reactions[idx].count - 1,
-                  users: arr
-                })
-            } catch (e) {
-              console.log(e)
-            }
-            setChosenEnmoji('')
-            document
-              .getElementById('like-post')
-              .setAttribute('style', 'background-color: initial')
-          }}
-          emoji={chosenmoji}
-          size={19}
-        />
-      ) : (
-        <LikeOutlined />
-      )}
-      <span style={{ fontWeight: 'bold', color: chosenmoji && '#1890ff' }}>
-        {sumReactions}
-      </span>
+      <Space>
+        {chosenmoji ? (
+          <Emoji
+            onClick={async () => {
+              const idx = reactions.findIndex(
+                reaction => reaction.id === chosenmoji
+              )
+              const arr = reactions[idx].users
+              arr.splice(
+                reactions[idx].users.findIndex(user => user === me._id),
+                1
+              )
+              try {
+                await firebase
+                  .database()
+                  .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
+                  .update({
+                    count: reactions[idx].count - 1,
+                    users: arr
+                  })
+              } catch (e) {
+                console.log(e)
+              }
+              setChosenEnmoji('')
+              document
+                .getElementById('like-post')
+                .setAttribute('style', 'background-color: initial')
+            }}
+            emoji={chosenmoji}
+            size={19}
+          />
+        ) : (
+          <LikeOutlined />
+        )}
+        <span style={{ fontWeight: 'bold', color: chosenmoji && '#1890ff' }}>
+          {sumReactions}
+        </span>
+      </Space>
     </Popover>
   )
 }
