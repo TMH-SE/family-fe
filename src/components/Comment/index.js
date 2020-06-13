@@ -120,7 +120,6 @@ const CommentList = ({ comments, showMore, idPost }) => {
   }
   return (
     <>
-      {' '}
       <List
         dataSource={comments?.length <= showMore ? comments : lessComment}
         // header={`${comments?.length} ${comments?.length > 1 ? 'replies' : 'reply'}`}
@@ -153,7 +152,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
                   }
                 />
               )}
-               {comment.replies &&
+              {comment.replies &&
                 comment.replies?.length - 1 > showMoreRep.rows && (
                   <a
                     style={{ textAlign: 'left', marginLeft: '10%' }}
@@ -178,7 +177,9 @@ const CommentList = ({ comments, showMore, idPost }) => {
                 comment.replies
                   .sort((a, b) => a.timestamp - b.timestamp)
                   .slice(
-                    comment.id === showMoreRep?.idParent ? comment.replies.length - showMoreRep.rows -1 : comment.replies.length -1,
+                    comment.id === showMoreRep?.idParent
+                      ? comment.replies.length - showMoreRep.rows - 1
+                      : comment.replies.length - 1,
                     comment.replies.length
                   )
                   .map((reply, idx) => (

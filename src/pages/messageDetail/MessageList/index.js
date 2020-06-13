@@ -171,10 +171,12 @@ export default function MessageList(props) {
         // style={{ 10 }}
         actions={[
           <InputCustomize
+            minRows={1}
+            maxRows={4}
             idElement={idChat}
             type="chat"
             onSubmit={handleSubmit}
-            placeholder="Nhạp tin nhắn"
+            placeholder="Nhập tin nhắn"
             key="input"
           />
         ]}

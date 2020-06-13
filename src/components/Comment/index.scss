@@ -33,7 +33,7 @@
 }
 .cmt-input {
     .ant-comment-content-detail {
-        border:none !important;
+        // border:none !important;
         width: 100%;
     }
 }
@@ -53,6 +53,7 @@
     border-radius: 20px
 }
 .rep-content {
+    word-break: break-all;
     a{
     display: contents !important;
     color: rgba(15, 90, 228, 0.7) !important;

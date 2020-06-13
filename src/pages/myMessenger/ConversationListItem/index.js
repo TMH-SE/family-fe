@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useLayoutEffect, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import firebase from 'firebase/app'
 import './ConversationListItem.css'
-import { List, Skeleton, Badge, Avatar } from 'antd'
+import { List, Badge, Avatar } from 'antd'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import { IContext } from '@tools'

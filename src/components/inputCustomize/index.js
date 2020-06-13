@@ -2,13 +2,13 @@
 /* eslint-disable indent */
 /* eslint-disable handle-callback-err */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext } from 'react'
-import { Menu, Upload, Popover, notification, message } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Upload, Popover, notification, message, Space } from 'antd'
 import {
-  FileImageTwoTone,
-  SmileTwoTone,
   LoadingOutlined,
-  CloseCircleFilled
+  CloseCircleFilled,
+  FileImageOutlined,
+  SmileOutlined
 } from '@ant-design/icons'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -17,9 +17,10 @@ import { MentionsInput, Mention } from 'react-mentions'
 import { uploadImg } from '@shared'
 
 function InputCustomize(props) {
+  const { mentions, replyAuthor, idElement, onSubmit, onAdd, placeholder, minRows, maxRows } = props
   const mentionData = []
-  props.mentions &&
-    props.mentions.map((item, idx) => {
+  mentions &&
+    mentions.map((item, idx) => {
       mentionData.push({
         id: item.id,
         display: item.name
@@ -39,14 +40,14 @@ function InputCustomize(props) {
   const [plainText, setPlainText] = useState('')
   useEffect(() => {
     setText(
-      props.replyAuthor
-        ? `<a href='${window.location.origin}/${props.replyAuthor.id}/info'>${props.replyAuthor.name}</a> `
+      replyAuthor
+        ? `<a href='${window.location.origin}/${replyAuthor.id}/info'>${replyAuthor.name}</a> `
         : ''
     )
-    props.replyAuthor &&
-      document.getElementById(`input-custom-${props.idElement}`).focus()
-    // props.onAdd && props.onAdd([{ id: props.replyAuthor.id, display: props.replyAuthor.name }])
-  }, [props.replyAuthor])
+    replyAuthor &&
+      document.getElementById(`input-custom-${idElement}`).focus()
+    // onAdd && onAdd([{ id: replyAuthor.id, display: replyAuthor.name }])
+  }, [replyAuthor])
 
   const deleteImg = () => {
     setImage({ ...image, srcImg: '' })
@@ -95,7 +96,7 @@ function InputCustomize(props) {
         srcImg: url,
         loading: false
       })
-      document.getElementById(`input-custom-${props.idElement}`).focus()
+      document.getElementById(`input-custom-${idElement}`).focus()
     })
   }
   const escapeHtml = text => {
@@ -121,6 +122,7 @@ function InputCustomize(props) {
           newPlain = escapeHtml(plainText).replace(mention.display, `<a href='${window.location.origin}/${mention.id}/info'>${mention.display}</a>`)
         })
         props.onSubmit(newPlain, image.srcImg)
+        onSubmit(text, image.srcImg)
         setText('')
         setImage({ ...image, srcImg: '' })
       }
@@ -128,7 +130,7 @@ function InputCustomize(props) {
   }
 
   return (
-    <div className="input-custome" style={{ width: '100%' }}>
+    <div style={{ width: '100%' }}>
       {/* <div> */}
       {image.loading && (
         <LoadingOutlined color="black" style={{ padding: 10 }} />
@@ -157,36 +159,33 @@ function InputCustomize(props) {
       )}
       <div className="input-menu">
         <MentionsInput
-          // defaultValue={props.replyAuthor && props.replyAuthor }
-          style={{ width: '100%' }}
+          // defaultValue={replyAuthor && replyAuthor }
+          style={{ maxWidth: '100%', flex: '1 1 auto' }}
           onFocus={() => {
             const a = document.getElementsByClassName(
-              `contentMess-box ${props.idElement}`
+              `contentMess-box ${idElement}`
             )[0]
             a && a.classList.add('focus')
-            // const ele = document.getElementsByClassName(
-            //   `message-list-container ${props.idElement}`
+            //           const ele = document.getElementsByClassName(
+            //   `message-list-container ${idElement}`
             // )[0]
             // ele.scrollTop = ele.scrollHeight
           }}
           onBlur={() => {
             const a = document.getElementsByClassName(
-              `contentMess-box ${props.idElement}`
+              `contentMess-box ${idElement}`
             )[0]
             a && a.classList.remove('focus')
           }}
-          id={`input-custom-${props.idElement}`}
+          id={`input-custom-${idElement}`}
           className="textMention"
-          // style={{ border: 'none' }}
-          placeholder={props.placeholder}
-          // markup='@__display__'
-          // markup='^@@@__display__'
-          // autoSize={{ minRows: 1, maxRows: 3 }}
+          placeholder={placeholder}
+          autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(event, newValue, newPlainTextValue, mentions) => {
             setText(newValue)
             setPlainText(newPlainTextValue)
             setArrMentions(mentions)
-            props.onAdd && props.onAdd(arrMentions)
+            onAdd && onAdd(arrMentions)
           }}
           value={text}
           onKeyUp={event => {
@@ -203,33 +202,26 @@ function InputCustomize(props) {
             className="textMention__mention"
           />
         </MentionsInput>
-        <Menu mode="horizontal" style={{ lineHeight: 0 }}>
-          <Menu.Item key="mail">
-            <Popover
-              placement="topLeft"
-              // content={<a onClick>Close</a>}
-              title={<Picker onSelect={e => addEmoji(e)} />}
-              trigger="click"
-              visible={emoji.showEmoji}
-              onVisibleChange={() =>
-                setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })
-              }
-            >
-              <SmileTwoTone
-                style={{ marginBottom: 3 }}
-                onClick={() => setEmoji({ ...setEmoji, showEmoji: true })}
-              />
-            </Popover>
-          </Menu.Item>
-          <Menu.Item key="app">
-            <Upload
-              action={handleUpload}
-              beforeUpload={beforeUpload}
-            >
-              <FileImageTwoTone />
-            </Upload>
-          </Menu.Item>
-        </Menu>
+        <Space>
+          <Popover
+            placement="bottomRight"
+            // content={<a onClick>Close</a>}
+            title={<Picker onSelect={e => addEmoji(e)} />}
+            trigger="click"
+            visible={emoji.showEmoji}
+            onVisibleChange={() =>
+              setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })
+            }
+          >
+            <SmileOutlined
+              style={{ color: '#bbb', fontSize: 16 }}
+              onClick={() => setEmoji({ ...setEmoji, showEmoji: true })}
+            />
+          </Popover>
+          <Upload action={handleUpload} beforeUpload={beforeUpload}>
+            <FileImageOutlined style={{ color: '#bbb', fontSize: 16 }} />
+          </Upload>
+        </Space>
       </div>
     </div>
   )

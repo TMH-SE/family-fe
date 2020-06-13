@@ -54,7 +54,8 @@ const CommentItem = props => {
                       height: 160,
                       width: 160,
                       objectFit: 'cover',
-                      borderRadius: 15
+                      borderRadius: 15,
+                      marginTop: 5
                     }}
                     src={comment?.content?.img}
                     onClick={() => {
@@ -71,7 +72,7 @@ const CommentItem = props => {
               dangerouslySetInnerHTML={{
                 __html: comment?.content?.message.trim()
               }}
-              style={{ display: 'inline' }}
+              style={{ margin: 5 }}
               className="rep-content"
             />
             {/* <p>{comment.content.message.trim()}</p> */}

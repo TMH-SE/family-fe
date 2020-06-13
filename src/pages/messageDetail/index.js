@@ -1,12 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import firebase from 'firebase/app'
 import Message from './Message'
 import moment from 'moment'
 import './index.scss'
-import { CaretLeftOutlined, CloseCircleFilled, BackwardFilled, FastBackwardOutlined, StepBackwardOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
-import * as uuid from 'uuid'
 import { InputCustomize } from '@components'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
@@ -16,10 +15,8 @@ moment().format()
 // const MY_USER_ID = 'tuinhune'
 function MessageDetail(props) {
   const [messages, setMessages] = useState([])
-  const { history } = props
   const { idChat, userId } = props.match.params
   const { me } = useContext(IContext)
-  const { showMoreMess, setShowMoreMess } = useState(10)
   useEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
@@ -164,10 +161,12 @@ function MessageDetail(props) {
         }
         actions={[
           <InputCustomize
+            minRows={1}
+            maxRows={4}
             idElement={idChat}
             type="chat"
             onSubmit={handleSubmit}
-            placeholder="Nhạp tin nhắn"
+            placeholder="Nhập tin nhắn"
             key="input"
           />
         ]}

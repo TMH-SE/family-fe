@@ -32,7 +32,6 @@ import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { Logo, HighLightGroup, Noti, Login } from '@components'
 import './mainlayout.scss'
-// import InputCustome from '../../components/inputCustome'
 
 import { IContext } from '@tools'
 import ConversationList from '@pages/myMessenger/ConversationList'

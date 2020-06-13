@@ -10,7 +10,6 @@ import { Reaction, SharePost, CommentPost, SaveAndReport } from '@components'
 import {
   CommentOutlined,
 } from '@ant-design/icons'
-import { Meta } from 'antd/lib/list/Item'
 import { useHistory } from 'react-router-dom'
 
 export const Post = props => {
@@ -19,7 +18,6 @@ export const Post = props => {
   const nameEl = showText ? 'expand' : 'collapse'
   const { item, idx } = props
   const history = useHistory()
-
   useLayoutEffect(() => {
     getSum(item?._id)
   }, [item?._id])
@@ -101,7 +99,7 @@ export const Post = props => {
           <CommentPost idPost={item?._id} key="commet"></CommentPost>
         ]}
       >
-        <Meta
+        <Card.Meta
           title={
             <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
               <Typography.Title level={2}>{item?.title}</Typography.Title>
@@ -133,7 +131,7 @@ export const Post = props => {
                   await setShowText(false)
                 }}
               >
-                See more{' '}
+                See more
               </a>
               <div></div>
             </div>
