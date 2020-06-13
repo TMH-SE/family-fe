@@ -1,23 +1,15 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useState, useEffect } from 'react'
-import { Avatar, Menu, Button, Upload, message, notification } from 'antd'
+import React, { useContext, useState } from 'react'
+import { Avatar, Menu, Button, Upload, notification } from 'antd'
 import { withRouter } from 'react-router-dom'
-import firebase from 'firebase/app'
 import {
   EllipsisOutlined,
-  HeartTwoTone,
-  MessageTwoTone,
-  PlusOutlined,
   LoadingOutlined,
   CameraFilled,
-  CheckOutlined,
-  CloseOutlined,
   CheckCircleTwoTone,
-  CloseCircleTwoTone,
-  CloseCircleFilled
+  CloseCircleTwoTone
 } from '@ant-design/icons'
 
-import * as uuid from 'uuid'
 import Info from './info'
 import MyMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
@@ -25,22 +17,26 @@ import SavedPosts from './savedPosts'
 import { HighLightGroup, ModalPreviewImg, Chat, Follow } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
+import {
+  GET_USER,
+  UPDATE_USER,
+  uploadImg,
+  GET_COMMUNITIES_BY_USER
+} from '@shared'
 import './index.scss'
 import { IContext } from '@tools'
-import noAvatar from '@assets/images/noavata.jpg'
+
 import ImgCrop from 'antd-img-crop'
+import JoinedCommunity from './joinedCommunity'
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
   // const MY_USER_ID = 'tuinhune'
   const isBroken = useContext(brokenContext)
-  const { loading, error, data, refetch } = useQuery(GET_USER, {
+  const { data, refetch } = useQuery(GET_USER, {
     variables: { userId: userId }
   })
-  useEffect(() => {
-    if (data && !data.getUser.avatar) data.getUser.avatar = noAvatar
-  }, [data])
+
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
@@ -56,24 +52,9 @@ function Profile(props) {
     avatar: null
   })
   const [updateUser] = useMutation(UPDATE_USER)
-  // const sendNotifollow = async () => {
-  //   const notificationId = uuid.v1()
-  //   try {
-  //     await firebase
-  //       .database()
-  //       .ref('notifications/' + userId + '/' + notificationId)
-  //       .set({
-  //         action: 'follow',
-  //         reciever: userId,
-  //         link: `/${me?._id}/info`,
-  //         content: `${me?.firstname} đã bắt đầu theo dõi bạn`,
-  //         seen: false
-  //       })
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  //   notification.success({ message: 'Đã theo dõi' })
-  // }
+  const { data: dataCommunity } = useQuery(GET_COMMUNITIES_BY_USER, {
+    variables: { userId: me?._id }
+  })
   const uploadButtonCover =
     isMe &&
     (!img.coverPhoto ? (
@@ -410,7 +391,7 @@ function Profile(props) {
                   </p>
                   <div>
                     {!isMe && (
-                      <div >
+                      <div>
                         <Follow
                           isBroken={isBroken}
                           follower={{ userId: userId, followerId: me?._id }}
@@ -487,7 +468,8 @@ function Profile(props) {
       )}
       <div
         style={{
-          backgroundColor: type === 'info' ? 'rgba(255,255,255,0.7)' : 'aliceblue',
+          backgroundColor:
+            type === 'info' ? 'rgba(255,255,255,0.7)' : 'aliceblue',
           padding: type === 'info' && 16
         }}
       >
@@ -499,7 +481,7 @@ function Profile(props) {
         {type === 'savedposts' && (
           <SavedPosts history={history} userInfo={data?.getUser} />
         )}
-        {type === 'joinedGroup' && <HighLightGroup userInfo={data?.getUser} />}
+        {type === 'joinedGroup' && <JoinedCommunity communities={dataCommunity?.getCommunitiesByUser} />}
       </div>
       <ModalPreviewImg
         previewImg={previewImg}

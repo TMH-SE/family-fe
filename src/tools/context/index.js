@@ -4,6 +4,7 @@ import { SdkUtils } from '@utils'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import { GET_SAVEDPOST_BY_USER } from '@shared'
 export const IContext = React.createContext()
 
 const GET_ME = gql`
@@ -69,12 +70,16 @@ const ContextWrapper = ({ children, history }) => {
     SdkUtils.loginGoogle()
     setIsAuth(false)
   }
-const openLoginModal= () => {
-  setShowLogin(true)
-}
-const closeLoginModal= () => {
-  setShowLogin(false)
-}
+  const openLoginModal = () => {
+    setShowLogin(true)
+  }
+  const closeLoginModal = () => {
+    setShowLogin(false)
+  }
+  const { data: dataSavedPost, refetch: refetchSavedPost } = useQuery(GET_SAVEDPOST_BY_USER, {
+    variables: { userId: data?.me?._id },
+    fetchPolicy: 'no-cache'
+  })
   return (
     <IContext.Provider
       value={{
@@ -89,7 +94,9 @@ const closeLoginModal= () => {
         onCancelMessbox: onCancelMessbox,
         showLogin: showLogin,
         openLoginModal: openLoginModal,
-        closeLoginModal: closeLoginModal
+        closeLoginModal: closeLoginModal,
+        dataSavedPost: dataSavedPost,
+        refetchSavedPost: refetchSavedPost
       }}
     >
       {children}

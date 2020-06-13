@@ -307,12 +307,10 @@ const index = ({ children }) => {
         </Sider>
         <Content
           style={{
-            // backgroundColor: 'aliceblue',
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
             marginTop: 0
-            // width: '90%'
-            // width: isAuth ? '90%' : '10%'
+
           }}
         >
           <brokenContext.Provider value={isBroken}>

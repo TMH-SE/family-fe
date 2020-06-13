@@ -1,19 +1,20 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect, useContext } from 'react'
 import firebase from 'firebase/app'
+import { Card, Avatar, Typography } from 'antd'
 import {
-  Card,
-  Avatar,
-  Button,
-  Typography,
-} from 'antd'
-import { Reaction, SharePost, CommentPost, SaveAndReport } from '@components'
-import {
-  CommentOutlined,
-} from '@ant-design/icons'
+  Reaction,
+  SharePost,
+  CommentPost,
+  SaveAndReport,
+  JoinBtn
+} from '@components'
+import { CommentOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
+import { IContext } from '@tools'
 
-export const Post = props => {
+function PostHaveGroup(props) {
   const [showText, setShowText] = useState(false)
+  const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
   const { item, idx } = props
@@ -35,15 +36,16 @@ export const Post = props => {
   return (
     <>
       <Card
-        className='post'
+        className="post"
         title={
-          <div style={{ display: 'flex', justifyContent: 'start' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Avatar
+              shape="square"
               onClick={() => history.push(`/pagegroup/${item?.community?._id}`)}
-              size="large"
+              size={64}
               src={item?.community?.avatar}
             />
-            <div>
+            <div style={{ marginLeft: 10 }}>
               <a
                 onClick={() =>
                   history.push(`/pagegroup/${item?.community?._id}`)
@@ -60,7 +62,8 @@ export const Post = props => {
                       history.push(`/${item?.createdBy?._id}/info`)
                     }
                   >
-                    {item?.createdBy?.firstname}
+                    {' '}
+                    {item?.createdBy?.firstname + ' '}
                   </a>
                 </span>
                 - {new Date(item?.createdAt).toLocaleString()}
@@ -69,11 +72,9 @@ export const Post = props => {
           </div>
         }
         extra={
-          <Button
-            style={{ backgroundColor: 'rgb(0, 152, 218)', color: '#fff' }}
-          >
-            Tham gia
-          </Button>
+          <JoinBtn
+            id={{ userId: me?._id, communityId: item?.community?._id }}
+          ></JoinBtn>
         }
         style={{ maxWidth: '100%', marginTop: 16 }}
         actions={[
@@ -95,7 +96,11 @@ export const Post = props => {
             <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
           </div>,
           <SharePost key="share" idPost={item?._id} />,
-         <SaveAndReport key='saveandreport' postId={item?._id} postItem={item}/>,
+          <SaveAndReport
+            key="saveandreport"
+            postId={item?._id}
+            postItem={item}
+          />,
           <CommentPost idPost={item?._id} key="commet"></CommentPost>
         ]}
       >
@@ -107,10 +112,6 @@ export const Post = props => {
           }
           description={
             <div>
-              <img
-                src={item?.thumbnail}
-                style={{ width: '100%', objectFit: 'cover' }}
-              ></img>
               <p
                 dangerouslySetInnerHTML={{
                   __html: item?.content
@@ -131,9 +132,12 @@ export const Post = props => {
                   await setShowText(false)
                 }}
               >
-                See more
+                Xem thêm
               </a>
-              <div></div>
+              <img
+                src={item?.thumbnail}
+                style={{ width: '100%', objectFit: 'cover' }}
+              ></img>
             </div>
           }
         />
@@ -148,3 +152,4 @@ export const Post = props => {
     </>
   )
 }
+export default PostHaveGroup

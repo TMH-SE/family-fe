@@ -18,7 +18,7 @@ export default function Message(props) {
     const ele = document.getElementsByClassName(
       `message-list-container ${props.idChat}`
     )[0]
-    if(ele) ele.scrollTop = ele.scrollHeight
+    if (ele) ele.scrollTop = ele.scrollHeight
   }, [props.isLast])
 
   return (

@@ -122,7 +122,7 @@ function InputCustomize(props) {
           newPlain = escapeHtml(plainText).replace(mention.display, `<a href='${window.location.origin}/${mention.id}/info'>${mention.display}</a>`)
         })
         props.onSubmit(newPlain, image.srcImg)
-        onSubmit(text, image.srcImg)
+        // onSubmit(text, image.srcImg)
         setText('')
         setImage({ ...image, srcImg: '' })
       }
@@ -180,7 +180,7 @@ function InputCustomize(props) {
           id={`input-custom-${idElement}`}
           className="textMention"
           placeholder={placeholder}
-          autoSize={{ minRows: 1, maxRows: 3 }}
+          // autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(event, newValue, newPlainTextValue, mentions) => {
             setText(newValue)
             setPlainText(newPlainTextValue)

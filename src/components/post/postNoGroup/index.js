@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
 import { Card, Avatar, Typography } from 'antd'
-import {
-  Reaction,
-  SharePost,
-  CommentPost,
-  SaveAndReport
-} from '@components'
+import { Reaction, SharePost, CommentPost, SaveAndReport } from '@components'
 import { CommentOutlined } from '@ant-design/icons'
 import { Meta } from 'antd/lib/list/Item'
 import { useHistory } from 'react-router-dom'
-
-export const Post = props => {
+function PostNoGroup(props) {
   const [showText, setShowText] = useState(false)
   // const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
@@ -19,9 +13,8 @@ export const Post = props => {
   // const [visibleModalReport, setVisibleModalReport] = useState(false)
   const { item, idx } = props
   const history = useHistory()
-
   useEffect(() => {
-    getSum(item.postId)
+    getSum(item?._id)
   }, [idx])
   const getSum = idPost => {
     let sumTemp = 0
@@ -29,7 +22,7 @@ export const Post = props => {
       .database()
       .ref(`posts/${idPost}/comments`)
       .on('value', snapshot => {
-        sumTemp = snapshot.val() && Object.keys(snapshot.val())?.length
+        sumTemp = snapshot.val() ? Object.keys(snapshot.val())?.length : 0
         setSum(sumTemp)
       })
   }
@@ -38,21 +31,21 @@ export const Post = props => {
       <Card
         // key={key}
         title={
-          <div style={{ display: 'flex', justifyContent: 'start' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Avatar
-              onClick={() => history.push(`/pagegroup/${item.groupId}`)}
+              onClick={() => history.push(`/${item?.createdBy?._id}/info`)}
               size="large"
-              src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+              src={item?.createdBy?.avatar || 'https://lh3.googleusercontent.com/proxy/6C5Z-8XG57kW_mwwDGrOz6PxPeVCy8D2cdZWKafAdYfyTxWRECggO74MhJSria5djCNtW-7r5bdxfSGoZhkqSyBN34OFbpfjwrc43LbI' }
             />
-            <div>
+            <div style={{ marginLeft: 10 }}>
               <a
-                // onClick={() => history.push('/tuinhune/info')}
+                onClick={() => history.push(`/${item?.createdBy?._id}/info`)}
                 style={{ fontWeight: 'bolder', color: 'black' }}
               >
-                Tuinhune
+                {item?.createdBy?.firstname}
               </a>
               <p style={{ color: '#9b9b9b', fontSize: 12 }}>
-                {new Date().toLocaleString()}
+               {new Date(item?.createdAt).toLocaleString()}
               </p>
             </div>
           </div>
@@ -64,48 +57,41 @@ export const Post = props => {
             key="like"
             onDoubleClick={() => console.log('đâsđâsd')}
           >
-            <Reaction idPost={item.postId} />
+            <Reaction idPost={item?._id} />
           </div>,
           <div key="comment">
             <CommentOutlined
               onClick={() =>
-                document.getElementById(`input-custom-${item.postId}`).focus()
+                document.getElementById(`input-custom-${item?._id}`).focus()
               }
             />
-            <span style={{ fontWeight: 'bold' }}>{sum} </span>
+             <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
           </div>,
           <SharePost key="share" />,
-          <SaveAndReport key='saveandreport' postId={item.postId} postItem={item}/>,
-          <CommentPost idPost={item.postId} key="commet"></CommentPost>
+          <SaveAndReport
+            key="saveandreport"
+            postId={item?._id}
+            postItem={item}
+          />,
+          <CommentPost idPost={item?._id} key="commet"></CommentPost>
         ]}
       >
         <Meta
           title={
-            <a onClick={() => history.push(`/postdetail/${item.postId}`)}>
+            <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
               <Typography.Title level={2}>
-                Giảm nóng cho bé mùa hè
+                {item?.title}
               </Typography.Title>
             </a>
           }
           description={
             <div>
-              <p
-                // id={showText ? `expand${key}` : 'collapse'}
+               <p
+                dangerouslySetInnerHTML={{
+                  __html: item?.content
+                }}
                 className={`content ${nameEl}${idx}}`}
-              >
-                Một trong những ngộ nhận sai lầm về giữ ấm bé yêu là ủ ấm bé.
-                Bằng cách mặc thật nhiều quần áo thật dày, thật kín. Đây là cách
-                giữ ấm không đúng, không khoa học. Bé sẽ bị nóng, ra nhiều mồ
-                hôi và nhiễm lạnh ngược lại, dễ dẫn đến viêm phổi nếu mẹ mặc quá
-                nhiều áo quần. Nhiều khi mẹ ủ ấm quá mức sẽ khiến bé bị đột tử
-                do bị bí hơi nữa đấy. Chọn quần áo khi ngủ cho con sao cho thoải
-                mái nhất, an toàn nhất là đã giúp bé được ủ ấm thân nhiệt rồi.
-                Nếu mẹ sợ bé lạnh, hãy đắp thêm một lớp chăn lưới mỏng, nhẹ,
-                loại dùng cho trẻ sơ sinh là bé vừa ấm áp vừa thoáng khí, thoát
-                mồ hôi. Mẹ nên tránh đồ ngủ có dây buộc, những họa tiết phụ kiện
-                trang trí khác có thể quấn cổ bé, làm bé không thở được. Nguồn:
-                internet
-              </p>
+              ></p>
               <a
                 id={`${nameEl}${idx}}`}
                 onClick={async () => {
@@ -120,8 +106,12 @@ export const Post = props => {
                   await setShowText(false)
                 }}
               >
-                See more{' '}
+                Xem thêm{' '}
               </a>
+              <img
+                src={item?.thumbnail}
+                style={{ width: '100%', objectFit: 'cover' }}
+              ></img>
             </div>
           }
         />
@@ -131,8 +121,9 @@ export const Post = props => {
         visible={visibleModalReport}
         handleCancel={handleCancel}
         handleOk={handleOk}
-        postId={item?._id}
+    ?_id={item?._id}
       ></ModalReport> */}
     </>
   )
 }
+export default PostNoGroup

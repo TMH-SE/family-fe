@@ -9,9 +9,10 @@ import { brokenContext } from '../../layouts/MainLayout'
 import './index.scss'
 import {
   HighLightPost,
+  PostHaveGroup,
+  PostNoGroup
 } from '@components'
 import { IContext } from '@tools'
-import { Post } from './post'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_POSTS } from '@shared'
 import CreatePostDrawer from './createPostDrawer'
@@ -60,16 +61,16 @@ const HomePage = ({ history }) => {
             ? history.push('/createpost')
             : setVisibleModalCreate(!visibleModalCreate)
         }
-        style={{ margin: '0 auto', marginBottom: 10 }}
+        style={{ margin: '0 auto', marginBottom: 10, resize: 'none' }}
         placeholder={`${me?.firstname} ơi, hôm nay bạn cần chia sẻ gì ?`}
-        autoSize={{ minRows: 3, maxRows: 5 }}
+        // autoSize={{ minRows: 3, maxRows: 5 }}
       /></>}
       <h3>Bài viết từ FAMILY</h3>
       <HighLightPost isBroken={isBroken}></HighLightPost>
 
       {data?.posts.map((item, idx) => {
         return (
-          <Post key={idx} item={item} idx={idx} ></Post>
+          item?.community ? <PostHaveGroup key={idx} item={item} idx={idx} ></PostHaveGroup> : <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
         )
       })}
 

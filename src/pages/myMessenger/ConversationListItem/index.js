@@ -41,7 +41,15 @@ export default function ConversationListItem(props) {
           </Badge>
         }
         title={data?.getUser?.firstname}
-        description={lastMess.content.message || lastMess}
+        description={
+          lastMess?.content?.message.trim() !== ''
+            ? lastMess?.content?.message.trim()
+            : lastMess?.content?.img
+            ? lastMess.author === me?._id
+              ? 'Bạn đã gửi 1 hình'
+              : `${data?.getUser?.firstname} đã gửi cho bạn 1 ảnh`
+            : ''
+        }
       />
     </List.Item>
   ) : (

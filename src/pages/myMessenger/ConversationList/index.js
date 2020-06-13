@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable react/prop-types */
-import React, { useContext, useState, useLayoutEffect, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import ConversationSearch from '../ConversationSearch'
 import Toolbar from '../../messageDetail/Toolbar'
 import ToolbarButton from '../../messageDetail/ToolbarButton'
@@ -45,9 +45,7 @@ export default function ConversationList(props) {
     data.trim() === '' ? setSearchdataChat(null) : setSearchdataChat(res)
   }
   const addSearch = data => {
-    const a = [...dataChatConver] || []
-    const idx = dataChatConver.findIndex(item => item?._id === data?._id)
-    a.length < dataChat?.length && a.push(dataChat)
+    const idx = dataChatConver.findIndex(item => item?.id === data?.id)
     dataChatConver[idx] = { ...dataChatConver[idx], name: data.name }
   }
   return (

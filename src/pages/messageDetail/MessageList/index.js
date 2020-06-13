@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
+import React, { useState, useContext, useLayoutEffect } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
-import * as uuid from 'uuid'
 
 import { InputCustomize } from '@components'
 import Message from '../Message'
@@ -18,8 +17,7 @@ export default function MessageList(props) {
   const [messages, setMessages] = useState([])
   const { chatBox } = props
   const { idChat, userId } = chatBox
-  const { me, onCancelMessbox, refetchDataChat } = useContext(IContext)
-  const { showMoreMess, setShowMoreMess } = useState(10)
+  const { me, onCancelMessbox } = useContext(IContext)
   useLayoutEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()

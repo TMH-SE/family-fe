@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Dropdown, Menu, notification, message } from 'antd'
+import { Dropdown, Menu, notification } from 'antd'
 import { ModalReport } from '@components'
 import { EllipsisOutlined, FlagOutlined, BookOutlined } from '@ant-design/icons'
 import { IContext } from '@tools'
@@ -8,7 +8,7 @@ import { CHECK_IS_SAVED, CREATE_AND_DELETE_SAVEDPOST } from '@shared'
 // import { brokenContext } from '../../../layouts/MainLayout'
 
 function SaveAndReport(props) {
-  const { me } = useContext(IContext)
+  const { me, refetchSavedPost } = useContext(IContext)
   const [isSaved, setIsSaved] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const { postId, postItem } = props
@@ -26,8 +26,7 @@ function SaveAndReport(props) {
             console.log(postItem, 'post')
             await createAndDelete({
               variables: {
-                id: { userId: me?._id, postId },
-                post: { ...postItem }
+                id: { userId: me?._id, postId }
               }
             }).then(res => {
               notification.success({
@@ -35,6 +34,7 @@ function SaveAndReport(props) {
                   ? 'Hủy lưu bài viết thành công'
                   : 'Lưu bài viết thành công'
               })
+              refetchSavedPost()
               setIsSaved(!isSaved)
             })
             refetch()

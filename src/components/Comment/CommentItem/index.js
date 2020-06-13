@@ -4,7 +4,7 @@ import { ModalPreviewImg } from '@components'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import moment from 'moment'
-import noAvatar from '@assets/images/noavata.jpg'
+// import noAvatar from '@assets/images/noavata.jpg'
 const CommentItem = props => {
   const { author } = props.comment
   const { comment, replyTo, type, idParent, history } = props
@@ -43,7 +43,7 @@ const CommentItem = props => {
             {data?.getUser?.firstname}
           </a>
         }
-      avatar={data?.getUser?.avatar || noAvatar}
+      avatar={data?.getUser?.avatar}
         content={
           <>
             <div style={{ display: 'flex', overflowX: 'auto' }}>

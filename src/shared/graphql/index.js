@@ -116,8 +116,8 @@ export const CHECK_IS_SAVED = gql`
   }
 `
 export const CREATE_AND_DELETE_SAVEDPOST = gql`
-  mutation createAndDeleteSavedPost($id: SavedPostInput, $post: PostInput) {
-    createAndDeleteSavedPost(id: $id, post: $post)
+  mutation createAndDeleteSavedPost($id: SavedPostInput) {
+    createAndDeleteSavedPost(id: $id)
   }
 `
 export const GET_SAVEDPOST_BY_USER = gql`
@@ -139,6 +139,37 @@ export const GET_SAVEDPOST_BY_USER = gql`
         }
         isActive
         createdAt
+        createdBy {
+          _id
+          firstname
+          avatar
+        }
+      }
+    }
+  }
+`
+export const CHECK_IS_MEMBER = gql`
+  query checkIsMember($id: CommunityUserInput) {
+    checkIsMember(id: $id)
+  }
+`
+export const CREATE_AND_DELETE_MEMBER = gql`
+  mutation createAndDeleteMember($id: CommunityUserInput) {
+    createAndDeleteMember(id: $id)
+  }
+`
+
+export const GET_COMMUNITIES_BY_USER = gql`
+  query getCommunitiesByUser($userId: String) {
+    getCommunitiesByUser(userId: $userId) {
+      _id {
+        userId
+      }
+      community {
+        _id
+        name
+        avatar
+        coverPhoto
       }
     }
   }

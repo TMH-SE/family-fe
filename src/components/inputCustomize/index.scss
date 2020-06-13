@@ -19,7 +19,7 @@
   &:active {
     outline: none;
     color: #454647;
-    border: 1px solid #3facded0;
+    border: none;
   }
   &::placeholder {
     color: #a4b0be;
@@ -83,5 +83,5 @@
   justify-content: flex-end;
   background-color: initial;
   border-radius: 20px;
-  padding: 5px;
+  // padding: 5px;
 }

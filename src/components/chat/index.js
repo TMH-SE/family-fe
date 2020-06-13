@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Button } from 'antd'
 import { MessageTwoTone } from '@ant-design/icons'
 import { IContext } from '@tools'
-
+import firebase from 'firebase/app'
 function Chat(props) {
   const { members, history, isBroken } = props
   const { chooseConversation, me, isAuth, openLoginModal } = useContext(IContext)
@@ -25,7 +25,7 @@ function Chat(props) {
             temp.id,
             temp.members.filter(mem => mem !== me?._id)[0]
           )
-          return
+          return true
         }
       })
     firebase

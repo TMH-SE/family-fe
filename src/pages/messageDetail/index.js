@@ -103,13 +103,8 @@ function MessageDetail(props) {
     return tempMessages
   }
   const handleSubmit = async (value, imgList) => {
-    // const chatId = `${idChat}` + '/'
-    const message = +new Date()
-    console.log(
-      value.trim() !== '' ? value.trim() : imgList ? 'Bạn đã gửi 1 hình' : '',
-      'lastmessageeeê'
-    )
     try {
+      const message = +new Date()
       await firebase
         .database()
         .ref(`messenger/${idChat}/listmessages/` + message)
