@@ -35,7 +35,6 @@ function PageGroup(props) {
     variables: { communityId },
     fetchPolicy: 'no-cache'
   })
-  console.log(dataCommunity, communityId, 'count')
   const handleOk = () => {
     // setVisibleModalCreate(false)
     setVisibleModalReport(false)
