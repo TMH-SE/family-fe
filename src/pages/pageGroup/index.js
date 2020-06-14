@@ -8,24 +8,8 @@ import { ModalReport, PostNoGroup, JoinBtn } from '@components'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
+import { GET_MEMBERS_BY_COMMUNITY, GET_POST_BY_COMMUNITY } from '@shared'
 
-export const GET_POST_BY_COMMUNITY = gql`
-  query postsByCommunity($communityId: String) {
-    postsByCommunity(communityId: $communityId) {
-      _id
-      title
-      content
-      thumbnail
-      createdBy {
-        _id
-        firstname
-        lastname
-        avatar
-      }
-      createdAt
-    }
-  }
-`
 export const GET_COMMUNITY_BY_ID = gql`
   query communityById($id: String) {
     communityById(id: $id) {
@@ -36,11 +20,7 @@ export const GET_COMMUNITY_BY_ID = gql`
     }
   }
 `
-export const GET_MEMBERS_BY_COMMUNITY = gql`
-  query getMembersByCommunity($communityId: String) {
-    getMembersByCommunity(communityId: $communityId)
-  }
-`
+
 function PageGroup(props) {
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const { communityId } = props.match.params
@@ -55,7 +35,7 @@ function PageGroup(props) {
     variables: { communityId },
     fetchPolicy: 'no-cache'
   })
-  console.log(dataMemberCount, 'count')
+  console.log(dataCommunity, communityId, 'count')
   const handleOk = () => {
     // setVisibleModalCreate(false)
     setVisibleModalReport(false)

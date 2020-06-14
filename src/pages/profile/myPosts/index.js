@@ -7,38 +7,15 @@ import {
   PostHaveGroup
   // ModalCreatePost
 } from '../../../components'
-import gql from 'graphql-tag'
-import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 
-export const GET_POSTS_BY_USER = gql`
-  query postsByUser($userId: String) {
-    postsByUser(userId: $userId) {
-      _id
-      title
-      content
-      thumbnail
-      createdBy {
-        _id
-        firstname
-        lastname
-        avatar
-      }
-      createdAt
-      community{
-        _id
-        name
-        avatar
-      }
-    }
-  }
-`
 function MyPosts(props) {
   const [visibleModalReport, setVisibleModalReport] = useState(false)
-  const { me } = useContext(IContext)
-  const { data } = useQuery(GET_POSTS_BY_USER, {
-    variables: { userId: me?._id }
-  })
+  const { dataMyPosts } = useContext(IContext)
+  // const { data } = useQuery(GET_POSTS_BY_USER, {
+  //   variables: { userId: me?._id }
+  // })
+  console.log(dataMyPosts, 'post')
   const handleOk = () => {
     // setVisibleModalCreate(false)
     setVisibleModalReport(false)
@@ -50,7 +27,7 @@ function MyPosts(props) {
 
   return (
     <>
-      {data && data?.postsByUser.map((item, idx) => (
+      {dataMyPosts && dataMyPosts?.postsByUser.map((item, idx) => (
         item?.community ? <PostHaveGroup key={idx} item={item} idx={idx}></PostHaveGroup> : <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
       ))}
 

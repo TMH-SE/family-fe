@@ -13,8 +13,6 @@ import {
   PostNoGroup
 } from '@components'
 import { IContext } from '@tools'
-import { useQuery } from '@apollo/react-hooks'
-import { GET_POSTS } from '@shared'
 import CreatePostDrawer from './createPostDrawer'
 // import { SumComment } from '../../components/Comment'
 // const { Meta } = Card
@@ -45,8 +43,7 @@ import CreatePostDrawer from './createPostDrawer'
 const HomePage = ({ history }) => {
   const isBroken = useContext(brokenContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
-  const { me, isAuth } = useContext(IContext)
-  const { data } = useQuery(GET_POSTS)
+  const { me, isAuth, dataPosts } = useContext(IContext)
 
   const handleCancel = () => {
     setVisibleModalCreate(false)
@@ -68,7 +65,7 @@ const HomePage = ({ history }) => {
       <h3>Bài viết từ FAMILY</h3>
       <HighLightPost isBroken={isBroken}></HighLightPost>
 
-      {data?.posts.map((item, idx) => {
+      {dataPosts?.posts.map((item, idx) => {
         return (
           item?.community ? <PostHaveGroup key={idx} item={item} idx={idx} ></PostHaveGroup> : <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
         )

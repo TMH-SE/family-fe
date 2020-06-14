@@ -31,11 +31,18 @@ const CREATE_POST = gql`
   }
 `
 
-const GET_COMMUNITIES = gql`
-  query communities {
-    communities {
-      _id
-      name
+const GET_COMMUNITIES_BY_USER = gql`
+  query getCommunitiesByUser($userId: String) {
+    getCommunitiesByUser(userId: $userId) {
+      _id{
+        userId
+      }
+      community{
+        _id
+        name
+        avatar
+        coverPhoto
+      }
     }
   }
 `
@@ -44,7 +51,7 @@ const CreatePostForm = forwardRef((props, ref) => {
   const { setConfirmLoading, handleCancel } = props
   const keywordRef = useRef()
 
-  const { me } = useContext(IContext)
+  const { me, refetchMyPosts, refetchPosts } = useContext(IContext)
 
   const [visibleInputKeyword, setVisibleInputKeyword] = useState(false)
   const [editor, setEditor] = useState(null)
@@ -54,7 +61,11 @@ const CreatePostForm = forwardRef((props, ref) => {
   const [form] = Form.useForm()
 
   const [createPost] = useMutation(CREATE_POST)
-  const { loading: loadingCommunities, data, refetch } = useQuery(GET_COMMUNITIES)
+  const {
+    loading: loadingCommunities,
+    data,
+    refetch
+  } = useQuery(GET_COMMUNITIES_BY_USER, { variables: { userId: me?._id } })
 
   useImperativeHandle(ref, () => ({
     handleOk: () => {
@@ -97,6 +108,8 @@ const CreatePostForm = forwardRef((props, ref) => {
       .then(({ data }) => {
         if (data?.createPost) {
           notification.success({ message: 'Tạo bài viết thành công' })
+          refetchPosts()
+          refetchMyPosts()
           setConfirmLoading(false)
           handleCancel && handleCancel()
         }
@@ -126,11 +139,11 @@ const CreatePostForm = forwardRef((props, ref) => {
           loading={loadingCommunities}
           placeholder="Chọn cộng đồng"
           showArrow={false}
-          options={data?.communities?.map(
-            community =>
+          options={data?.getCommunitiesByUser?.map(
+            communityUser =>
               ({
-                label: community?.name,
-                value: community?._id
+                label: communityUser?.community?.name,
+                value: communityUser?.community?._id
               } || [])
           )}
           showSearch

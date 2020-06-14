@@ -110,6 +110,28 @@ export const GET_POSTS = gql`
     }
   }
 `
+export const GET_POSTS_BY_USER = gql`
+  query postsByUser($userId: String) {
+    postsByUser(userId: $userId) {
+      _id
+      title
+      content
+      thumbnail
+      createdBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      createdAt
+      community{
+        _id
+        name
+        avatar
+      }
+    }
+  }
+`
 export const CHECK_IS_SAVED = gql`
   query checkIsSaved($id: SavedPostInput) {
     checkIsSaved(id: $id)
@@ -172,5 +194,27 @@ export const GET_COMMUNITIES_BY_USER = gql`
         coverPhoto
       }
     }
+  }
+`
+export const GET_POST_BY_COMMUNITY = gql`
+  query postsByCommunity($communityId: String) {
+    postsByCommunity(communityId: $communityId) {
+      _id
+      title
+      content
+      thumbnail
+      createdBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      createdAt
+    }
+  }
+`
+export const GET_MEMBERS_BY_COMMUNITY = gql`
+  query getMembersByCommunity($communityId: String) {
+    getMembersByCommunity(communityId: $communityId)
   }
 `

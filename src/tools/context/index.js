@@ -4,7 +4,7 @@ import { SdkUtils } from '@utils'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import { GET_SAVEDPOST_BY_USER } from '@shared'
+import { GET_SAVEDPOST_BY_USER, GET_POSTS, GET_POSTS_BY_USER } from '@shared'
 export const IContext = React.createContext()
 
 const GET_ME = gql`
@@ -80,6 +80,11 @@ const ContextWrapper = ({ children, history }) => {
     variables: { userId: data?.me?._id },
     fetchPolicy: 'no-cache'
   })
+  const { data: dataPosts, refetch: refetchPosts } = useQuery(GET_POSTS)
+  const { data: dataMyPosts, refetch: refetchMyPosts } = useQuery(GET_POSTS_BY_USER, {
+    variables: { userId: data?.me?._id },
+    fetchPolicy: 'no-cache'
+  })
   return (
     <IContext.Provider
       value={{
@@ -96,7 +101,11 @@ const ContextWrapper = ({ children, history }) => {
         openLoginModal: openLoginModal,
         closeLoginModal: closeLoginModal,
         dataSavedPost: dataSavedPost,
-        refetchSavedPost: refetchSavedPost
+        refetchSavedPost: refetchSavedPost,
+        dataPosts: dataPosts,
+        refetchPosts: refetchPosts,
+        dataMyPosts: dataMyPosts,
+        refetchMyPosts: refetchMyPosts
       }}
     >
       {children}

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
-import { Row, Col, Divider, Tooltip } from 'antd'
+import { Row, Col, Tooltip } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import EditUser from './editUser'
 const DescriptionItem = ({ title, content }) => (
@@ -10,7 +10,7 @@ const DescriptionItem = ({ title, content }) => (
   </div>
 )
 function Info(props) {
-  const { userInfo, isMe } = props
+  const { userInfo, isMe, dataCountFollow } = props
   const [visible, setVisible] = useState(false)
   return (
     <>
@@ -20,7 +20,7 @@ function Info(props) {
             className="site-description-item-profile-p"
             style={{ marginBottom: 24 }}
           >
-            User Profile
+            Thông tin
           </p>
         </Col>
         {isMe && (
@@ -31,7 +31,6 @@ function Info(props) {
           </Col>
         )}
       </Row>
-
       <Row>
         <Col span={12}>
           <DescriptionItem
@@ -80,11 +79,19 @@ function Info(props) {
           />
         </Col>
       </Row>
-      <Row>
+      {/* <Row>
         <Col span={24}>
           <DescriptionItem
             title="Tham gia ngày"
             content={userInfo?.createdAt}
+          />
+        </Col>
+      </Row> */}
+      <Row>
+        <Col span={24}>
+          <DescriptionItem
+            title="Số người theo dõi"
+            content={dataCountFollow?.getSumFollowerByUser}
           />
         </Col>
       </Row>

@@ -50,7 +50,7 @@ function PostNoGroup(props) {
             </div>
           </div>
         }
-        style={{ maxWidth: '100%', marginTop: 16 }}
+        style={{ maxWidth: '100%' }}
         actions={[
           <div
             id="like-post"
@@ -79,7 +79,7 @@ function PostNoGroup(props) {
         <Meta
           title={
             <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
-              <Typography.Title level={2}>
+              <Typography.Title level={4}>
                 {item?.title}
               </Typography.Title>
             </a>

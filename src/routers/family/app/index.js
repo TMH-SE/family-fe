@@ -51,7 +51,7 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
-      path: '/pagegroup/:groupId',
+      path: '/pagegroup/:communityId',
       component: 'pageGroup',
       title: 'Cộng đồng'
     },

@@ -18,6 +18,7 @@ export default function MessageList(props) {
   const { chatBox } = props
   const { idChat, userId } = chatBox
   const { me, onCancelMessbox } = useContext(IContext)
+
   useLayoutEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
@@ -143,15 +144,23 @@ export default function MessageList(props) {
     ele.scrollTop = ele.scrollHeight
   }
 
-  const { isBroken } = props
+  const { isBroken, history } = props
 
   return (
     <div className="message-list">
       <Card
         title={
           <>
-            <Avatar src={data?.getUser?.avatar}></Avatar>
-            <span style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</span>
+            <Avatar
+              src={data?.getUser?.avatar}
+              onClick={() => history.push(`/${data?.getUser?._id}/info`)}
+            ></Avatar>
+            <a
+              style={{ marginLeft: 5 }}
+              onClick={() => history.push(`/${data?.getUser?._id}/info`)}
+            >
+              {data?.getUser?.firstname}
+            </a>
           </>
         }
         className="ant-mess"

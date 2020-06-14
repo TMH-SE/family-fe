@@ -45,7 +45,7 @@ function PostHaveGroup(props) {
               size={64}
               src={item?.community?.avatar}
             />
-            <div style={{ marginLeft: 10 }}>
+            <div style={{ marginLeft: 10, marginTop: 10 }}>
               <a
                 onClick={() =>
                   history.push(`/pagegroup/${item?.community?._id}`)
@@ -76,7 +76,7 @@ function PostHaveGroup(props) {
             id={{ userId: me?._id, communityId: item?.community?._id }}
           ></JoinBtn>
         }
-        style={{ maxWidth: '100%', marginTop: 16 }}
+        style={{ maxWidth: '100%' }}
         actions={[
           <div id="like-post" key="like">
             <Reaction idPost={item?._id} />
@@ -107,7 +107,7 @@ function PostHaveGroup(props) {
         <Card.Meta
           title={
             <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
-              <Typography.Title level={2}>{item?.title}</Typography.Title>
+              <Typography.Title level={4}>{item?.title}</Typography.Title>
             </a>
           }
           description={
@@ -142,13 +142,6 @@ function PostHaveGroup(props) {
           }
         />
       </Card>
-
-      {/* <ModalReport
-        visible={visibleModalReport}
-        handleCancel={handleCancel}
-        handleOk={handleOk}
-        postId={item?._id}
-      ></ModalReport> */}
     </>
   )
 }

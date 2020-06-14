@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState } from 'react'
-import { Avatar, Menu, Button, Upload, notification } from 'antd'
+import { Avatar, Button, Upload, notification, List } from 'antd'
 import { withRouter } from 'react-router-dom'
 import {
-  EllipsisOutlined,
   LoadingOutlined,
   CameraFilled,
   CheckCircleTwoTone,
@@ -14,7 +13,7 @@ import Info from './info'
 import MyMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
-import { HighLightGroup, ModalPreviewImg, Chat, Follow } from '@components'
+import { ModalPreviewImg, Chat, Follow } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import {
@@ -28,15 +27,24 @@ import { IContext } from '@tools'
 
 import ImgCrop from 'antd-img-crop'
 import JoinedCommunity from './joinedCommunity'
+import gql from 'graphql-tag'
+import MenuInfo from './menuInfo'
+export const GET_SUM_FOLLOWER_BY_USER = gql`
+  query getSumFollowerByUser($userId: String) {
+    getSumFollowerByUser(userId: $userId)
+  }
+`
+
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
-  // const MY_USER_ID = 'tuinhune'
   const isBroken = useContext(brokenContext)
   const { data, refetch } = useQuery(GET_USER, {
     variables: { userId: userId }
   })
-
+  const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(GET_SUM_FOLLOWER_BY_USER, {
+    variables: { userId: userId }
+  })
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
@@ -53,7 +61,8 @@ function Profile(props) {
   })
   const [updateUser] = useMutation(UPDATE_USER)
   const { data: dataCommunity } = useQuery(GET_COMMUNITIES_BY_USER, {
-    variables: { userId: me?._id }
+    variables: { userId: me?._id },
+    fetchPolicy: 'no-cache'
   })
   const uploadButtonCover =
     isMe &&
@@ -393,6 +402,7 @@ function Profile(props) {
                     {!isMe && (
                       <div>
                         <Follow
+                          refetchDataCountFollow={refetchDataCountFollow}
                           isBroken={isBroken}
                           follower={{ userId: userId, followerId: me?._id }}
                         />
@@ -406,59 +416,13 @@ function Profile(props) {
                   </div>
                 </div>
                 {isMe && (
-                  <Menu
-                    selectedKeys={[type]}
-                    //   onSelect={(e) => {
-                    //     // setKeyMenu(e.key)
-                    //     // console.log(keyMenu)
-                    //   }
-                    //   }
-                    style={{
-                      marginTop: -30,
-                      // color: 'black',
-                      fontSize: 15,
-                      fontWeight: 550,
-                      width: isBroken ? '60vw' : '35vw',
-                      backgroundColor: 'initial'
-                    }}
-                    overflowedIndicator={<EllipsisOutlined color="black" />}
-                    mode="horizontal"
-                  >
-                    <Menu.Item
-                      onClick={() => history.push(`/${userId}/info`)}
-                      key="info"
-                    >
-                      Thông tin
-                    </Menu.Item>
-                    {isBroken && (
-                      <Menu.Item
-                        onClick={() => history.push(`/${userId}/messenger`)}
-                        key="mail"
-                      >
-                        Tin nhắn
-                      </Menu.Item>
-                    )}
-                    {isMe && (
-                      <Menu.Item
-                        onClick={() => history.push(`/${userId}/savedposts`)}
-                        key="savedposts"
-                      >
-                        Bài viết đã lưu
-                      </Menu.Item>
-                    )}
-                    <Menu.Item
-                      onClick={() => history.push(`/${userId}/myposts`)}
-                      key="myposts"
-                    >
-                      Bài viết của tôi
-                    </Menu.Item>
-                    <Menu.Item
-                      onClick={() => history.push(`/${userId}/joinedGroup`)}
-                      key="joinedGroup"
-                    >
-                      Cộng đồng đã tham gia
-                    </Menu.Item>
-                  </Menu>
+                  <MenuInfo
+                    isBroken={isBroken}
+                    userId={userId}
+                    type={type}
+                    isMe={isMe}
+                    history={history}
+                  />
                 )}
               </div>
             </div>
@@ -473,7 +437,7 @@ function Profile(props) {
           padding: type === 'info' && 16
         }}
       >
-        {type === 'info' && <Info userInfo={data?.getUser} isMe={isMe} />}
+        {type === 'info' && <Info userInfo={data?.getUser} isMe={isMe} dataCountFollow={dataCountFollow} />}
         {type === 'messenger' && <MyMessenger userInfo={data?.getUser} />}
         {type === 'myposts' && (
           <MyPosts history={history} userInfo={data?.getUser} />
@@ -481,7 +445,18 @@ function Profile(props) {
         {type === 'savedposts' && (
           <SavedPosts history={history} userInfo={data?.getUser} />
         )}
-        {type === 'joinedGroup' && <JoinedCommunity communities={dataCommunity?.getCommunitiesByUser} />}
+        {type === 'joinedGroup' && (
+          <List
+            itemLayout="horizontal"
+            dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser}
+            renderItem={item => (
+              <JoinedCommunity
+                item={item}
+                data={dataCommunity?.getCommunitiesByUser}
+              />
+            )}
+          />
+        )}
       </div>
       <ModalPreviewImg
         previewImg={previewImg}

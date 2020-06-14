@@ -231,6 +231,7 @@ const index = ({ children }) => {
                         }}
                         size={30}
                         src={me?.avatar}
+                        onClick={() => history.push(`/${me?._id}/info`)}
                       >
                         {/* N */}
                       </Avatar>
@@ -249,6 +250,7 @@ const index = ({ children }) => {
                       }}
                       size={30}
                       src={me?.avatar}
+                      onClick={() => history.push(`/${me?._id}/info`)}
                     >
                       {/* N */}
                     </Avatar>
@@ -337,7 +339,7 @@ const index = ({ children }) => {
                     style={{ display: 'flex', flexDirection: 'column' }}
                   >
                     <MessageList
-                      // refetch={refetch}
+                      history={history}
                       idx={idx}
                       onCancelMessbox={() => onCancelMessbox(mess.idChat)}
                       chatBox={mess}

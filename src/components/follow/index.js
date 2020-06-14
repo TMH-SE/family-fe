@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react'
 import Modal from 'antd/lib/modal/Modal'
 import firebase from 'firebase/app'
-import { Button } from 'antd'
+import { Button, Popconfirm } from 'antd'
 import { MessageTwoTone, HeartTwoTone, HeartFilled } from '@ant-design/icons'
 import {
   CREATE_CHAT,
@@ -19,7 +19,7 @@ function Follow(props) {
   const [createFollower] = useMutation(CREATE_FOLLOWER)
   const [deleteFollower] = useMutation(DELETE_FOLLOWER)
   const { userId, followerId } = props.follower
-  const { data, loading, refetch } = useQuery(CHECK_FOLLOW, {
+  const { data, refetch } = useQuery(CHECK_FOLLOW, {
     variables: { id: props.follower }
     // fetchPolicy: 'no-cache'
   })
@@ -38,14 +38,16 @@ function Follow(props) {
                 content: `${me?.firstname} đã bắt đầu theo dõi bạn`,
                 seen: false
               })
+            props.refetchDataCountFollow()
           } catch (err) {
             console.log(err)
           }
           refetch()
         })
-      : deleteFollower({ variables: { id: props.follower } }).then(() =>
+      : deleteFollower({ variables: { id: props.follower } }).then(() => {
           refetch()
-        )
+          props.refetchDataCountFollow()
+        })
   }
   return data?.checkFollow ? (
     props.isBroken ? (
@@ -54,18 +56,24 @@ function Follow(props) {
         onClick={() => sendNotifollow('unfollow')}
       />
     ) : (
-      <Button
-        type="ghost"
-        icon={<HeartFilled style={{ color: 'red' }} />}
-        onClick={() => sendNotifollow('unfollow')}
+      <Popconfirm
+        title="Bạn muốn bỏ theo dõi ?"
+        onConfirm={() =>
+          isAuth ? sendNotifollow('unfollow') : openLoginModal()
+        }
+        // onCancel={cancel}
+        okText="Đồng ý"
+        cancelText="Hủy"
       >
-        Đã theo dõi
-      </Button>
+        <Button type="ghost" icon={<HeartFilled style={{ color: 'red' }} />}>
+          Đã theo dõi
+        </Button>
+      </Popconfirm>
     )
   ) : props.isBroken ? (
     <HeartTwoTone
       style={{ marginLeft: 10, fontSize: 20 }}
-      onClick={() => isAuth ? sendNotifollow('follow') : openLoginModal()}
+      onClick={() => (isAuth ? sendNotifollow('follow') : openLoginModal())}
     />
   ) : (
     <Button

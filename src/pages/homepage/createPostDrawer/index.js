@@ -5,7 +5,6 @@ import { CreatePostForm } from '@components'
 function CreatePostDrawer(props) {
   const formRef = useRef()
   const { visible, handleCancel } = props
-
   const [confirmLoading, setConfirmLoading] = useState(false)
 
   return (
