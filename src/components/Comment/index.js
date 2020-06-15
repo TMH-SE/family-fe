@@ -9,32 +9,6 @@ import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
 import CommentItem from './CommentItem'
 
-// export const SumComment = (props) => {
-//   const { getSumComment } = useContext(IContext)
-//   const {idPost } = props
-//   const [sum, setSum] = useState(0)
-
-//   useLayoutEffect(() => {
-//      setSum(getSumComment(idPost))
-//     console.log(sum, 'a', idPost)
-//   }, [idPost])
-
-//   return <div
-//     key="comment"
-//     onClick={() =>
-//       document.getElementById(`input-custom-${idPost}`).focus()
-//     }
-//   >
-//     <CommentOutlined
-//       onClick={() =>
-//         document.getElementById(`input-custom-${idPost}`).focus()
-//       }
-//     />
-//     <span style={{ marginLeft: 5, fontWeight: 'bold' }}>
-//      {/* {sum} */}
-//     </span>
-//   </div>
-// }
 const CommentList = ({ comments, showMore, idPost }) => {
   const history = useHistory()
   const { me, isAuth, openLoginModal } = useContext(IContext)
@@ -54,7 +28,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
     setRep(repTo)
   }
   const sendNotiTagReply = async (userId, postId) => {
-    const notificationId = uuid.v1()
+    const notificationId = +new Date()
     arrTag &&
       arrTag.map(async item => {
         try {
@@ -66,7 +40,8 @@ const CommentList = ({ comments, showMore, idPost }) => {
               reciever: item?.id,
               link: `/postdetail/${postId}`,
               content: `${me?.firstname} đã nhắc đến bạn trong bình luận`,
-              seen: false
+              seen: false,
+              createdAt: +new Date()
             })
         } catch (err) {
           console.log(err)
@@ -205,7 +180,7 @@ function CommentPost(props) {
   const [showMore, setShowMore] = useState(1)
 
   const { me, isAuth, openLoginModal } = useContext(IContext)
-  const { idPost } = props
+  const { idPost, postItem } = props
   useLayoutEffect(() => {
     getComment()
   }, [idPost])
@@ -245,6 +220,17 @@ function CommentPost(props) {
           // photo: me?.avatar,
           mention: mentions,
           replies: []
+        })
+      await firebase
+        .database()
+        .ref(`notifications/${postItem?.createdBy?._id}/${+new Date()}`)
+        .set({
+          action: 'cmt',
+          reciever: postItem?.createdBy?._id,
+          link: `/postdetail/${postId}`,
+          content: `${me?.firstname} đã bình luận bài viết của bạn`,
+          seen: false,
+          createdAt: +new Date()
         })
     } catch (error) {
       console.log(error)

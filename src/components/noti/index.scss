@@ -1,5 +1,5 @@
 .noti-item {
-  padding: 18px;
+  padding: 0 18px;
   margin: 0 -15px;
 }
 .noti-item:hover {
@@ -9,6 +9,6 @@
 #noti-popover {
   .ant-popover-inner-content {
     max-height: 50vh;
-    overflow-y: scroll;
+    overflow-y: visible;
   }
 }

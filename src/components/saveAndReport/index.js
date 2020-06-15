@@ -56,6 +56,7 @@ function SaveAndReport(props) {
   const [deleteSavedPostsByPost] = useMutation(DELETE_SAVEPOSTS_BY_POST)
   const [showEditPost, setShowEditPost] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
+
   const onSaveClick = async () => {
     await createAndDelete({
       variables: {

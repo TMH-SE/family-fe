@@ -35,7 +35,10 @@ function PostNoGroup(props) {
             <Avatar
               onClick={() => history.push(`/${item?.createdBy?._id}/info`)}
               size="large"
-              src={item?.createdBy?.avatar || 'https://lh3.googleusercontent.com/proxy/6C5Z-8XG57kW_mwwDGrOz6PxPeVCy8D2cdZWKafAdYfyTxWRECggO74MhJSria5djCNtW-7r5bdxfSGoZhkqSyBN34OFbpfjwrc43LbI' }
+              src={
+                item?.createdBy?.avatar ||
+                'https://lh3.googleusercontent.com/proxy/6C5Z-8XG57kW_mwwDGrOz6PxPeVCy8D2cdZWKafAdYfyTxWRECggO74MhJSria5djCNtW-7r5bdxfSGoZhkqSyBN34OFbpfjwrc43LbI'
+              }
             />
             <div style={{ marginLeft: 10 }}>
               <a
@@ -45,48 +48,52 @@ function PostNoGroup(props) {
                 {item?.createdBy?.firstname}
               </a>
               <p style={{ color: '#9b9b9b', fontSize: 12 }}>
-               {new Date(item?.createdAt).toLocaleString()}
+                {new Date(item?.createdAt).toLocaleString()}
               </p>
             </div>
           </div>
         }
         style={{ maxWidth: '100%' }}
-        actions={[
-          <div
-            id="like-post"
-            key="like"
-            onDoubleClick={() => console.log('đâsđâsd')}
-          >
-            <Reaction idPost={item?._id} />
-          </div>,
-          <div key="comment">
-            <CommentOutlined
-              onClick={() =>
-                document.getElementById(`input-custom-${item?._id}`).focus()
-              }
-            />
-             <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
-          </div>,
-          <SharePost key="share" />,
-          <SaveAndReport
-            key="saveandreport"
-            postId={item?._id}
-            postItem={item}
-          />,
-          <CommentPost idPost={item?._id} key="commet"></CommentPost>
-        ]}
+        actions={
+          process.env.ADMIN_SERVER === 'false' && [
+            <div
+              id="like-post"
+              key="like"
+              onDoubleClick={() => console.log('đâsđâsd')}
+            >
+              <Reaction idPost={item?._id} postItem={item} />
+            </div>,
+            <div key="comment">
+              <CommentOutlined
+                onClick={() =>
+                  document.getElementById(`input-custom-${item?._id}`).focus()
+                }
+              />
+              <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
+            </div>,
+            <SharePost key="share" />,
+            <SaveAndReport
+              key="saveandreport"
+              postId={item?._id}
+              postItem={item}
+            />,
+            <CommentPost
+              idPost={item?._id}
+              postItem={item}
+              key="commet"
+            ></CommentPost>
+          ]
+        }
       >
         <Meta
           title={
             <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
-              <Typography.Title level={4}>
-                {item?.title}
-              </Typography.Title>
+              <Typography.Title level={4}>{item?.title}</Typography.Title>
             </a>
           }
           description={
             <div>
-               <p
+              <p
                 dangerouslySetInnerHTML={{
                   __html: item?.content
                 }}

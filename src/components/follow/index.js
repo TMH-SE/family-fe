@@ -24,7 +24,7 @@ function Follow(props) {
     // fetchPolicy: 'no-cache'
   })
   const sendNotifollow = async type => {
-    const notificationId = uuid.v1()
+    const notificationId = +new Date()
     type === 'follow'
       ? createFollower({ variables: { id: props.follower } }).then(async () => {
           try {
@@ -36,7 +36,8 @@ function Follow(props) {
                 reciever: userId,
                 link: `/${me?._id}/info`,
                 content: `${me?.firstname} đã bắt đầu theo dõi bạn`,
-                seen: false
+                seen: false,
+                createdAt: +new Date()
               })
             props.refetchDataCountFollow()
           } catch (err) {

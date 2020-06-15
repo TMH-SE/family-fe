@@ -13,7 +13,7 @@ import Info from './info'
 import MyMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
-import { ModalPreviewImg, Chat, Follow } from '@components'
+import { ModalPreviewImg, Chat, Follow, CommunityItem } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import {
@@ -26,7 +26,6 @@ import './index.scss'
 import { IContext } from '@tools'
 
 import ImgCrop from 'antd-img-crop'
-import JoinedCommunity from './joinedCommunity'
 import gql from 'graphql-tag'
 import MenuInfo from './menuInfo'
 export const GET_SUM_FOLLOWER_BY_USER = gql`
@@ -42,9 +41,12 @@ function Profile(props) {
   const { data, refetch } = useQuery(GET_USER, {
     variables: { userId: userId }
   })
-  const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(GET_SUM_FOLLOWER_BY_USER, {
-    variables: { userId: userId }
-  })
+  const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(
+    GET_SUM_FOLLOWER_BY_USER,
+    {
+      variables: { userId: userId }
+    }
+  )
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
@@ -82,9 +84,9 @@ function Profile(props) {
           listType="picture-card"
           className="icon-uploader"
           showUploadList={false}
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          action={file => handleChangeCover(file)}
           beforeUpload={beforeUpload}
-          onChange={info => handleChangeCover(info)}
+          // onChange={info => handleChangeCover(info)}
         >
           <CameraFilled style={{ fontSize: 25, color: '#fff' }} />
         </Upload>
@@ -134,9 +136,9 @@ function Profile(props) {
             listType="picture-card"
             className="icon-avt-uploader"
             showUploadList={false}
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            action={file => handleChangeAvatar(file)}
             beforeUpload={beforeUpload}
-            onChange={info => handleChangeAvatar(info)}
+            // onChange={info => handleChangeAvatar(info)}
           >
             <CameraFilled style={{ fontSize: 23 }} />
           </Upload>
@@ -166,66 +168,25 @@ function Profile(props) {
         <CloseCircleTwoTone twoToneColor="red" onClick={() => handleCancel()} />
       </div>
     ))
-  function getBase64(img, callback) {
-    const reader = new FileReader()
-    reader.addEventListener('load', () => callback(reader.result))
-    reader.readAsDataURL(img)
+  const handleChangeAvatar = async file => {
+    setLoadingImg({ ...loadingImg, avatar: true })
+    uploadImg(file).then(url => {
+      setImg({
+        ...img,
+        avatar: url
+      })
+      setLoadingImg({ ...loadingImg, avatar: false })
+    })
   }
-  const handleChangeAvatar = async info => {
-    setLoadingImg({
-      ...loadingImg,
-      coverPhoto: false
-    })
-    setImg({
-      ...img,
-      coverPhoto: null
-    })
-    if (info.file.status === 'uploading') {
-      setLoadingImg({
-        ...loadingImg,
-        avatar: true
+  const handleChangeCover = file => {
+    setLoadingImg({ ...loadingImg, coverPhoto: true })
+    uploadImg(file).then(url => {
+      setImg({
+        ...img,
+        coverPhoto: url
       })
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, async imageUrl => {
-        const url = await uploadImg(imageUrl)
-        setLoadingImg({ ...loadingImg, avatar: false })
-        setImg({
-          ...img,
-          avatar: url
-        })
-      })
-    }
-  }
-  const handleChangeCover = info => {
-    setLoadingImg({
-      ...loadingImg,
-      avatar: false
+      setLoadingImg({ ...loadingImg, coverPhoto: false })
     })
-    setImg({
-      ...img,
-      avatar: null
-    })
-    if (info.file.status === 'uploading') {
-      setLoadingImg({
-        ...loadingImg,
-        coverPhoto: true
-      })
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, async imageUrl => {
-        const url = await uploadImg(imageUrl)
-        setLoadingImg({ ...loadingImg, coverPhoto: false })
-        setImg({
-          ...img,
-          coverPhoto: url
-        })
-      })
-    }
   }
   function beforeUpload(file) {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -437,7 +398,13 @@ function Profile(props) {
           padding: type === 'info' && 16
         }}
       >
-        {type === 'info' && <Info userInfo={data?.getUser} isMe={isMe} dataCountFollow={dataCountFollow} />}
+        {type === 'info' && (
+          <Info
+            userInfo={data?.getUser}
+            isMe={isMe}
+            dataCountFollow={dataCountFollow}
+          />
+        )}
         {type === 'messenger' && <MyMessenger userInfo={data?.getUser} />}
         {type === 'myposts' && (
           <MyPosts history={history} userInfo={data?.getUser} />
@@ -450,8 +417,8 @@ function Profile(props) {
             itemLayout="horizontal"
             dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser}
             renderItem={item => (
-              <JoinedCommunity
-                item={item}
+              <CommunityItem
+                item={item.community}
                 data={dataCommunity?.getCommunitiesByUser}
               />
             )}

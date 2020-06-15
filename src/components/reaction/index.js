@@ -20,12 +20,12 @@ const emojiData = [
   },
   {
     emoji: 'open_mouth',
-    text: 'wow',
+    text: 'Wow',
     count: 9
   },
   {
     emoji: 'joy',
-    text: 'he he',
+    text: 'He He',
     count: 43
   }
 ]
@@ -34,7 +34,9 @@ function Reaction(props) {
   const [chosenmoji, setChosenEnmoji] = useState('')
   const [reactions, setReactions] = useState([])
   const [sumReactions, setSSumReactions] = useState(0)
-  const { idPost } = props
+  const [isClick, setIsClick] = useState(false)
+  const [visible, setVisible] = useState(true)
+  const { idPost, postItem } = props
   const { me, isAuth, openLoginModal } = useContext(IContext)
 
   useLayoutEffect(() => {
@@ -67,29 +69,7 @@ function Reaction(props) {
         setSSumReactions(count)
       })
   }
-  const onClickEmoji = e => {
-    if (chosenmoji !== '') {
-      const idx = reactions.findIndex(reaction => reaction.id === chosenmoji)
-      const arr = reactions[idx].users
-      arr.splice(
-        reactions[idx].users.findIndex(user => user === me._id),
-        1
-      )
-      try {
-        firebase
-          .database()
-          .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
-          .update({
-            count: reactions[idx].count - 1,
-            users: arr
-          })
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    setChosenEnmoji(e.id)
-
-    // reactions.map(async reaction => {
+  const updateOrSet = (e, emo) => {
     const vt = reactions.findIndex(reaction => reaction.id === e.id)
     reactions[vt]
       ? firebase
@@ -108,20 +88,70 @@ function Reaction(props) {
             count: 1,
             users: [me._id]
           })
-    // })
+    firebase
+      .database()
+      .ref(`notifications/${postItem?.createdBy?._id}/${+new Date()}`)
+      .set({
+        action: 'reaction',
+        reciever: postItem?.createdBy?._id,
+        link: `/postdetail/${idPost}`,
+        content: `${me?.firstname} đã ${emo.text} bài viết của bạn`,
+        seen: false,
+        createdAt: +new Date()
+      })
+  }
+  const onClickEmoji = (e, emo) => {
+    console.log(chosenmoji)
+    if (chosenmoji !== '') {
+      if (chosenmoji !== e.id) {
+        // ko trùng icon cũ
+        const idx = reactions.findIndex(reaction => reaction.id === chosenmoji)
+        const arr = reactions[idx].users
+        arr.splice(
+          reactions[idx].users.findIndex(user => user === me._id),
+          1
+        )
+        try {
+          firebase
+            .database()
+            .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
+            .update({
+              count: reactions[idx].count - 1, //xóa reaction cũ
+              users: arr
+            })
+          updateOrSet(e, emo)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    } else {
+      setChosenEnmoji(e.id)
+      updateOrSet(e, emo)
+    }
     document
       .getElementById('like-post')
       .setAttribute('style', 'background-color: #f5f5f5')
   }
   return (
     <Popover
+      // visible={isClick}
+      // onVisibleChange={() => {
+      //   console.log(visible)
+      //   if (visible) {
+      //     setTimeout(() => {
+      //       setIsClick(true)
+      //     }, 1000)
+      //     setIsClick(false)
+      //     setVisible(false)
+      //   }
+      // }}
       className="reaction-popover"
-      content={emojiData.map(e => (
-        <Tooltip key={e.emoji} title={e.text}>
+      content={emojiData.map(emo => (
+        <Tooltip key={emo.emoji} title={emo.text}>
           <Emoji
-            emoji={e.emoji}
+            emoji={emo.emoji}
             size={24}
-            onClick={e => (isAuth ? onClickEmoji(e) : openLoginModal())}
+            onClick={e => (isAuth ? onClickEmoji(e, emo) : openLoginModal())}
           />
         </Tooltip>
       ))}
@@ -130,6 +160,7 @@ function Reaction(props) {
         {chosenmoji ? (
           <Emoji
             onClick={async () => {
+              setIsClick(false)
               const idx = reactions.findIndex(
                 reaction => reaction.id === chosenmoji
               )
@@ -160,7 +191,13 @@ function Reaction(props) {
         ) : (
           <LikeOutlined />
         )}
-        <span style={{ fontWeight: 'bold', color: chosenmoji && '#1890ff' }}>
+        <span
+          style={{
+            marginLeft: 5,
+            fontWeight: 'bold',
+            color: chosenmoji && '#1890ff'
+          }}
+        >
           {sumReactions}
         </span>
       </Space>

@@ -72,14 +72,16 @@ function PostHaveGroup(props) {
           </div>
         }
         extra={
-          <JoinBtn
-            id={{ userId: me?._id, communityId: item?.community?._id }}
-          ></JoinBtn>
+          process.env.ADMIN_SERVER === 'false' && (
+            <JoinBtn
+              id={{ userId: me?._id, communityId: item?.community?._id }}
+            ></JoinBtn>
+          )
         }
         style={{ maxWidth: '100%' }}
-        actions={[
+        actions={process.env.ADMIN_SERVER === 'false' && [
           <div id="like-post" key="like">
-            <Reaction idPost={item?._id} />
+            <Reaction idPost={item?._id} postItem={item} />
           </div>,
           // <Sum idPost ={item.postId} ></Sum>,
           <div
@@ -101,7 +103,7 @@ function PostHaveGroup(props) {
             postId={item?._id}
             postItem={item}
           />,
-          <CommentPost idPost={item?._id} key="commet"></CommentPost>
+          <CommentPost idPost={item?._id} postItem={item} key="commet"></CommentPost>
         ]}
       >
         <Card.Meta

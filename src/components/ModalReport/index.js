@@ -35,7 +35,7 @@ const data = [
     reason: 'Lý do khác'
   }
 ]
-function ModalReport (props) {
+function ModalReport(props) {
   const [value, setValue] = useState('')
   const { me } = useContext(IContext)
   const radioStyle = {
@@ -43,32 +43,47 @@ function ModalReport (props) {
     height: '30px',
     lineHeight: '30px'
   }
-  const onChange = (e) => {
+  const onChange = e => {
     setValue(e.target.value)
   }
   return (
     <Modal
       centered
-      width='50%'
-      className='modal'
+      width="50%"
+      className="modal"
       visible={props.visible}
-      title='Lý do báo cáo bài viết này là: '
+      title="Lý do báo cáo bài viết này là: "
       onOk={props.handleOk}
       onCancel={props.handleCancel}
       footer={[
-        <Button key='back' onClick={props.handleCancel}>
+        <Button key="back" onClick={props.handleCancel}>
           Return
         </Button>,
-        <Button key='submit' type='primary' onClick={() => {
-          firebase
-          .database()
-          .ref(`posts/${props.postId}/reports/${me?._id}`)
-          .set({
-            reason: value,
-            createdAt: +new Date()
-          })
-        notification.success({ message: 'Bạn đã báo cáo bài viết', duration: 1.5 })
-          props.handleOk()}}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => {
+            if (value.trim() !== '') {
+              firebase
+                .database()
+                .ref(`reports/${props.postId}/${me?._id}`)
+                .set({
+                  reason: value,
+                  createdAt: +new Date()
+                })
+              notification.success({
+                message: 'Bạn đã báo cáo bài viết',
+                duration: 1.5
+              })
+              props.handleOk()
+            } else {
+              notification.success({
+                message: 'Bạn chưa báo cáo bài viết',
+                duration: 1.5
+              })
+            }
+          }}
+        >
           Submit
         </Button>
       ]}
@@ -76,7 +91,7 @@ function ModalReport (props) {
       <Radio.Group onChange={onChange} value={value}>
         {data.map((item, idx) => {
           return (
-            <Radio key ={idx} style={radioStyle} value={item.reason}>
+            <Radio key={idx} style={radioStyle} value={item.reason}>
               {item.reason}
             </Radio>
           )

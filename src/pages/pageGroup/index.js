@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+ /* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
 import { Avatar } from 'antd'
 
@@ -35,6 +35,10 @@ function PageGroup(props) {
     variables: { communityId },
     fetchPolicy: 'no-cache'
   })
+  // getMembersCount({
+  //   variables: { communityId },
+  //   fetchPolicy: 'no-cache'
+  // })
   const handleOk = () => {
     // setVisibleModalCreate(false)
     setVisibleModalReport(false)
