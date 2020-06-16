@@ -5,7 +5,7 @@ import { PostHaveGroup, PostNoGroup } from '@components'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { LeftSquareOutlined } from '@ant-design/icons'
-import { Tooltip } from 'antd'
+import { Tooltip, Empty } from 'antd'
 
 export const GET_POST_BY_ID = gql`
   query postById($id: String) {
@@ -36,14 +36,22 @@ function PostDetail(props) {
   return (
     <>
       <Tooltip title="Quay lại">
-        <LeftSquareOutlined style={{ fontSize: 20 }} onClick={() => props.history.goBack()}/>
+        <LeftSquareOutlined
+          style={{ fontSize: 20 }}
+          onClick={() => props.history.goBack()}
+        />
       </Tooltip>
-      {data &&
-        (data?.postById?.community ? (
+      {data.postById ? (
+        data?.postById?.community ? (
           <PostHaveGroup key={0} item={data?.postById} idx={0}></PostHaveGroup>
         ) : (
           <PostNoGroup key={0} item={data?.postById} idx={0}></PostNoGroup>
-        ))}
+        )
+      ) : (
+        <div>
+          <Empty description={'Bài đăng không còn khả dụng'}/>
+        </div>
+      )}
     </>
   )
 }

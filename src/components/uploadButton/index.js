@@ -1,10 +1,11 @@
 import React from 'react'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons'
+import { Spin } from 'antd'
 
 const UploadButton = ({ loading }) => {
   return (
     <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      {loading ? <Spin /> : <PlusOutlined />}
       <div>Upload</div>
     </div>
   )

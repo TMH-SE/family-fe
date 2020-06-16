@@ -91,7 +91,7 @@ function Info(props) {
         <Col span={24}>
           <DescriptionItem
             title="Số người theo dõi"
-            content={dataCountFollow?.getSumFollowerByUser}
+            content={dataCountFollow?.getFollowerByUser?.length}
           />
         </Col>
       </Row>

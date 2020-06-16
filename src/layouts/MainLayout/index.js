@@ -49,7 +49,16 @@ const { Header, Content, Sider } = Layout
 export const brokenContext = React.createContext(null)
 // const MY_USER_ID =
 const index = ({ children }) => {
-  const { logout, me, isAuth, messbox, onCancelMessbox, showLogin, closeLoginModal } = useContext(IContext)
+  const {
+    logout,
+    me,
+    isAuth,
+    messbox,
+    onCancelMessbox,
+    showLogin,
+    closeLoginModal,
+    refetchPosts
+  } = useContext(IContext)
 
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -144,7 +153,10 @@ const index = ({ children }) => {
             <Logo
               isBroken={isBroken}
               size="medium"
-              onClick={() => history.push('/')}
+              onClick={() => {
+                refetchPosts()
+                history.push('/homepage')
+              }}
             />
             {
               !isBroken ? (
@@ -179,39 +191,41 @@ const index = ({ children }) => {
               marginRight: 10
             }}
           >
-            { isAuth && <Menu
-              style={{
-                backgroundColor: 'initial',
-                width: isBroken ? 50 : 120
-              }}
-              overflowedIndicator={
-                <UnorderedListOutlined style={{ fontSize: 23 }} />
-              }
-              mode="horizontal"
-            >
-              <Menu.Item onClick={() => history.push('/createpost')}>
-                {isBroken ? (
-                  <>
-                    <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
-                    <span>Thêm bài viết</span>
-                  </>
-                ) : (
-                  <Tooltip title="Thêm bài viết" placement="bottomRight">
-                    <Button
-                      className="btn-round"
-                      shape="circle"
-                      icon={
-                        <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
-                      }
-                      // onClick={() => history.push('/createpost')}
-                    />
-                  </Tooltip>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                <Noti history={history} isBroken={isBroken} />
-              </Menu.Item>
-            </Menu>}
+            {isAuth && (
+              <Menu
+                style={{
+                  backgroundColor: 'initial',
+                  width: isBroken ? 50 : 120
+                }}
+                overflowedIndicator={
+                  <UnorderedListOutlined style={{ fontSize: 23 }} />
+                }
+                mode="horizontal"
+              >
+                <Menu.Item onClick={() => history.push('/createpost')}>
+                  {isBroken ? (
+                    <>
+                      <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
+                      <span>Thêm bài viết</span>
+                    </>
+                  ) : (
+                    <Tooltip title="Thêm bài viết" placement="bottomRight">
+                      <Button
+                        className="btn-round"
+                        shape="circle"
+                        icon={
+                          <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
+                        }
+                        // onClick={() => history.push('/createpost')}
+                      />
+                    </Tooltip>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  <Noti history={history} isBroken={isBroken} />
+                </Menu.Item>
+              </Menu>
+            )}
             <div>
               {isAuth ? (
                 isBroken ? (
@@ -312,7 +326,6 @@ const index = ({ children }) => {
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
             marginTop: 0
-
           }}
         >
           <brokenContext.Provider value={isBroken}>
@@ -351,7 +364,13 @@ const index = ({ children }) => {
           </div>
         )}
       </Layout>
-      <Modal visible={showLogin} title="Đăng nhập" footer={null} centered onCancel={closeLoginModal}>
+      <Modal
+        visible={showLogin}
+        title="Đăng nhập"
+        footer={null}
+        centered
+        onCancel={closeLoginModal}
+      >
         <Login></Login>
       </Modal>
     </Layout>

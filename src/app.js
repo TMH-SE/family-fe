@@ -22,7 +22,6 @@ const firebaseConfig = {
 if (!firebase.apps?.length) {
   firebase.initializeApp(firebaseConfig)
 }
-console.log(firebase.apps)
 const App = () => {
   // firebase.initializeApp(firebaseConfig)
   SdkUtils.initFacebookSdk()

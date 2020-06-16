@@ -9,18 +9,20 @@ function JoinBtn(props) {
   const { data, refetch } = useQuery(CHECK_IS_MEMBER, {
     variables: { id: props.id }
   })
-  const { isAuth, openLoginModal } = useContext(IContext)
+  const { isAuth, openLoginModal, setRefetchCount } = useContext(
+    IContext
+  )
   const [createAndDelete] = useMutation(CREATE_AND_DELETE_MEMBER)
   const onHandleClick = async () => {
     await createAndDelete({ variables: { id: props.id } }).then(async res => {
       await refetch()
-      ;(await props.refetchMemberCount) && props.refetchMemberCount()
+      setRefetchCount(props.id.communityId)
     })
   }
   return data?.checkIsMember ? (
     <Popconfirm
       title="Bạn muốn bỏ tham gia nhóm"
-      onConfirm={() => (isAuth ? onHandleClick() : openLoginModal())}
+      onConfirm={async () => (isAuth ? onHandleClick() : openLoginModal())}
       // onCancel={cancel}
       okText="Đồng ý"
       cancelText="Hủy"

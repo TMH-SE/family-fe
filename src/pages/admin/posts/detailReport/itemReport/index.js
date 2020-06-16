@@ -11,7 +11,6 @@ function ItemReport({ data }) {
     variables: { userId: data?.id },
     fetchPolicy: 'no-cache'
   })
-  console.log(dataUser, 'a')
   return (
     <List.Item
       //   onClick={() => history.push('/pagegroup/111')}

@@ -4,7 +4,12 @@ import { SdkUtils } from '@utils'
 import { withRouter } from 'react-router-dom'
 import { useQuery, useLazyQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import { GET_SAVEDPOST_BY_USER, GET_POSTS, GET_POSTS_BY_USER, GET_MEMBERS_BY_COMMUNITY } from '@shared'
+import {
+  GET_SAVEDPOST_BY_USER,
+  GET_POSTS,
+  GET_POSTS_BY_USER,
+  GET_MEMBERS_BY_COMMUNITY
+} from '@shared'
 export const IContext = React.createContext()
 
 const GET_ME = gql`
@@ -76,16 +81,23 @@ const ContextWrapper = ({ children, history }) => {
   const closeLoginModal = () => {
     setShowLogin(false)
   }
-  const { data: dataSavedPost, refetch: refetchSavedPost } = useQuery(GET_SAVEDPOST_BY_USER, {
-    variables: { userId: data?.me?._id },
-    fetchPolicy: 'no-cache'
-  })
+  const { data: dataSavedPost, refetch: refetchSavedPost } = useQuery(
+    GET_SAVEDPOST_BY_USER,
+    {
+      variables: { userId: data?.me?._id },
+      fetchPolicy: 'no-cache'
+    }
+  )
   const { data: dataPosts, refetch: refetchPosts } = useQuery(GET_POSTS)
-  const { data: dataMyPosts, refetch: refetchMyPosts } = useQuery(GET_POSTS_BY_USER, {
-    variables: { userId: data?.me?._id },
-    fetchPolicy: 'no-cache'
-  })
-  const [getMembersCount, { data: dataMemberCount, refetch: refetchMemberCount }] = useLazyQuery(GET_MEMBERS_BY_COMMUNITY)
+  const { data: dataMyPosts, refetch: refetchMyPosts } = useQuery(
+    GET_POSTS_BY_USER,
+    {
+      variables: { userId: data?.me?._id },
+      fetchPolicy: 'no-cache'
+    }
+  )
+  const [refetchCount, setRefetchCount] = useState('')
+  const [refetchSumPosts, setRefetchSumPosts] = useState('')
   return (
     <IContext.Provider
       value={{
@@ -107,9 +119,10 @@ const ContextWrapper = ({ children, history }) => {
         refetchPosts: refetchPosts,
         dataMyPosts: dataMyPosts,
         refetchMyPosts: refetchMyPosts,
-        getMembersCount: getMembersCount,
-        dataMemberCount: dataMemberCount,
-        refetchMemberCount: refetchMemberCount
+        refetchCount: refetchCount,
+        setRefetchCount: setRefetchCount,
+        refetchSumPosts: refetchSumPosts,
+        setRefetchSumPosts: setRefetchSumPosts
       }}
     >
       {children}

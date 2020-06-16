@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useState, useContext, useLayoutEffect } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
-import * as uuid from 'uuid'
 
 import { InputCustomize } from '@components'
 import Message from '../Message'
@@ -19,19 +18,18 @@ export default function MessageList(props) {
   const { chatBox } = props
   const { idChat, userId } = chatBox
   const { me, onCancelMessbox } = useContext(IContext)
-  const { showMoreMess, setShowMoreMess } = useState(10)
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
-  }, [idChat])
+  }, [chatBox])
   const { data } = useQuery(GET_USER, { variables: { userId } })
-  const [showMore, setShowMore] = useState(10)
   const getMessages = () => {
     firebase
       .database()
-      .ref(`messenger/${idChat}`)
+      .ref(`messenger/${idChat}/listmessages`)
       .orderByKey()
-      .limitToLast(100)
+      // .limitToLast(100)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = snapshot.val()
@@ -42,16 +40,12 @@ export default function MessageList(props) {
           : []
         // temp.sort((a, b) => a.timestamp - b.timestamp)
         setMessages(temp)
-        const ele = document.getElementsByClassName(
-          `message-list-container ${idChat}`
-        )[0]
-        ele.scrollTop = ele.scrollHeight
       })
   }
 
   const renderMessages = () => {
     let i = 0
-    const messageCount = messages.length
+    const messageCount = messages?.length
     const tempMessages = []
 
     while (i < messageCount) {
@@ -91,8 +85,11 @@ export default function MessageList(props) {
           endsSequence = false
         }
       }
+
       tempMessages.push(
         <Message
+          idChat={idChat}
+          isLast={messageCount - 1 === i}
           key={i}
           isMine={isMine}
           startsSequence={startsSequence}
@@ -105,17 +102,19 @@ export default function MessageList(props) {
       // Proceed to the next message.
       i += 1
     }
-
     return tempMessages
   }
   const handleSubmit = async (value, imgList) => {
-    const chatId = `${idChat}` + '/'
-    const message = uuid.v1()
-    console.log(value, 'value')
+    // const chatId = `${idChat}` + '/'
+    const message = +new Date()
+    console.log(
+      value.trim() !== '' ? value.trim() : imgList ? 'Bạn đã gửi 1 hình' : '',
+      'lastmessageeeê'
+    )
     try {
       await firebase
         .database()
-        .ref('messenger/' + chatId + message)
+        .ref(`messenger/${idChat}/listmessages/` + message)
         .set({
           content: { message: value, img: imgList },
           timestamp: +new Date(),
@@ -123,25 +122,45 @@ export default function MessageList(props) {
           seen: false,
           hideWith: []
         })
+      await firebase
+        .database()
+        .ref(`messenger/${idChat}`)
+        .update({
+          lastMess: {
+            content: { message: value, img: imgList },
+            timestamp: +new Date(),
+            author: me?._id,
+            seen: false,
+            hideWith: []
+          },
+          lastActivity: +new Date()
+        })
     } catch (error) {
       console.log(error)
     }
     const ele = document.getElementsByClassName(
       `message-list-container ${idChat}`
     )[0]
-    // console.log(ele, 'elemu')
     ele.scrollTop = ele.scrollHeight
   }
 
-  const { isBroken } = props
+  const { isBroken, history } = props
 
   return (
     <div className="message-list">
       <Card
         title={
           <>
-            <Avatar src={data?.getUser?.avatar}></Avatar>
-            <span style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</span>
+            <Avatar
+              src={data?.getUser?.avatar}
+              onClick={() => history.push(`/${data?.getUser?._id}/info`)}
+            ></Avatar>
+            <a
+              style={{ marginLeft: 5 }}
+              onClick={() => history.push(`/${data?.getUser?._id}/info`)}
+            >
+              {data?.getUser?.firstname}
+            </a>
           </>
         }
         className="ant-mess"
@@ -162,6 +181,7 @@ export default function MessageList(props) {
             minRows={1}
             maxRows={4}
             idElement={idChat}
+            type="chat"
             onSubmit={handleSubmit}
             placeholder="Nhập tin nhắn"
             key="input"

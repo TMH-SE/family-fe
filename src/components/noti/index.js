@@ -80,7 +80,7 @@ const Noti = props => {
                 {/* <Skeleton avatar title={false} loading={item.loading} active> */}
                 <List.Item.Meta
                   // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                  title={<a href="https://ant.design">{noti.content.trim()}</a>}
+                  title={<a onClick={() => history.push(`/${noti?.link}`)}>{noti.content.trim()}</a>}
                   description={
                     <p style={{ fontSize: 10 }}>
                       {noti?.createdAt

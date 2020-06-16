@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState, useLayoutEffect } from 'react'
 import { Avatar, List } from 'antd'
 import { useHistory, useLocation } from 'react-router-dom'
 import { GET_POST_BY_COMMUNITY, GET_MEMBERS_BY_COMMUNITY } from '@shared'
@@ -7,19 +7,23 @@ import { IContext } from '@tools'
 
 function CommunityItem(props) {
   const { item } = props
-  const { getMembersCount, dataMemberCount } = useContext(IContext)
+  const { refetchCount, setRefetchCount, refetchSumPosts, setRefetchSumPosts } = useContext(IContext)
   const history = useHistory()
-  const { data } = useQuery(GET_POST_BY_COMMUNITY, {
-    variables: { communityId: item?._id }
-  })
-  // const { data: dataMemberCount } = useQuery(GET_MEMBERS_BY_COMMUNITY, {
-  //   variables: { communityId: item?._id },
-  //   fetchPolicy: 'no-cache'
-  // })
-  getMembersCount({
+  // const [ dataMems, setDataMems ] = useState(null)
+  const { data, refetch } = useQuery(GET_POST_BY_COMMUNITY, {
     variables: { communityId: item?._id },
     fetchPolicy: 'no-cache'
   })
+  const { data: dataMemberCount, refetch: refetchDataMemberCount } = useQuery(GET_MEMBERS_BY_COMMUNITY, {
+    variables: { communityId: item?._id },
+    fetchPolicy: 'no-cache'
+  })
+  useEffect(() => {
+    refetchCount !== '' && refetchDataMemberCount({ variables: refetchCount })
+    refetchSumPosts !== '' && refetch({ variables: refetchSumPosts })
+    setRefetchCount('')
+    setRefetchSumPosts('')
+  }, [refetchCount, refetchSumPosts])
   return (
     <List.Item
       onClick={() => history.push(`/pagegroup/${item?._id}`)}

@@ -101,7 +101,6 @@ function Reaction(props) {
       })
   }
   const onClickEmoji = (e, emo) => {
-    console.log(chosenmoji)
     if (chosenmoji !== '') {
       if (chosenmoji !== e.id) {
         // ko trùng icon cũ
@@ -156,7 +155,7 @@ function Reaction(props) {
         </Tooltip>
       ))}
     >
-      <Space>
+      {/* <Space> */}
         {chosenmoji ? (
           <Emoji
             onClick={async () => {
@@ -200,7 +199,7 @@ function Reaction(props) {
         >
           {sumReactions}
         </span>
-      </Space>
+      {/* </Space> */}
     </Popover>
   )
 }

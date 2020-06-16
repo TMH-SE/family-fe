@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState } from 'react'
-import { Avatar, Button, Upload, notification, List } from 'antd'
+import { Avatar, Button, Upload, notification, List, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import {
   LoadingOutlined,
@@ -29,8 +29,17 @@ import ImgCrop from 'antd-img-crop'
 import gql from 'graphql-tag'
 import MenuInfo from './menuInfo'
 export const GET_SUM_FOLLOWER_BY_USER = gql`
-  query getSumFollowerByUser($userId: String) {
-    getSumFollowerByUser(userId: $userId)
+  query getFollowerByUser($userId: String) {
+    getFollowerByUser(userId: $userId) {
+      _id {
+        userId
+      }
+      follower {
+        _id
+        firstname
+        lastname
+      }
+    }
   }
 `
 
@@ -169,20 +178,20 @@ function Profile(props) {
       </div>
     ))
   const handleChangeAvatar = async file => {
-    setLoadingImg({ ...loadingImg, avatar: true })
+    setLoadingImg({ coverPhoto: false, avatar: true })
     uploadImg(file).then(url => {
       setImg({
-        ...img,
+        coverPhoto: null,
         avatar: url
       })
       setLoadingImg({ ...loadingImg, avatar: false })
     })
   }
   const handleChangeCover = file => {
-    setLoadingImg({ ...loadingImg, coverPhoto: true })
+    setLoadingImg({ avatar: false, coverPhoto: true })
     uploadImg(file).then(url => {
       setImg({
-        ...img,
+        avatar: null,
         coverPhoto: url
       })
       setLoadingImg({ ...loadingImg, coverPhoto: false })
@@ -223,12 +232,12 @@ function Profile(props) {
   }
   const handleCancel = () => {
     setLoadingImg({
-      coverPhoto: false,
-      avatar: false
+      avatar: false,
+      coverPhoto: false
     })
     setImg({
-      coverPhoto: null,
-      avatar: null
+      avatar: null,
+      coverPhoto: null
     })
   }
   return (
@@ -258,28 +267,29 @@ function Profile(props) {
                   }}
                 />
               )}
-              {loadingImg.coverPhoto && (
-                <div
-                  className="btn-saveCover"
-                  style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    top: 0,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0,0,0,0.7)'
-                  }}
-                >
-                  <LoadingOutlined
+              {/* {loadingImg.coverPhoto && ( */}
+              <div
+                className="btn-saveCover"
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
+                }}
+              >
+                {/* <LoadingOutlined
                     style={{
                       fontSize: 30,
                       color: '#fff'
                     }}
-                  />
-                </div>
-              )}
+                  /> */}
+                <Spin spinning={loadingImg.coverPhoto} size="large" />
+              </div>
+              {/* )} */}
               {uploadButtonCover}
             </div>
           </div>
@@ -316,31 +326,32 @@ function Profile(props) {
                     }}
                   />
                 )}
-                {uploadButtonAvt}
-                {loadingImg.avatar && (
-                  <div
-                    className="btn-saveAvt"
-                    style={{
-                      fontSize: 25,
-                      borderRadius: '50%',
-                      position: 'absolute',
-                      width: '100%',
-                      height: '100%',
-                      top: 0,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'rgba(0,0,0,0.6)'
-                    }}
-                  >
-                    <LoadingOutlined
+                {/* {loadingImg.avatar && ( */}
+                <div
+                  className="btn-saveAvt"
+                  style={{
+                    fontSize: 25,
+                    borderRadius: '50%',
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    top: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
+                  }}
+                >
+                  {/* <LoadingOutlined
                       style={{
                         fontSize: 30,
                         color: '#fff'
                       }}
-                    />
-                  </div>
-                )}
+                    /> */}
+                  <Spin spinning={loadingImg.avatar} />
+                </div>
+                {uploadButtonAvt}
+                {/* )} */}
               </div>
               <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
                 <div

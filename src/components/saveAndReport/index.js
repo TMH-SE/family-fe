@@ -88,7 +88,6 @@ function SaveAndReport(props) {
           }
         })
           .then(({ data }) => {
-            console.log(data, 'dataa')
             if (data?.deletePost) {
               deleteSavedPostsByPost({ variables: { postId: postId } })
               refetchPosts()

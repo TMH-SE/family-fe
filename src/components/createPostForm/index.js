@@ -3,7 +3,8 @@ import React, {
   useContext,
   useState,
   forwardRef,
-  useImperativeHandle
+  useImperativeHandle,
+  useEffect
 } from 'react'
 import {
   Form,
@@ -24,20 +25,24 @@ import { IContext } from '@tools'
 import { uploadImg, beforeUpload } from '@shared'
 import postTemplate from '@assets/templates/post.html'
 import { Editor, UploadButton } from '@components'
-
+import firebase from 'firebase/app'
+import { GET_COMMUNITY_BY_ID } from '@pages/pageGroup'
 const CREATE_POST = gql`
   mutation createPost($newPost: NewPost) {
-    createPost(newPost: $newPost)
+    createPost(newPost: $newPost) {
+      _id
+      title
+    }
   }
 `
 
 const GET_COMMUNITIES_BY_USER = gql`
   query getCommunitiesByUser($userId: String) {
     getCommunitiesByUser(userId: $userId) {
-      _id{
+      _id {
         userId
       }
-      community{
+      community {
         _id
         name
         avatar
@@ -46,27 +51,48 @@ const GET_COMMUNITIES_BY_USER = gql`
     }
   }
 `
+const GET_SUM_FOLLOWER_BY_USER = gql`
+  query getFollowerByUser($userId: String) {
+    getFollowerByUser(userId: $userId) {
+      _id {
+        userId
+      }
+      follower {
+        _id
+        firstname
+        lastname
+      }
+    }
+  }
+`
 
 const CreatePostForm = forwardRef((props, ref) => {
   const { setConfirmLoading, handleCancel } = props
   const keywordRef = useRef()
-
-  const { me, refetchMyPosts, refetchPosts } = useContext(IContext)
-
+  const { me, refetchMyPosts, refetchPosts, setRefetchSumPosts } = useContext(
+    IContext
+  )
+  const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(
+    GET_SUM_FOLLOWER_BY_USER,
+    {
+      variables: { userId: me?._id },
+      fetchPolicy: 'no-cache'
+    }
+  )
   const [visibleInputKeyword, setVisibleInputKeyword] = useState(false)
   const [editor, setEditor] = useState(null)
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState(null)
   const [keywords, setKeywords] = useState([])
   const [form] = Form.useForm()
-
   const [createPost] = useMutation(CREATE_POST)
-  const {
-    loading: loadingCommunities,
-    data,
-    refetch
-  } = useQuery(GET_COMMUNITIES_BY_USER, { variables: { userId: me?._id } })
-
+  const { loading: loadingCommunities, data, refetch } = useQuery(
+    GET_COMMUNITIES_BY_USER,
+    {
+      variables: { userId: me?._id },
+      fetchPolicy: 'no-cache'
+    }
+  )
   useImperativeHandle(ref, () => ({
     handleOk: () => {
       form.submit()
@@ -87,7 +113,23 @@ const CreatePostForm = forwardRef((props, ref) => {
       setLoading(false)
     })
   }
-
+  const notifyToUser = (item, postId) => {
+    try {
+      firebase
+        .database()
+        .ref(`notifications/${item?._id}/${+new Date()}`)
+        .set({
+          action: 'post',
+          reciever: item?._id,
+          link: `/postdetail/${postId}`,
+          content: `${me?.firstname} đã đăng bài viết mới`,
+          seen: false,
+          createdAt: +new Date()
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }
   const submitCreatePost = ({ title, communityId }) => {
     setConfirmLoading(true)
     const html = handlebars.compile(postTemplate)
@@ -107,9 +149,15 @@ const CreatePostForm = forwardRef((props, ref) => {
     })
       .then(({ data }) => {
         if (data?.createPost) {
+          console.log(data?.createPost)
           notification.success({ message: 'Tạo bài viết thành công' })
           refetchPosts()
           refetchMyPosts()
+          setRefetchSumPosts(communityId)
+          dataCountFollow?.getFollowerByUser?.map(item => {
+            notifyToUser(item.follower, data?.createPost?._id)
+          })
+          // notifyToUser()
           setConfirmLoading(false)
           handleCancel && handleCancel()
         }
@@ -132,10 +180,18 @@ const CreatePostForm = forwardRef((props, ref) => {
     }
   }
   return (
-    <Form form={form} layout="vertical" onFinish={submitCreatePost}>
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={submitCreatePost}
+      initialValues={{
+        communityId: { key: props?.communityId }
+      }}
+    >
       <Form.Item name="communityId" label="Cộng đồng">
         <Select
           allowClear
+          labelInValue
           loading={loadingCommunities}
           placeholder="Chọn cộng đồng"
           showArrow={false}
