@@ -7,6 +7,7 @@ const CreatePost = props => {
   const formRef = useRef(null)
   const [confirmLoading, setConfirmLoading] = useState(false)
   console.log(formRef.current)
+
   return (
     <>
       <Typography.Title level={3}>Bài Viết Mới</Typography.Title>
