@@ -18,7 +18,6 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID || '1:950930789819:web:b54a53c02ebdcf7e59609e',
   measurementId: process.env.FIREBASE_MEASUREMENT_ID || 'G-MPT0K7B144'
 }
-
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig)
 }

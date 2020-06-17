@@ -1,6 +1,6 @@
 import React, { useContext, Suspense, lazy } from 'react'
 import { IContext } from '@tools'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import { Result, Button } from 'antd'
 import FamilyAppRoutes from './app'
 
@@ -26,6 +26,18 @@ const FamilyRoutes = () => {
       title: 'Đăng ký thành viên'
     }
   ]
+  const authRoutesNoLayout = [
+    {
+      path: '/seminars/:idSeminar',
+      component: 'seminar',
+      title: 'Hội thảo'
+    },
+    {
+      path: '/joinseminar/:idSeminar',
+      component: 'joinSeminar',
+      title: 'Tham dự hội thảo'
+    }
+  ]
   return (
     <Suspense fallback={null}>
       <Switch>
@@ -41,6 +53,41 @@ const FamilyRoutes = () => {
             }}
           />
         ))}
+        {authRoutesNoLayout.map((route, idx) => (
+          <Route
+            key={idx}
+            exact={route.exact}
+            path={route.path}
+            render={() => {
+              if (!isAuth) {
+                return <Redirect to="/login" />
+              }
+              const Component = lazy(() => import(`@pages/${route.component}`))
+              document.title = route.title
+              return <Component />
+            }}
+          />
+        ))}
+        <Route
+          path="/waitroom"
+          render={() => {
+            document.title = 'Phòng chờ'
+            return (
+              <Result
+                title="Hội thảo chưa bắt đầu"
+                subTitle="Người thuyết trình chưa bắt đầu hội thảo vui lòng quay lại sau. Xin cảm ơn!"
+                extra={
+                  <Button
+                    onClick={() => history.push('/homepage')}
+                    type="primary"
+                  >
+                    Trở về trang chủ
+                  </Button>
+                }
+              />
+            )
+          }}
+        />
         <Route
           path="/404"
           render={() => {
@@ -65,10 +112,16 @@ const FamilyRoutes = () => {
                 title="Đăng ký thành viên thành công!"
                 subTitle="Vui lòng kiểm tra mail để xác minh tài khoản."
                 extra={[
-                  <Button onClick={() => history.push('/login')} type="primary" key="login">
+                  <Button
+                    onClick={() => history.push('/login')}
+                    type="primary"
+                    key="login"
+                  >
                     Đăng nhập
                   </Button>,
-                  <Button onClick={() => history.push('/homepage')} key="home">Về trang chủ</Button>,
+                  <Button onClick={() => history.push('/homepage')} key="home">
+                    Về trang chủ
+                  </Button>
                 ]}
               />
             )

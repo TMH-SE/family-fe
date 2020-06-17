@@ -90,27 +90,30 @@ const index = ({ children }) => {
   const menu = (
     <Menu>
       <Menu.Item key="0" onClick={() => history.push(`/${me?._id}/info`)}>
-        <InfoCircleTwoTone /> Thông tin cá nhân{' '}
+        <InfoCircleTwoTone /> Thông tin cá nhân
       </Menu.Item>
       {isBroken && (
         <Menu.Item
           key="1"
           onClick={() => history.push(`/${me?._id}/messenger`)}
         >
-          <MessageTwoTone /> Tin nhắn{' '}
+          <MessageTwoTone /> Tin nhắn
         </Menu.Item>
       )}
       <Menu.Item key="2" onClick={() => history.push(`/${me?._id}/myposts`)}>
-        <FileTextTwoTone /> Bài viết của tôi{' '}
+        <FileTextTwoTone /> Bài viết của tôi
+      </Menu.Item>
+      <Menu.Item key="2" onClick={() => history.push(`/seminars/1`)}>
+        <FileTextTwoTone /> Hội thảo của tôi
       </Menu.Item>
       <Menu.Item key="3" onClick={() => history.push(`/${me?._id}/savedposts`)}>
-        <BookTwoTone /> Bài viết đã lưu{' '}
+        <BookTwoTone /> Bài viết đã lưu
       </Menu.Item>
       <Menu.Item
         key="4"
         onClick={() => history.push(`/${me?._id}/joinedGroup`)}
       >
-        <HeartTwoTone /> Cộng đồng đã tham gia{' '}
+        <HeartTwoTone /> Cộng đồng đã tham gia
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="5" onClick={logout}>

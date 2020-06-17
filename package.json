@@ -44,7 +44,8 @@
     "shave": "^2.5.9",
     "styled-components": "^5.1.1",
     "subscriptions-transport-ws": "^0.9.16",
-    "uuid": "^8.0.0"
+    "uuid": "^8.0.0",
+    "webrtc-adapter": "^7.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
