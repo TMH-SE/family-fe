@@ -88,17 +88,18 @@ function Reaction(props) {
             count: 1,
             users: [me._id]
           })
-    firebase
-      .database()
-      .ref(`notifications/${postItem?.createdBy?._id}/${+new Date()}`)
-      .set({
-        action: 'reaction',
-        reciever: postItem?.createdBy?._id,
-        link: `/postdetail/${idPost}`,
-        content: `${me?.firstname} đã ${emo.text} bài viết của bạn`,
-        seen: false,
-        createdAt: +new Date()
-      })
+    postItem?.createdBy?._id !== me?._id &&
+      firebase
+        .database()
+        .ref(`notifications/${postItem?.createdBy?._id}/${+new Date()}`)
+        .set({
+          action: 'reaction',
+          reciever: postItem?.createdBy?._id,
+          link: `/postdetail/${idPost}`,
+          content: `${me?.firstname} đã ${emo.text} bài viết của bạn`,
+          seen: false,
+          createdAt: +new Date()
+        })
   }
   const onClickEmoji = (e, emo) => {
     if (chosenmoji !== '') {
@@ -156,49 +157,49 @@ function Reaction(props) {
       ))}
     >
       {/* <Space> */}
-        {chosenmoji ? (
-          <Emoji
-            onClick={async () => {
-              setIsClick(false)
-              const idx = reactions.findIndex(
-                reaction => reaction.id === chosenmoji
-              )
-              const arr = reactions[idx].users
-              arr.splice(
-                reactions[idx].users.findIndex(user => user === me._id),
-                1
-              )
-              try {
-                await firebase
-                  .database()
-                  .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
-                  .update({
-                    count: reactions[idx].count - 1,
-                    users: arr
-                  })
-              } catch (e) {
-                console.log(e)
-              }
-              setChosenEnmoji('')
-              document
-                .getElementById('like-post')
-                .setAttribute('style', 'background-color: initial')
-            }}
-            emoji={chosenmoji}
-            size={19}
-          />
-        ) : (
-          <LikeOutlined />
-        )}
-        <span
-          style={{
-            marginLeft: 5,
-            fontWeight: 'bold',
-            color: chosenmoji && '#1890ff'
+      {chosenmoji ? (
+        <Emoji
+          onClick={async () => {
+            setIsClick(false)
+            const idx = reactions.findIndex(
+              reaction => reaction.id === chosenmoji
+            )
+            const arr = reactions[idx].users
+            arr.splice(
+              reactions[idx].users.findIndex(user => user === me._id),
+              1
+            )
+            try {
+              await firebase
+                .database()
+                .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
+                .update({
+                  count: reactions[idx].count - 1,
+                  users: arr
+                })
+            } catch (e) {
+              console.log(e)
+            }
+            setChosenEnmoji('')
+            document
+              .getElementById('like-post')
+              .setAttribute('style', 'background-color: initial')
           }}
-        >
-          {sumReactions}
-        </span>
+          emoji={chosenmoji}
+          size={19}
+        />
+      ) : (
+        <LikeOutlined />
+      )}
+      <span
+        style={{
+          marginLeft: 5,
+          fontWeight: 'bold',
+          color: chosenmoji && '#1890ff'
+        }}
+      >
+        {sumReactions}
+      </span>
       {/* </Space> */}
     </Popover>
   )

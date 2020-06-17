@@ -1,15 +1,15 @@
 /* eslint-disable no-undef */
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState } from 'react'
 import { SdkUtils } from '@utils'
 import { withRouter } from 'react-router-dom'
-import { useQuery, useLazyQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import {
   GET_SAVEDPOST_BY_USER,
   GET_POSTS,
-  GET_POSTS_BY_USER,
-  GET_MEMBERS_BY_COMMUNITY
+  GET_POSTS_BY_USER
 } from '@shared'
+import MyPosts from '@pages/profile/myPosts'
 export const IContext = React.createContext()
 
 const GET_ME = gql`
@@ -81,21 +81,7 @@ const ContextWrapper = ({ children, history }) => {
   const closeLoginModal = () => {
     setShowLogin(false)
   }
-  const { data: dataSavedPost, refetch: refetchSavedPost } = useQuery(
-    GET_SAVEDPOST_BY_USER,
-    {
-      variables: { userId: data?.me?._id },
-      fetchPolicy: 'no-cache'
-    }
-  )
-  const { data: dataPosts, refetch: refetchPosts } = useQuery(GET_POSTS)
-  const { data: dataMyPosts, refetch: refetchMyPosts } = useQuery(
-    GET_POSTS_BY_USER,
-    {
-      variables: { userId: data?.me?._id },
-      fetchPolicy: 'no-cache'
-    }
-  )
+
   const [refetchCount, setRefetchCount] = useState('')
   const [refetchSumPosts, setRefetchSumPosts] = useState('')
   return (
@@ -113,12 +99,6 @@ const ContextWrapper = ({ children, history }) => {
         showLogin: showLogin,
         openLoginModal: openLoginModal,
         closeLoginModal: closeLoginModal,
-        dataSavedPost: dataSavedPost,
-        refetchSavedPost: refetchSavedPost,
-        dataPosts: dataPosts,
-        refetchPosts: refetchPosts,
-        dataMyPosts: dataMyPosts,
-        refetchMyPosts: refetchMyPosts,
         refetchCount: refetchCount,
         setRefetchCount: setRefetchCount,
         refetchSumPosts: refetchSumPosts,

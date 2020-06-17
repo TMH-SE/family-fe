@@ -12,7 +12,7 @@ function Chat(props) {
     firebase
       .database()
       .ref(`messenger/`)
-      .on('value', snapshot => {
+      .once('value', snapshot => {
         const temp = Object.keys(snapshot.val()).map(key => ({
           ...snapshot.val()[key],
           id: key

@@ -1,4 +1,9 @@
-import React, { useContext, useState, forwardRef, useImperativeHandle } from 'react'
+import React, {
+  useContext,
+  useState,
+  forwardRef,
+  useImperativeHandle
+} from 'react'
 import { Form, notification, Input, Upload, Button } from 'antd'
 import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
@@ -12,8 +17,8 @@ const UPDATE_POST = gql`
   }
 `
 const EditPostForm = forwardRef((props, ref) => {
-  const { setConfirmLoading, handleCancel, postItem } = props
-  const { me, refetchPosts, refetchMyPosts } = useContext(IContext)
+  const { setConfirmLoading, handleCancel, postItem, refetch } = props
+  const { me } = useContext(IContext)
   const [loading, setLoading] = useState(false)
   const [editor, setEditor] = useState(null)
   const [form] = Form.useForm()
@@ -36,12 +41,11 @@ const EditPostForm = forwardRef((props, ref) => {
         }
       }
     })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         if (data?.updatePost) {
           notification.success({ message: 'Chỉnh sửa bài viết thành công' })
           setConfirmLoading(false)
-          refetchPosts()
-          refetchMyPosts()
+          await refetch()
           handleCancel && handleCancel()
         }
       })
@@ -114,7 +118,7 @@ const EditPostForm = forwardRef((props, ref) => {
         ]}
       >
         <div style={{ width: '100%' }}>
-          <Editor setEditor={setEditor} initialValue={postItem?.content}/>
+          <Editor setEditor={setEditor} initialValue={postItem?.content} />
         </div>
       </Form.Item>
       {/* <Form.Item

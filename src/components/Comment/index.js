@@ -32,7 +32,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
     arrTag &&
       arrTag.map(async item => {
         try {
-          await firebase
+          item?.id !== me?._id && await firebase
             .database()
             .ref('notifications/' + item?.id + '/' + notificationId)
             .set({
@@ -221,7 +221,7 @@ function CommentPost(props) {
           mention: mentions,
           replies: []
         })
-      await firebase
+        postItem?.createdBy?._id !== me?._id && await firebase
         .database()
         .ref(`notifications/${postItem?.createdBy?._id}/${+new Date()}`)
         .set({

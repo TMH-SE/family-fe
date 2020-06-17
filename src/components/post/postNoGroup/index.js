@@ -11,7 +11,7 @@ function PostNoGroup(props) {
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
   // const [visibleModalReport, setVisibleModalReport] = useState(false)
-  const { item, idx } = props
+  const { item, idx, refetch } = props
   const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -21,7 +21,7 @@ function PostNoGroup(props) {
     firebase
       .database()
       .ref(`posts/${idPost}/comments`)
-      .on('value', snapshot => {
+      .once('value', snapshot => {
         sumTemp = snapshot.val() ? Object.keys(snapshot.val())?.length : 0
         setSum(sumTemp)
       })
@@ -73,6 +73,7 @@ function PostNoGroup(props) {
             </div>,
             <SharePost key="share" />,
             <SaveAndReport
+              refetch={refetch}
               key="saveandreport"
               postId={item?._id}
               postItem={item}

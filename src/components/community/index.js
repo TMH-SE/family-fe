@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react'
-import { Avatar, List } from 'antd'
+import { Avatar, List, Skeleton } from 'antd'
 import { useHistory, useLocation } from 'react-router-dom'
 import { GET_POST_BY_COMMUNITY, GET_MEMBERS_BY_COMMUNITY } from '@shared'
 import { useQuery } from '@apollo/react-hooks'
@@ -10,11 +10,11 @@ function CommunityItem(props) {
   const { refetchCount, setRefetchCount, refetchSumPosts, setRefetchSumPosts } = useContext(IContext)
   const history = useHistory()
   // const [ dataMems, setDataMems ] = useState(null)
-  const { data, refetch } = useQuery(GET_POST_BY_COMMUNITY, {
+  const { data, refetch, loading } = useQuery(GET_POST_BY_COMMUNITY, {
     variables: { communityId: item?._id },
     fetchPolicy: 'no-cache'
   })
-  const { data: dataMemberCount, refetch: refetchDataMemberCount } = useQuery(GET_MEMBERS_BY_COMMUNITY, {
+  const { data: dataMemberCount, refetch: refetchDataMemberCount, loading: loadingSumMem } = useQuery(GET_MEMBERS_BY_COMMUNITY, {
     variables: { communityId: item?._id },
     fetchPolicy: 'no-cache'
   })
@@ -25,6 +25,7 @@ function CommunityItem(props) {
     setRefetchSumPosts('')
   }, [refetchCount, refetchSumPosts])
   return (
+    (loading || loadingSumMem ) ? <Skeleton active></Skeleton> :
     <List.Item
       onClick={() => history.push(`/pagegroup/${item?._id}`)}
       style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}

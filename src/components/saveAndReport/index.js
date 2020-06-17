@@ -40,17 +40,10 @@ export const DELETE_SAVEPOSTS_BY_POST = gql`
 `
 function SaveAndReport(props) {
   const formRef = useRef(null)
-  const {
-    me,
-    refetchSavedPost,
-    isAuth,
-    openLoginModal,
-    refetchPosts,
-    refetchMyPosts
-  } = useContext(IContext)
+  const { me, isAuth, openLoginModal } = useContext(IContext)
   const [isSaved, setIsSaved] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
-  const { postId, postItem } = props
+  const { postId, postItem, refetch } = props
   const [createAndDelete] = useMutation(CREATE_AND_DELETE_SAVEDPOST)
   const [deletePost] = useMutation(DELETE_POST)
   const [deleteSavedPostsByPost] = useMutation(DELETE_SAVEPOSTS_BY_POST)
@@ -62,16 +55,16 @@ function SaveAndReport(props) {
       variables: {
         id: { userId: me?._id, postId }
       }
-    }).then(res => {
+    }).then(async res => {
       notification.success({
         message: isSaved
           ? 'Hủy lưu bài viết thành công'
           : 'Lưu bài viết thành công'
       })
-      refetchSavedPost()
+      await refetch()
       setIsSaved(!isSaved)
     })
-    refetch()
+    refetchSaved()
   }
   const onDeletePostClick = async () => {
     Modal.confirm({
@@ -87,11 +80,11 @@ function SaveAndReport(props) {
             postId: postId
           }
         })
-          .then(({ data }) => {
+          .then(async ({ data }) => {
             if (data?.deletePost) {
               deleteSavedPostsByPost({ variables: { postId: postId } })
-              refetchPosts()
-              refetchMyPosts()
+              await refetch()
+              notification.success({ message: 'xóa bài viết thành công' })
             }
           })
           .catch(notificationError)
@@ -137,7 +130,7 @@ function SaveAndReport(props) {
         </Menu.Item>
       </Menu>
     )
-  const { data, refetch } = useQuery(CHECK_IS_SAVED, {
+  const { data, refetch: refetchSaved } = useQuery(CHECK_IS_SAVED, {
     variables: { id: { userId: me?._id, postId } }
   })
   useEffect(() => {
@@ -149,6 +142,7 @@ function SaveAndReport(props) {
   }
   const handleCancel = () => {
     setVisibleModalReport(false)
+    setShowEditPost(false)
   }
   return (
     <>
@@ -166,24 +160,36 @@ function SaveAndReport(props) {
         handleOk={handleOk}
         postId={postId}
       ></ModalReport>
-      { showEditPost && <Drawer
-        width="100%"
-        closable={false}
-        visible={showEditPost}
-        title="Chỉnh sửa baì viết"
-        footer={
-          <Space style={{ float: 'right' }}>
-            <Button onClick={() => setShowEditPost(false)}>Hủy</Button>
-            <Button loading={confirmLoading} onClick={() => formRef?.current?.handleOk()} type="primary">
-              Lưu
-            </Button>
-          </Space>
-        }
-      >
-        <div style={{ width: '80%', margin: '0 auto' }}>
-          <EditPostForm setConfirmLoading={setConfirmLoading} ref={formRef} postItem={postItem}></EditPostForm>
-        </div>
-      </Drawer>}
+      {showEditPost && (
+        <Drawer
+          width="100%"
+          closable={false}
+          visible={showEditPost}
+          title="Chỉnh sửa baì viết"
+          footer={
+            <Space style={{ float: 'right' }}>
+              <Button onClick={() => setShowEditPost(false)}>Hủy</Button>
+              <Button
+                loading={confirmLoading}
+                onClick={() => formRef?.current?.handleOk()}
+                type="primary"
+              >
+                Lưu
+              </Button>
+            </Space>
+          }
+        >
+          <div style={{ width: '80%', margin: '0 auto' }}>
+            <EditPostForm
+              refetch={refetch}
+              setConfirmLoading={setConfirmLoading}
+              ref={formRef}
+              handleCancel={handleCancel}
+              postItem={postItem}
+            ></EditPostForm>
+          </div>
+        </Drawer>
+      )}
     </>
   )
 }

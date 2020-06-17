@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from 'react'
 // import { brokenContext } from '../../layouts/MainLayout'
 import { IContext } from '@tools'
 import firebase from 'firebase/app'
-import { BellOutlined } from '@ant-design/icons'
-import { Tooltip, Popover, Badge, Button, List } from 'antd'
+import { BellOutlined, HeartTwoTone } from '@ant-design/icons'
+import { Tooltip, Popover, Badge, Button, List, Avatar } from 'antd'
 import './index.scss'
+import NotiList from './notiList'
 
 const Noti = props => {
   // const isBroken = useContext(brokenContext)
@@ -34,15 +35,20 @@ const Noti = props => {
   }
 
   return props.isBroken ? (
-    <div onClick={() => history.push('/notify')}>
-      <Badge
-        dot
-        count={notifications.filter(item => item.seen === false)?.length}
-      >
-        <BellOutlined />
-      </Badge>
-      <span>Thông báo</span>
-    </div>
+    <Button
+      onClick={() => history.push('/notify')}
+      className="btn-round"
+      shape="circle"
+      icon={
+        <Badge
+          size={1}
+          overflowCount={9}
+          count={notifications.filter(item => item.seen === false)?.length}
+        >
+          <BellOutlined />
+        </Badge>
+      }
+    />
   ) : (
     <Popover
       placement="bottomLeft"
@@ -59,39 +65,7 @@ const Noti = props => {
             // loadMore={loadMore}
             dataSource={notifications}
             renderItem={noti => (
-              <List.Item
-                className="noti-item"
-                style={{
-                  backgroundColor: noti.seen
-                    ? 'initial'
-                    : 'rgba(214, 234, 248, 0.8)'
-                }}
-                onClick={() => {
-                  firebase
-                    .database()
-                    .ref('notifications/' + me?._id + '/' + noti.id)
-                    .update({
-                      seen: true
-                    })
-                  history.push(noti.link)
-                  setVisible(false)
-                }}
-              >
-                {/* <Skeleton avatar title={false} loading={item.loading} active> */}
-                <List.Item.Meta
-                  // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                  title={<a onClick={() => history.push(`/${noti?.link}`)}>{noti.content.trim()}</a>}
-                  description={
-                    <p style={{ fontSize: 10 }}>
-                      {noti?.createdAt
-                        ? new Date(noti?.createdAt).toLocaleString()
-                        : new Date().toLocaleString()}
-                    </p>
-                  }
-                />
-                {/* <div>content</div> */}
-                {/* </Skeleton> */}
-              </List.Item>
+              <NotiList noti={noti}></NotiList>
             )}
           />
         )

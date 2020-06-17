@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable handle-callback-err */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Upload, Popover, notification, message, Space, Spin } from 'antd'
 import {
   LoadingOutlined,
@@ -15,6 +15,7 @@ import { Picker } from 'emoji-mart'
 import './index.scss'
 import { MentionsInput, Mention } from 'react-mentions'
 import { uploadImg } from '@shared'
+import { brokenContext } from '../../layouts/MainLayout'
 
 function InputCustomize(props) {
   const {
@@ -56,7 +57,7 @@ function InputCustomize(props) {
     replyAuthor && document.getElementById(`input-custom-${idElement}`).focus()
     // onAdd && onAdd([{ id: replyAuthor.id, display: replyAuthor.name }])
   }, [replyAuthor])
-
+  const isBroken = useContext(brokenContext)
   const deleteImg = () => {
     setImage({ ...image, srcImg: '' })
   }
@@ -84,19 +85,6 @@ function InputCustomize(props) {
     }
     return isJpgOrPng && isLt2M
   }
-  // const handleChange = async info => {
-  // if (info.file.status === 'uploading') {
-  //   setImage({ ...image, loading: true })
-  //   return
-  // }
-  // if (info.file.status === 'done') {
-  //   getBase64(info.file.originFileObj, async imageUrl => {
-  //     const url = await uploadImg(imageUrl)
-  //     setImage({
-  //       srcImg: url,
-  //       loading: false
-  //     })
-
   const handleUpload = file => {
     setImage({ ...image, loading: true })
     uploadImg(file).then(url => {
@@ -144,7 +132,7 @@ function InputCustomize(props) {
     <div style={{ width: '100%' }}>
       {/* <div> */}
 
-      <Spin spinning={image.loading} size='small' style={{ padding: 10 }} />
+      <Spin spinning={image.loading} size="small" style={{ padding: 10 }} />
 
       {image.srcImg && (
         <div style={{ display: 'flex', overflowX: 'auto' }}>
@@ -213,26 +201,28 @@ function InputCustomize(props) {
             className="textMention__mention"
           />
         </MentionsInput>
-        <Space>
-          <Popover
-            placement="bottomRight"
-            // content={<a onClick>Close</a>}
-            title={<Picker onSelect={e => addEmoji(e)} />}
-            trigger="click"
-            visible={emoji.showEmoji}
-            onVisibleChange={() =>
-              setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })
-            }
-          >
-            <SmileOutlined
-              style={{ color: '#bbb', fontSize: 16 }}
-              onClick={() => setEmoji({ ...setEmoji, showEmoji: true })}
-            />
-          </Popover>
-          <Upload action={handleUpload} beforeUpload={beforeUpload}>
-            <FileImageOutlined style={{ color: '#bbb', fontSize: 16 }} />
-          </Upload>
-        </Space>
+        {!isBroken && (
+          <Space>
+            <Popover
+              placement="bottomRight"
+              // content={<a onClick>Close</a>}
+              title={<Picker onSelect={e => addEmoji(e)} />}
+              trigger="click"
+              visible={emoji.showEmoji}
+              onVisibleChange={() =>
+                setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })
+              }
+            >
+              <SmileOutlined
+                style={{ color: '#bbb', fontSize: 16 }}
+                onClick={() => setEmoji({ ...setEmoji, showEmoji: true })}
+              />
+            </Popover>
+            <Upload action={handleUpload} beforeUpload={beforeUpload}>
+              <FileImageOutlined style={{ color: '#bbb', fontSize: 16 }} />
+            </Upload>
+          </Space>
+        )}
       </div>
     </div>
   )
