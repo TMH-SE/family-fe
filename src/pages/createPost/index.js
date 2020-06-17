@@ -13,7 +13,11 @@ const CreatePost = props => {
       <Typography.Title level={3}>Bài Viết Mới</Typography.Title>
       <CreatePostForm ref={formRef} setConfirmLoading={setConfirmLoading} />
       <div
-        style={{ margin: '15px 0', display: 'flex', justifyContent: 'flex-end' }}
+        style={{
+          margin: '15px 0',
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}
       >
         <Button
           style={{
@@ -24,7 +28,15 @@ const CreatePost = props => {
         >
           Hủy
         </Button>
-        <Button loading={confirmLoading} onClick={() => formRef.current?.handleOk()} style={{ fontWeight: 'bolder' }} type="primary">
+        <Button
+          loading={confirmLoading}
+          onClick={() => {
+            formRef.current?.handleOk()
+            props.history.push('./homepage')
+          }}
+          style={{ fontWeight: 'bolder' }}
+          type="primary"
+        >
           Đăng bài
         </Button>
       </div>

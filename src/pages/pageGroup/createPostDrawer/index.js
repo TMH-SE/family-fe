@@ -18,7 +18,10 @@ function CreatePostDrawer(props) {
       footer={
         <Space style={{ float: 'right' }}>
           <Button onClick={handleCancel}>Hủy</Button>
-          <Button onClick={() => formRef?.current?.handleOk()} type="primary">
+          <Button onClick={() => {
+            formRef?.current?.handleOk()
+            props.refetchPostsByCom()
+            }} type="primary">
             Đăng bài
           </Button>
         </Space>

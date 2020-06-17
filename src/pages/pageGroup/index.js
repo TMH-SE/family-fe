@@ -39,8 +39,9 @@ function PageGroup(props) {
   } = useContext(IContext)
   const isBroken = useContext(brokenContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
-  const { data } = useQuery(GET_POST_BY_COMMUNITY, {
-    variables: { communityId }
+  const { data, refetch: refetchPostsByCom } = useQuery(GET_POST_BY_COMMUNITY, {
+    variables: { communityId },
+    fetchPolicy: 'no-cache'
   })
   const { data: dataCommunity, refetch } = useQuery(GET_COMMUNITY_BY_ID, {
     variables: { id: communityId },
@@ -167,6 +168,7 @@ function PageGroup(props) {
         handleOk={handleOk}
       ></ModalReport>
       <CreatePostDrawer
+        refetchPostsByCom={refetchPostsByCom}
         communityId={communityId}
         isBroken={isBroken}
         handleCancel={handleCancel}
