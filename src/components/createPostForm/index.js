@@ -93,6 +93,7 @@ const CreatePostForm = forwardRef((props, ref) => {
       fetchPolicy: 'no-cache'
     }
   )
+  console.log(data, 'k')
   useImperativeHandle(ref, () => ({
     handleOk: () => {
       form.submit()
@@ -137,7 +138,7 @@ const CreatePostForm = forwardRef((props, ref) => {
       variables: {
         newPost: {
           title,
-          communityId,
+          communityId: communityId.key,
           content: html({
             title,
             author: `${me?.firstname} ${me?.lastname}`,
@@ -182,7 +183,8 @@ const CreatePostForm = forwardRef((props, ref) => {
   return (
     <Form
       form={form}
-      labelCol={{ span: 2 }}
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 20 }}
       layout="horizontal"
       onFinish={submitCreatePost}
       initialValues={{

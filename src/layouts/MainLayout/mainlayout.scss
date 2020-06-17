@@ -42,8 +42,8 @@
 }
 .content {
   overflow: hidden;
-  line-height: 1.5em;
-  height: 4.5em;
+  // line-height: 1.5em;
+  height: 3em;
 }
 .avatar-uploader .ant-upload.ant-upload-select-picture-card {
   width: 20%;
@@ -81,7 +81,7 @@ ul {
 }
 .ant-carousel .slick-slide {
   text-align: center;
-  height: 160px;
+  // height: 160px;
   line-height: 160px;
   background: initial;
   overflow: hidden;
