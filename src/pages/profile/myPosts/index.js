@@ -11,7 +11,7 @@ import {
 import { IContext } from '@tools'
 import { GET_POSTS_BY_USER } from '@shared'
 import { useQuery } from '@apollo/react-hooks'
-import { Input } from 'antd'
+import { Input, Skeleton } from 'antd'
 import { brokenContext } from '../../../layouts/MainLayout'
 
 function MyPosts(props) {
@@ -19,7 +19,7 @@ function MyPosts(props) {
   const { me } = useContext(IContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const isBroken = useContext(brokenContext)
-  const { data: dataMyPosts, refetch: refetchMyPosts } = useQuery(
+  const { data: dataMyPosts, refetch: refetchMyPosts, loading } = useQuery(
     GET_POSTS_BY_USER,
     {
       variables: { userId: me?._id },
@@ -54,7 +54,10 @@ function MyPosts(props) {
         placeholder={`${me?.firstname} ơi, hôm nay bạn cần chia sẻ gì ?`}
         // autoSize={{ minRows: 3, maxRows: 5 }}
       />
-      {dataMyPosts &&
+      {loading ? (
+        <Skeleton active />
+      ) : (
+        dataMyPosts &&
         dataMyPosts?.postsByUser.map((item, idx) =>
           item?.community ? (
             <PostHaveGroup
@@ -71,7 +74,8 @@ function MyPosts(props) {
               idx={idx}
             ></PostNoGroup>
           )
-        )}
+        )
+      )}
 
       <ModalReport
         visible={visibleModalReport}
