@@ -3,12 +3,13 @@
     border-radius: 20px;
     background-color: rgba(199, 224, 240, 0.123);
     width: fit-content;
-    padding: 0 10px;
+    padding: 0 5px;
     p{
         margin-block-end:5px;
         text-align: left;
     }
 }
+
 .ant-comment-inner{
     padding-top: 0;
     // border-bottom: rgba(199, 224, 240, 0.828) solid 1px;
@@ -43,6 +44,9 @@
 }
 .ant-comment-content{
     text-align: left;
+    .ant-comment-content-detail {
+        max-width: 100%;
+    }
 }
 .ant-form-item textarea.ant-input{
     overflow: hidden;

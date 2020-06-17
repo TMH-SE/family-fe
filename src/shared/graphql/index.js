@@ -73,3 +73,148 @@ export const DELETE_FOLLOWER = gql`
     deleteFollower(id: $id)
   }
 `
+export const GET_POSTS = gql`
+  query posts {
+    posts {
+      _id
+      title
+      thumbnail
+      isActive
+      content
+      community {
+        _id
+        name
+        avatar
+      }
+      createdBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      createdAt
+      updatedAt
+      deletedBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      updatedBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      deletedAt
+    }
+  }
+`
+export const GET_POSTS_BY_USER = gql`
+  query postsByUser($userId: String) {
+    postsByUser(userId: $userId) {
+      _id
+      title
+      content
+      thumbnail
+      createdBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      createdAt
+      community{
+        _id
+        name
+        avatar
+      }
+    }
+  }
+`
+export const CHECK_IS_SAVED = gql`
+  query checkIsSaved($id: SavedPostInput) {
+    checkIsSaved(id: $id)
+  }
+`
+export const CREATE_AND_DELETE_SAVEDPOST = gql`
+  mutation createAndDeleteSavedPost($id: SavedPostInput) {
+    createAndDeleteSavedPost(id: $id)
+  }
+`
+export const GET_SAVEDPOST_BY_USER = gql`
+  query getSavedPostByUser($userId: String) {
+    getSavedPostByUser(userId: $userId) {
+      _id {
+        userId
+        postId
+      }
+      post {
+        _id
+        title
+        content
+        thumbnail
+        community {
+          _id
+          name
+          avatar
+        }
+        isActive
+        createdAt
+        createdBy {
+          _id
+          firstname
+          avatar
+        }
+      }
+    }
+  }
+`
+export const CHECK_IS_MEMBER = gql`
+  query checkIsMember($id: CommunityUserInput) {
+    checkIsMember(id: $id)
+  }
+`
+export const CREATE_AND_DELETE_MEMBER = gql`
+  mutation createAndDeleteMember($id: CommunityUserInput) {
+    createAndDeleteMember(id: $id)
+  }
+`
+
+export const GET_COMMUNITIES_BY_USER = gql`
+  query getCommunitiesByUser($userId: String) {
+    getCommunitiesByUser(userId: $userId) {
+      _id {
+        userId
+      }
+      community {
+        _id
+        name
+        avatar
+        coverPhoto
+      }
+    }
+  }
+`
+export const GET_POST_BY_COMMUNITY = gql`
+  query postsByCommunity($communityId: String) {
+    postsByCommunity(communityId: $communityId) {
+      _id
+      title
+      content
+      thumbnail
+      createdBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      createdAt
+    }
+  }
+`
+export const GET_MEMBERS_BY_COMMUNITY = gql`
+  query getMembersByCommunity($communityId: String) {
+    getMembersByCommunity(communityId: $communityId)
+  }
+`

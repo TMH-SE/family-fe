@@ -17,7 +17,6 @@ const formItemLayout = {
   wrapperCol: { span: 18 }
 }
 const EditUser = props => {
-
   const { visible, onCancel } = props
   const { me, refetchMe } = useContext(IContext)
   const [form] = Form.useForm()
@@ -29,7 +28,9 @@ const EditUser = props => {
         userId: me?._id,
         userInfo: {
           ...values,
-          birthday: values.birthday ? Date.parse(values.birthday.toString()) : null
+          birthday: values.birthday
+            ? Date.parse(values.birthday.toString())
+            : null
         }
       }
     })
@@ -54,7 +55,7 @@ const EditUser = props => {
         initialValues={{
           firstname: me?.firstname,
           lastname: me?.lastname,
-          phone: me?.phone,
+          phoneNumber: me?.phoneNumber,
           gender: me?.gender,
           birthday: me?.birthday
             ? moment(new Date(me?.birthday).toLocaleDateString())
@@ -96,8 +97,9 @@ const EditUser = props => {
           <DatePicker
             // hideDisabledOptions
             showToday={false}
-            defaultPickerValue={moment(`12/31/${new Date().getFullYear() - 16}`)}
-
+            defaultPickerValue={moment(
+              `12/31/${new Date().getFullYear() - 16}`
+            )}
             disabledDate={disabledDate}
             style={{ width: '100%' }}
             format="DD-MM-YYYY"
@@ -117,7 +119,7 @@ const EditUser = props => {
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name="phone"
+          name="phoneNumber"
           label="Số điện thoại"
           //   initialValue={me?.phone}
         >
@@ -125,7 +127,7 @@ const EditUser = props => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Register
+            Lưu
           </Button>
         </Form.Item>
       </Form>

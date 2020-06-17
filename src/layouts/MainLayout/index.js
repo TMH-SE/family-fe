@@ -11,7 +11,8 @@ import {
   Button,
   Tooltip,
   Badge,
-  Popover
+  Popover,
+  Modal
   // Switch
 } from 'antd'
 import {
@@ -29,7 +30,7 @@ import {
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
-import { Logo, HighLightGroup, Noti } from '@components'
+import { Logo, HighLightGroup, Noti, Login } from '@components'
 import './mainlayout.scss'
 
 import { IContext } from '@tools'
@@ -42,19 +43,30 @@ import MessageList from '@pages/messageDetail/MessageList'
 import reactStringReplace from 'react-string-replace'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_CHAT_BY_USER } from '@shared'
+import SignIn from '@pages/signIn'
 const { Header, Content, Sider } = Layout
 
 export const brokenContext = React.createContext(null)
 // const MY_USER_ID =
 const index = ({ children }) => {
-  const { logout, me, isAuth, messbox, onCancelMessbox } = useContext(IContext)
+  const {
+    logout,
+    me,
+    isAuth,
+    messbox,
+    onCancelMessbox,
+    showLogin,
+    closeLoginModal,
+    refetchPosts
+  } = useContext(IContext)
 
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
   // const [messbox, setMessbox] = useState([])
-  const { data } = useQuery(GET_CHAT_BY_USER, {
-    variables: { userId: me?._id }
-  })
+  // const { data, refetch } = useQuery(GET_CHAT_BY_USER, {
+  //   variables: { userId: me?._id },
+  //   fetchPolicy: "no-cache"
+  // })
   const [notifications, setNotifications] = useState([])
 
   useEffect(() => {
@@ -78,14 +90,6 @@ const index = ({ children }) => {
         setNotifications(temp)
       })
   }
-  // const chooseConvention = convention => {
-  //   if (messbox.findIndex(mess => mess.idChat === convention.idChat) === -1) {
-  //     const a = [...messbox]
-  //     a.push(convention)
-  //     setMessbox(a)
-  //   }
-  //   document.getElementById(`input-custom-${convention.idChat}`).focus()
-  // }
   const history = useHistory()
   const menu = (
     <Menu>
@@ -118,12 +122,6 @@ const index = ({ children }) => {
       </Menu.Item>
     </Menu>
   )
-  // const onCancelMessbox = idChat => {
-  //   const idx = messbox.findIndex(mess => mess.idChat === idChat)
-  //   var arr = [...messbox]
-  //   arr.splice(idx, 1)
-  //   setMessbox([...arr])
-  // }
 
   return (
     <Layout>
@@ -155,7 +153,10 @@ const index = ({ children }) => {
             <Logo
               isBroken={isBroken}
               size="medium"
-              onClick={() => history.push('/')}
+              onClick={() => {
+                refetchPosts()
+                history.push('/homepage')
+              }}
             />
             {
               !isBroken ? (
@@ -190,39 +191,41 @@ const index = ({ children }) => {
               marginRight: 10
             }}
           >
-            <Menu
-              style={{
-                backgroundColor: 'initial',
-                width: isBroken ? 50 : 120
-              }}
-              overflowedIndicator={
-                <UnorderedListOutlined style={{ fontSize: 23 }} />
-              }
-              mode="horizontal"
-            >
-              <Menu.Item onClick={() => history.push('/createpost')}>
-                {isBroken ? (
-                  <>
-                    <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
-                    <span>Thêm bài viết</span>
-                  </>
-                ) : (
-                  <Tooltip title="Thêm bài viết" placement="bottomRight">
-                    <Button
-                      className="btn-round"
-                      shape="circle"
-                      icon={
-                        <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
-                      }
-                      // onClick={() => history.push('/createpost')}
-                    />
-                  </Tooltip>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                <Noti history={history} isBroken={isBroken} />
-              </Menu.Item>
-            </Menu>
+            {isAuth && (
+              <Menu
+                style={{
+                  backgroundColor: 'initial',
+                  width: isBroken ? 50 : 120
+                }}
+                overflowedIndicator={
+                  <UnorderedListOutlined style={{ fontSize: 23 }} />
+                }
+                mode="horizontal"
+              >
+                <Menu.Item onClick={() => history.push('/createpost')}>
+                  {isBroken ? (
+                    <>
+                      <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
+                      <span>Thêm bài viết</span>
+                    </>
+                  ) : (
+                    <Tooltip title="Thêm bài viết" placement="bottomRight">
+                      <Button
+                        className="btn-round"
+                        shape="circle"
+                        icon={
+                          <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
+                        }
+                        // onClick={() => history.push('/createpost')}
+                      />
+                    </Tooltip>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  <Noti history={history} isBroken={isBroken} />
+                </Menu.Item>
+              </Menu>
+            )}
             <div>
               {isAuth ? (
                 isBroken ? (
@@ -242,6 +245,7 @@ const index = ({ children }) => {
                         }}
                         size={30}
                         src={me?.avatar}
+                        onClick={() => history.push(`/${me?._id}/info`)}
                       >
                         {/* N */}
                       </Avatar>
@@ -260,6 +264,7 @@ const index = ({ children }) => {
                       }}
                       size={30}
                       src={me?.avatar}
+                      onClick={() => history.push(`/${me?._id}/info`)}
                     >
                       {/* N */}
                     </Avatar>
@@ -318,12 +323,9 @@ const index = ({ children }) => {
         </Sider>
         <Content
           style={{
-            // backgroundColor: 'aliceblue',
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
             marginTop: 0
-            // width: '90%'
-            // width: isAuth ? '90%' : '10%'
           }}
         >
           <brokenContext.Provider value={isBroken}>
@@ -333,7 +335,7 @@ const index = ({ children }) => {
         {!isBroken && isAuth ? (
           <Sider width="18%">
             <div className="sidebarMess-mainLayout">
-              <ConversationList dataChat={data?.getChatByUser} />
+              <ConversationList />
             </div>
           </Sider>
         ) : (
@@ -350,6 +352,7 @@ const index = ({ children }) => {
                     style={{ display: 'flex', flexDirection: 'column' }}
                   >
                     <MessageList
+                      history={history}
                       idx={idx}
                       onCancelMessbox={() => onCancelMessbox(mess.idChat)}
                       chatBox={mess}
@@ -357,26 +360,19 @@ const index = ({ children }) => {
                   </div>
                 )
               })}
-              {/* <div className='contentMess-box' style={{ display: 'flex', flexDirection: 'column' }}>
-              <MessageList />
-            </div> */}
             </div>
           </div>
         )}
-        {/* {isBroken && (
-          <Drawer
-            drawerStyle={{ transition: 'all 0.2s' }}
-            width='80%'
-            placement='left'
-            closable={false}
-            bodyStyle={{ padding: 0 }}
-            visible={visible}
-            getContainer={false}
-          >
-            <HighLightGroup></HighLightGroup>
-          </Drawer>
-        )} */}
       </Layout>
+      <Modal
+        visible={showLogin}
+        title="Đăng nhập"
+        footer={null}
+        centered
+        onCancel={closeLoginModal}
+      >
+        <Login></Login>
+      </Modal>
     </Layout>
   )
 }

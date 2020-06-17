@@ -26,7 +26,7 @@ const Notify = props => {
         setNotifications(temp)
       })
   }
-  return notifications.length === 0 ? (
+  return notifications?.length === 0 ? (
     <p>Chưa có thông báo nào</p>
   ) : (
     notifications.map((noti, idx) => (

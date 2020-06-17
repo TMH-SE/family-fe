@@ -1,42 +1,61 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState } from 'react'
-import { Avatar, Menu, Button, Upload, message, notification } from 'antd'
+import { Avatar, Button, Upload, notification, List, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
-import firebase from 'firebase/app'
 import {
-  EllipsisOutlined,
-  HeartTwoTone,
-  MessageTwoTone,
-  PlusOutlined,
   LoadingOutlined,
   CameraFilled,
-  CheckOutlined,
-  CloseOutlined,
   CheckCircleTwoTone,
-  CloseCircleTwoTone,
-  CloseCircleFilled
+  CloseCircleTwoTone
 } from '@ant-design/icons'
 
-import * as uuid from 'uuid'
 import Info from './info'
 import MyMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
-import { HighLightGroup, ModalPreviewImg, Chat, Follow } from '@components'
+import { ModalPreviewImg, Chat, Follow, CommunityItem } from '@components'
 import { brokenContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { GET_USER, UPDATE_USER, uploadImg } from '@shared'
+import {
+  GET_USER,
+  UPDATE_USER,
+  uploadImg,
+  GET_COMMUNITIES_BY_USER
+} from '@shared'
 import './index.scss'
 import { IContext } from '@tools'
+
+import ImgCrop from 'antd-img-crop'
+import gql from 'graphql-tag'
+import MenuInfo from './menuInfo'
+export const GET_SUM_FOLLOWER_BY_USER = gql`
+  query getFollowerByUser($userId: String) {
+    getFollowerByUser(userId: $userId) {
+      _id {
+        userId
+      }
+      follower {
+        _id
+        firstname
+        lastname
+      }
+    }
+  }
+`
 
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
-  // const MY_USER_ID = 'tuinhune'
   const isBroken = useContext(brokenContext)
-  const { loading, error, data, refetch } = useQuery(GET_USER, {
+  const { data, refetch } = useQuery(GET_USER, {
     variables: { userId: userId }
   })
+  const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(
+    GET_SUM_FOLLOWER_BY_USER,
+    {
+      variables: { userId: userId }
+    }
+  )
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
@@ -52,24 +71,10 @@ function Profile(props) {
     avatar: null
   })
   const [updateUser] = useMutation(UPDATE_USER)
-  // const sendNotifollow = async () => {
-  //   const notificationId = uuid.v1()
-  //   try {
-  //     await firebase
-  //       .database()
-  //       .ref('notifications/' + userId + '/' + notificationId)
-  //       .set({
-  //         action: 'follow',
-  //         reciever: userId,
-  //         link: `/${me?._id}/info`,
-  //         content: `${me?.firstname} đã bắt đầu theo dõi bạn`,
-  //         seen: false
-  //       })
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  //   notification.success({ message: 'Đã theo dõi' })
-  // }
+  const { data: dataCommunity } = useQuery(GET_COMMUNITIES_BY_USER, {
+    variables: { userId: me?._id },
+    fetchPolicy: 'no-cache'
+  })
   const uploadButtonCover =
     isMe &&
     (!img.coverPhoto ? (
@@ -88,9 +93,9 @@ function Profile(props) {
           listType="picture-card"
           className="icon-uploader"
           showUploadList={false}
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          action={file => handleChangeCover(file)}
           beforeUpload={beforeUpload}
-          onChange={info => handleChangeCover(info)}
+          // onChange={info => handleChangeCover(info)}
         >
           <CameraFilled style={{ fontSize: 25, color: '#fff' }} />
         </Upload>
@@ -126,24 +131,27 @@ function Profile(props) {
         </Button>
       </div>
     ))
+
   const uploadButtonAvt =
     isMe &&
-    (!img.avatar ? (
+    (!img?.avatar ? (
       <div
         className="avatar-uploader"
         style={{ position: 'absolute', bottom: 5, right: 5 }}
       >
-        <Upload
-          name="avatar"
-          listType="picture-card"
-          className="icon-avt-uploader"
-          showUploadList={false}
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          beforeUpload={beforeUpload}
-          onChange={info => handleChangeAvatar(info)}
-        >
-          <CameraFilled style={{ fontSize: 23 }} />
-        </Upload>
+        <ImgCrop rotate shape="round">
+          <Upload
+            name="avatar"
+            listType="picture-card"
+            className="icon-avt-uploader"
+            showUploadList={false}
+            action={file => handleChangeAvatar(file)}
+            beforeUpload={beforeUpload}
+            // onChange={info => handleChangeAvatar(info)}
+          >
+            <CameraFilled style={{ fontSize: 23 }} />
+          </Upload>
+        </ImgCrop>
       </div>
     ) : (
       <div
@@ -169,66 +177,25 @@ function Profile(props) {
         <CloseCircleTwoTone twoToneColor="red" onClick={() => handleCancel()} />
       </div>
     ))
-  function getBase64(img, callback) {
-    const reader = new FileReader()
-    reader.addEventListener('load', () => callback(reader.result))
-    reader.readAsDataURL(img)
+  const handleChangeAvatar = async file => {
+    setLoadingImg({ coverPhoto: false, avatar: true })
+    uploadImg(file).then(url => {
+      setImg({
+        coverPhoto: null,
+        avatar: url
+      })
+      setLoadingImg({ ...loadingImg, avatar: false })
+    })
   }
-  const handleChangeAvatar = async info => {
-    setLoadingImg({
-      ...loadingImg,
-      coverPhoto: false
-    })
-    setImg({
-      ...img,
-      coverPhoto: null
-    })
-    if (info.file.status === 'uploading') {
-      setLoadingImg({
-        ...loadingImg,
-        avatar: true
+  const handleChangeCover = file => {
+    setLoadingImg({ avatar: false, coverPhoto: true })
+    uploadImg(file).then(url => {
+      setImg({
+        avatar: null,
+        coverPhoto: url
       })
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, async imageUrl => {
-        const url = await uploadImg(imageUrl)
-        setLoadingImg({ ...loadingImg, avatar: false })
-        setImg({
-          ...img,
-          avatar: url
-        })
-      })
-    }
-  }
-  const handleChangeCover = info => {
-    setLoadingImg({
-      ...loadingImg,
-      avatar: false
+      setLoadingImg({ ...loadingImg, coverPhoto: false })
     })
-    setImg({
-      ...img,
-      avatar: null
-    })
-    if (info.file.status === 'uploading') {
-      setLoadingImg({
-        ...loadingImg,
-        coverPhoto: true
-      })
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, async imageUrl => {
-        const url = await uploadImg(imageUrl)
-        setLoadingImg({ ...loadingImg, coverPhoto: false })
-        setImg({
-          ...img,
-          coverPhoto: url
-        })
-      })
-    }
   }
   function beforeUpload(file) {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -248,8 +215,8 @@ function Profile(props) {
         userId: userId,
         editUser: {
           coverPhoto:
-            type === 'coverPhoto' ? img.coverPhoto : data?.getUser.coverPhoto,
-          avatar: type === 'avatar' ? img.avatar : data?.getUser.avatar
+            type === 'coverPhoto' ? img?.coverPhoto : data?.getUser?.coverPhoto,
+          avatar: type === 'avatar' ? img?.avatar : data?.getUser?.avatar
         }
       }
     })
@@ -265,19 +232,19 @@ function Profile(props) {
   }
   const handleCancel = () => {
     setLoadingImg({
-      coverPhoto: false,
-      avatar: false
+      avatar: false,
+      coverPhoto: false
     })
     setImg({
-      coverPhoto: null,
-      avatar: null
+      avatar: null,
+      coverPhoto: null
     })
   }
   return (
     <>
       {type !== 'messenger' && (
-        <>
-          <div className="cover-uploader">
+        <div>
+          <div>
             <div
               style={{
                 position: 'relative',
@@ -300,22 +267,35 @@ function Profile(props) {
                   }}
                 />
               )}
-              {loadingImg.coverPhoto && (
-                <LoadingOutlined
-                  style={{
-                    fontSize: 30,
-                    position: 'absolute',
-                    top: 'calc(50% - 15px)',
-                    left: 'calc(50% - 15px)'
-                  }}
-                />
-              )}
+              {/* {loadingImg.coverPhoto && ( */}
+              <div
+                className="btn-saveCover"
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
+                }}
+              >
+                {/* <LoadingOutlined
+                    style={{
+                      fontSize: 30,
+                      color: '#fff'
+                    }}
+                  /> */}
+                <Spin spinning={loadingImg.coverPhoto} size="large" />
+              </div>
+              {/* )} */}
               {uploadButtonCover}
             </div>
           </div>
           <div
             style={{
-              backgroundColor: '#fff',
+              backgroundColor: 'rgba(255,255,255,0.7)',
               width: '100%',
               display: 'flex',
               marginTop: -95,
@@ -331,33 +311,47 @@ function Profile(props) {
                   marginRight: 30
                 }}
               >
-                {(data?.getUser.avatar || img.avatar) && (
+                {(data?.getUser?.avatar || img?.avatar) && (
                   <Avatar
                     className="img-avt"
                     style={{ border: '2px solid black', objectFit: 'cover' }}
                     shape="circle"
                     size={130}
-                    src={img.avatar || data?.getUser.avatar}
+                    src={img?.avatar || data?.getUser?.avatar}
                     onClick={() => {
                       setPreviewImg({
                         isShow: true,
-                        imgSrc: img.avatar || data?.getUser.avatar
+                        imgSrc: img?.avatar || data?.getUser?.avatar
                       })
                     }}
                   />
                 )}
+                {/* {loadingImg.avatar && ( */}
+                <div
+                  className="btn-saveAvt"
+                  style={{
+                    fontSize: 25,
+                    borderRadius: '50%',
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    top: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
+                  }}
+                >
+                  {/* <LoadingOutlined
+                      style={{
+                        fontSize: 30,
+                        color: '#fff'
+                      }}
+                    /> */}
+                  <Spin spinning={loadingImg.avatar} />
+                </div>
                 {uploadButtonAvt}
-                {loadingImg.avatar && (
-                  <LoadingOutlined
-                    style={{
-                      fontSize: 30,
-                      position: 'absolute',
-                      top: 'calc(50% - 15px)',
-                      left: 'calc(50% - 15px)',
-                      color: '#fff'
-                    }}
-                  />
-                )}
+                {/* )} */}
               </div>
               <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
                 <div
@@ -370,85 +364,58 @@ function Profile(props) {
                     style={{
                       fontWeight: 'bolder',
                       fontSize: 20,
-                      color: 'black'
+                      color: 'black',
+                      textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
                     }}
                   >
                     {`${data?.getUser.firstname} ${data?.getUser.lastname}`}
                   </p>
                   <div>
-                    {
-                      !isMe && 
-                        <div style={{ marginTop: 5 }}> 
-                          <Follow isBroken={isBroken} follower={{userId: userId, followerId: me?._id}}/>
-                          <Chat members={[me?._id, userId]} history={history} isBroken={isBroken}></Chat>
-                        </div>
-                    }
+                    {!isMe && (
+                      <div>
+                        <Follow
+                          refetchDataCountFollow={refetchDataCountFollow}
+                          isBroken={isBroken}
+                          follower={{ userId: userId, followerId: me?._id }}
+                        />
+                        <Chat
+                          members={[me?._id, userId]}
+                          history={history}
+                          isBroken={isBroken}
+                        ></Chat>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <Menu
-                  selectedKeys={[type]}
-                  //   onSelect={(e) => {
-                  //     // setKeyMenu(e.key)
-                  //     // console.log(keyMenu)
-                  //   }
-                  //   }
-                  style={{
-                    marginTop: -30,
-                    // color: 'black',
-                    fontSize: 15,
-                    fontWeight: 550,
-                    width: isBroken ? '60vw' : '35vw',
-                    backgroundColor: 'initial'
-                  }}
-                  overflowedIndicator={<EllipsisOutlined color="black" />}
-                  mode="horizontal"
-                >
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/info`)}
-                    key="info"
-                  >
-                    Thông tin
-                  </Menu.Item>
-                  {isBroken && (
-                    <Menu.Item
-                      onClick={() => history.push(`/${userId}/messenger`)}
-                      key="mail"
-                    >
-                      Tin nhắn
-                    </Menu.Item>
-                  )}
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/savedposts`)}
-                    key="savedposts"
-                  >
-                    Bài viết đã lưu
-                  </Menu.Item>
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/myposts`)}
-                    key="myposts"
-                  >
-                    Bài viết của tôi
-                  </Menu.Item>
-                  <Menu.Item
-                    onClick={() => history.push(`/${userId}/joinedGroup`)}
-                    key="joinedGroup"
-                  >
-                    Cộng đồng đã tham gia
-                  </Menu.Item>
-                </Menu>
+                {isMe && (
+                  <MenuInfo
+                    isBroken={isBroken}
+                    userId={userId}
+                    type={type}
+                    isMe={isMe}
+                    history={history}
+                  />
+                )}
               </div>
             </div>
           </div>
           <br />{' '}
-        </>
+        </div>
       )}
       <div
         style={{
-          backgroundColor: type === 'info' ? '#fff' : 'aliceblue',
+          backgroundColor:
+            type === 'info' ? 'rgba(255,255,255,0.7)' : 'aliceblue',
           padding: type === 'info' && 16
         }}
       >
-        {type === 'info' && <Info userInfo={data?.getUser} />}
+        {type === 'info' && (
+          <Info
+            userInfo={data?.getUser}
+            isMe={isMe}
+            dataCountFollow={dataCountFollow}
+          />
+        )}
         {type === 'messenger' && <MyMessenger userInfo={data?.getUser} />}
         {type === 'myposts' && (
           <MyPosts history={history} userInfo={data?.getUser} />
@@ -456,7 +423,18 @@ function Profile(props) {
         {type === 'savedposts' && (
           <SavedPosts history={history} userInfo={data?.getUser} />
         )}
-        {type === 'joinedGroup' && <HighLightGroup userInfo={data?.getUser} />}
+        {type === 'joinedGroup' && (
+          <List
+            itemLayout="horizontal"
+            dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser}
+            renderItem={item => (
+              <CommunityItem
+                item={item.community}
+                data={dataCommunity?.getCommunitiesByUser}
+              />
+            )}
+          />
+        )}
       </div>
       <ModalPreviewImg
         previewImg={previewImg}

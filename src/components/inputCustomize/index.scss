@@ -19,6 +19,43 @@
   &:active {
     outline: none;
     color: #454647;
+    border: none;
+  }
+  &::placeholder {
+    color: #a4b0be;
+    font-size: 14px;
+  }
+  .textMention--multiLine{
+    line-height: 30px !important;
+    width: 80% !important;
+  }
+  .textMention__suggestions__list {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    max-height: 200px;
+    overflow: auto;
+  }
+  .textMention__suggestions__item {
+    padding: 5px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  }
+  .textMention__suggestions__item--focused {
+    background-color: #daf4fa;
+  }
+  textarea.ant-input:hover {
+    /* border: none !important; */
+  }
+  .input-menu{
+    display: flex;
+    background-color: initial;
+    /* border: black solid 1px; */
+    /* border-top: none; */
+    border-radius: 20px;
+    .ant-menu-horizontal > .ant-menu-item{
+      padding-left: 5px;
+      padding-right: 0;
+    }
   }
 }
 .textMention--multiLine {
@@ -46,5 +83,5 @@
   justify-content: flex-end;
   background-color: initial;
   border-radius: 20px;
-  padding: 5px;
+  // padding: 5px;
 }

@@ -4,9 +4,8 @@ import firebase from 'firebase/app'
 import Message from './Message'
 import moment from 'moment'
 import './index.scss'
-import { CloseCircleFilled } from '@ant-design/icons'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Card, Avatar } from 'antd'
-import * as uuid from 'uuid'
 import { InputCustomize } from '@components'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
@@ -16,20 +15,17 @@ moment().format()
 // const MY_USER_ID = 'tuinhune'
 function MessageDetail(props) {
   const [messages, setMessages] = useState([])
-  const { history } = props
   const { idChat, userId } = props.match.params
   const { me } = useContext(IContext)
-  const { showMoreMess, setShowMoreMess } = useState(10)
   useEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
   }, [idChat])
   const { data } = useQuery(GET_USER, { variables: { userId } })
-  const [showMore, setShowMore] = useState(10)
   const getMessages = () => {
     firebase
       .database()
-      .ref(`messenger/${idChat}`)
+      .ref(`messenger/${idChat}/listmessages`)
       .orderByKey()
       // .limitToLast(100)
       .on('value', snapshot => {
@@ -42,16 +38,12 @@ function MessageDetail(props) {
           : []
         // temp.sort((a, b) => a.timestamp - b.timestamp)
         setMessages(temp)
-        const ele = document.getElementsByClassName(
-          `message-list-container ${idChat}`
-        )[0]
-        ele.scrollTop = ele.scrollHeight
       })
   }
 
   const renderMessages = () => {
     let i = 0
-    const messageCount = messages.length
+    const messageCount = messages?.length
     const tempMessages = []
 
     while (i < messageCount) {
@@ -91,8 +83,11 @@ function MessageDetail(props) {
           endsSequence = false
         }
       }
+
       tempMessages.push(
         <Message
+          idChat={idChat}
+          isLast={messageCount - 1 === i}
           key={i}
           isMine={isMine}
           startsSequence={startsSequence}
@@ -105,16 +100,14 @@ function MessageDetail(props) {
       // Proceed to the next message.
       i += 1
     }
-
     return tempMessages
   }
   const handleSubmit = async (value, imgList) => {
-    const chatId = `${idChat}` + '/'
-    const message = uuid.v1()
     try {
+      const message = +new Date()
       await firebase
         .database()
-        .ref('messenger/' + chatId + message)
+        .ref(`messenger/${idChat}/listmessages/` + message)
         .set({
           content: { message: value, img: imgList },
           timestamp: +new Date(),
@@ -122,20 +115,30 @@ function MessageDetail(props) {
           seen: false,
           hideWith: []
         })
+      await firebase
+        .database()
+        .ref(`messenger/${idChat}`)
+        .update({
+          lastMess: {
+            content: { message: value, img: imgList },
+            timestamp: +new Date(),
+            author: me?._id,
+            seen: false,
+            hideWith: []
+          },
+          lastActivity: +new Date()
+        })
     } catch (error) {
       console.log(error)
     }
     const ele = document.getElementsByClassName(
       `message-list-container ${idChat}`
     )[0]
-    // console.log(ele, 'elemu')
     ele.scrollTop = ele.scrollHeight
   }
 
-  const { isBroken } = props
-
   return (
-    <div className="message-list">
+    <div className="message-list-phone">
       <Card
         title={
           <>
@@ -143,24 +146,20 @@ function MessageDetail(props) {
             <span style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</span>
           </>
         }
-        className="ant-mess"
+        className="ant-mess-phone"
         extra={
-          !isBroken && (
-            // <div className='delete-messbox'>
-            <CloseCircleFilled
+            <ArrowLeftOutlined
               className="delete-messbox"
-              onClick={() => history.goBack()}
-              style={{ color: '#ccc' }}
+              onClick={() => props.history.goBack()}
+              style={{ color: '#ccc', fontSize: 20 }}
             />
-          )
         }
-        // </div>}
-        // style={{ 10 }}
         actions={[
           <InputCustomize
             minRows={1}
             maxRows={4}
             idElement={idChat}
+            type="chat"
             onSubmit={handleSubmit}
             placeholder="Nhập tin nhắn"
             key="input"

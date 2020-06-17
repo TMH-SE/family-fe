@@ -3,7 +3,7 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
-import { Upload, Popover, notification, message, Space } from 'antd'
+import { Upload, Popover, notification, message, Space, Spin } from 'antd'
 import {
   LoadingOutlined,
   CloseCircleFilled,
@@ -17,7 +17,16 @@ import { MentionsInput, Mention } from 'react-mentions'
 import { uploadImg } from '@shared'
 
 function InputCustomize(props) {
-  const { mentions, replyAuthor, idElement, onSubmit, onAdd, placeholder, minRows, maxRows } = props
+  const {
+    mentions,
+    replyAuthor,
+    idElement,
+    onSubmit,
+    onAdd,
+    placeholder,
+    minRows,
+    maxRows
+  } = props
   const mentionData = []
   mentions &&
     mentions.map((item, idx) => {
@@ -37,14 +46,14 @@ function InputCustomize(props) {
   })
 
   const [text, setText] = useState('')
+  const [plainText, setPlainText] = useState('')
   useEffect(() => {
     setText(
       replyAuthor
         ? `<a href='${window.location.origin}/${replyAuthor.id}/info'>${replyAuthor.name}</a> `
         : ''
     )
-    replyAuthor &&
-      document.getElementById(`input-custom-${idElement}`).focus()
+    replyAuthor && document.getElementById(`input-custom-${idElement}`).focus()
     // onAdd && onAdd([{ id: replyAuthor.id, display: replyAuthor.name }])
   }, [replyAuthor])
 
@@ -75,6 +84,18 @@ function InputCustomize(props) {
     }
     return isJpgOrPng && isLt2M
   }
+  // const handleChange = async info => {
+  // if (info.file.status === 'uploading') {
+  //   setImage({ ...image, loading: true })
+  //   return
+  // }
+  // if (info.file.status === 'done') {
+  //   getBase64(info.file.originFileObj, async imageUrl => {
+  //     const url = await uploadImg(imageUrl)
+  //     setImage({
+  //       srcImg: url,
+  //       loading: false
+  //     })
 
   const handleUpload = file => {
     setImage({ ...image, loading: true })
@@ -86,24 +107,45 @@ function InputCustomize(props) {
       document.getElementById(`input-custom-${idElement}`).focus()
     })
   }
+  const escapeHtml = text => {
+    var map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }
+    return text.replace(/[&<>"']/g, function (m) {
+      return map[m]
+    })
+  }
 
   const handleSubmit = event => {
     if (event.shiftKey && event.keyCode === 13) {
       event.stopPropagation()
     } else if (event.keyCode === 13) {
       if (text.trim() || image.srcImg) {
-        onSubmit(text, image.srcImg)
+        let newPlain = plainText
+        arrMentions.map(mention => {
+          newPlain = escapeHtml(plainText).replace(
+            mention.display,
+            `<a href='${window.location.origin}/${mention.id}/info'>${mention.display}</a>`
+          )
+        })
+        props.onSubmit(newPlain, image.srcImg)
+        // onSubmit(text, image.srcImg)
         setText('')
         setImage({ ...image, srcImg: '' })
       }
     }
   }
+
   return (
     <div style={{ width: '100%' }}>
       {/* <div> */}
-      {image.loading && (
-        <LoadingOutlined color="black" style={{ padding: 10 }} />
-      )}
+
+      <Spin spinning={image.loading} size='small' style={{ padding: 10 }} />
+
       {image.srcImg && (
         <div style={{ display: 'flex', overflowX: 'auto' }}>
           <div
@@ -149,9 +191,10 @@ function InputCustomize(props) {
           id={`input-custom-${idElement}`}
           className="textMention"
           placeholder={placeholder}
-          autoSize={{ minRows: 1, maxRows: 3 }}
+          // autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(event, newValue, newPlainTextValue, mentions) => {
             setText(newValue)
+            setPlainText(newPlainTextValue)
             setArrMentions(mentions)
             onAdd && onAdd(arrMentions)
           }}

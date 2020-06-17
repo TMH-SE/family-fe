@@ -1,18 +1,26 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import moment from 'moment'
 import './Message.css'
 import { ModalPreviewImg } from '@components'
-
+import { CheckOutlined } from '@ant-design/icons'
+import { IContext } from '@tools'
 
 export default function Message(props) {
   const { data, isMine, startsSequence, endsSequence, showTimestamp } = props
-  // console.log(data, 'data')
+  const { me } = useContext(IContext)
   const friendlyTimestamp = moment(data?.timestamp).locale('vi').format('llll')
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
   })
+  useEffect(() => {
+    const ele = document.getElementsByClassName(
+      `message-list-container ${props.idChat}`
+    )[0]
+    if (ele) ele.scrollTop = ele.scrollHeight
+  }, [props.isLast])
+
   return (
     <div
       className={[
@@ -24,7 +32,7 @@ export default function Message(props) {
     >
       {showTimestamp && <div className="timestamp">{friendlyTimestamp}</div>}
 
-      {data.content.img && (
+      {data?.content?.img && (
         <div className="bubble-container">
           <div className="imgBubble">
             <img
@@ -38,12 +46,21 @@ export default function Message(props) {
               }}
             />
           </div>
+          {/* {props.isLast && <CheckOutlined />} */}
         </div>
       )}
-      {data.content.message.trim() && (
+      {data?.content?.message.trim() && (
         <div className="bubble-container">
-          <div className="bubble" title={friendlyTimestamp}>
-            {data.content.message}
+          <div>
+            <div className="bubble" title={friendlyTimestamp}>
+              {data.content.message}
+            </div>
+            {props.isLast && data.seen && data.author !== me?._id && (
+              <div style={{ display: 'flex' }}>
+                <CheckOutlined style={{ fontSize: 10, marginRight: 5 }} />{' '}
+                <p style={{ fontSize: 10 }}>đã xem</p>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -1,100 +1,177 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
-import { Avatar, Button } from 'antd'
+import React, { useState, useContext, useEffect } from 'react'
+import { Avatar, Input } from 'antd'
 
 import { withRouter } from 'react-router-dom'
-import { ModalReport } from '@components'
+import { ModalReport, PostNoGroup, JoinBtn } from '@components'
 
-import { Post } from './post'
-// var moment = require('moment')
-const data = [
-  {
-    title: 'Ant Design Title 1',
-    groupId: '111',
-    postId: 'post1'
-  },
-  {
-    title: 'Ant Design Title 2',
-    groupId: '222',
-    postId: 'post2'
-  },
-  {
-    title: 'Ant Design Title 3',
-    groupId: '111',
-    postId: 'post3'
-  },
-  {
-    title: 'Ant Design Title 4',
-    groupId: '222',
-    postId: 'post4'
+import gql from 'graphql-tag'
+import { useQuery } from '@apollo/react-hooks'
+import { IContext } from '@tools'
+import {
+  GET_MEMBERS_BY_COMMUNITY,
+  GET_POST_BY_COMMUNITY,
+  CHECK_IS_MEMBER
+} from '@shared'
+import CreatePostDrawer from './createPostDrawer'
+import { brokenContext } from '../../layouts/MainLayout'
+
+export const GET_COMMUNITY_BY_ID = gql`
+  query communityById($id: String) {
+    communityById(id: $id) {
+      _id
+      name
+      avatar
+      coverPhoto
+    }
   }
-]
+`
+
 function PageGroup(props) {
-  // const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
+  const { communityId } = props.match.params
+  const {
+    me,
+    refetchCount,
+    setRefetchCount,
+    setRefetchSumPosts,
+    refetchSumPosts
+  } = useContext(IContext)
+  const isBroken = useContext(brokenContext)
+  const [visibleModalCreate, setVisibleModalCreate] = useState(false)
+  const { data } = useQuery(GET_POST_BY_COMMUNITY, {
+    variables: { communityId }
+  })
+  const { data: dataCommunity, refetch } = useQuery(GET_COMMUNITY_BY_ID, {
+    variables: { id: communityId },
+    fetchPolicy: 'no-cache'
+  })
+  const { data: dataMemberCount, refetch: refetchMemberCount } = useQuery(
+    GET_MEMBERS_BY_COMMUNITY,
+    {
+      variables: { communityId },
+      fetchPolicy: 'no-cache'
+    }
+  )
+  const { data: dataIsMember } = useQuery(CHECK_IS_MEMBER, {
+    variables: { id: { userId: me?._id, communityId: communityId } }
+  })
   const handleOk = () => {
     // setVisibleModalCreate(false)
     setVisibleModalReport(false)
   }
   const handleCancel = () => {
-    // setVisibleModalCreate(false)
+    setVisibleModalCreate(false)
     setVisibleModalReport(false)
   }
+  useEffect(() => {
+    refetchCount !== '' && refetchMemberCount({ variables: refetchCount })
+    refetchSumPosts !== '' && refetch({ variables: refetchSumPosts })
+    setRefetchCount('')
+    setRefetchSumPosts('')
+  }, [refetchCount, setRefetchSumPosts])
   return (
     <>
-      <div>
+      <div
+        style={{
+          height: 250,
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.9)'
+        }}
+      >
         <img
           className="cover-img"
           style={{ objectFit: 'cover', height: 250, width: '100%' }}
           alt="example"
-          src="https://scontent.fsgn2-2.fna.fbcdn.net/v/t1.0-9/92522573_1498212850342148_3908204202505011200_n.jpg?_nc_cat=100&_nc_sid=85a577&_nc_ohc=Hs7CLNZhiVYAX8UfzYa&_nc_ht=scontent.fsgn2-2.fna&oh=bd39d3ac8da082083ba12c10e4b8870a&oe=5EDC49A8"
+          src={dataCommunity?.communityById?.coverPhoto}
         />
       </div>
-      <div style={{ display: 'flex', marginTop: -60, backgroundColor: '#fff' }}>
+      <div
+        style={{
+          display: 'flex',
+          marginTop: -60,
+          backgroundColor: 'rgba(255,255,255,0.6)'
+        }}
+      >
         <Avatar
-          style={{ border: '2px solid black', marginLeft: 10 }}
-          shape="circle"
+          style={{ border: '2px solid rgba(0,0,0,0.5)', marginLeft: 10 }}
+          shape="square"
           size={120}
-          src="https://scontent.fsgn2-3.fna.fbcdn.net/v/t1.0-9/42509129_1029389683910372_8485576172426493952_n.jpg?_nc_cat=106&_nc_sid=dd9801&_nc_ohc=3By-MUAxPSkAX-vnCzn&_nc_ht=scontent.fsgn2-3.fna&oh=de4871077a93092c361bb222770ed707&oe=5EDD69A3"
+          src={dataCommunity?.communityById?.avatar}
         />
         <div style={{ marginLeft: 10 }}>
-          <p style={{ fontWeight: 'bolder', fontSize: 20, color: '#fff' }}>
-            Chăm sóc bé sinh non
+          <p
+            style={{
+              fontWeight: 'bolder',
+              fontSize: 20,
+              color: '#fff',
+              textShadow: '0px 2px 2px rgba(0, 0, 0, 0.8)'
+            }}
+          >
+            {dataCommunity?.communityById?.name}
           </p>
           <p
             style={{
               marginTop: -15,
               fontWeight: 'bolder',
               color: '#fff',
-              fontSize: 12
+              fontSize: 12,
+              textShadow: '0px 2px 2px rgba(0, 0, 0, 0.8)'
             }}
           >
             {' '}
-            12k thành viên - 300 bài viết
+            {dataMemberCount?.getMembersByCommunity} thành viên -{' '}
+            {data?.postsByCommunity?.length} bài viết
           </p>
-          <Button
-            style={{ backgroundColor: 'rgb(0, 152, 218)', color: '#fff' }}
-          >
-            Tham gia
-          </Button>
+          <JoinBtn id={{ userId: me?._id, communityId: communityId }}></JoinBtn>
         </div>
       </div>
       <br />
-      {data.map((item, idx) => {
-        // const sumCmt = getSumComment(item.postId)
-        return <Post key={idx} item={item} idx={idx}></Post>
-      })}
+      {dataIsMember?.checkIsMember && (
+        // <>
+        //   <p
+        //     style={{
+        //       fontSize: 16,
+        //       color: 'rgba(0,0,0,0.6)',
+        //       fontWeight: 'bold'
+        //     }}
+        //   >
+        //     Tạo bài viết
+        //   </p>
+        <Input.TextArea
+          onClick={() =>
+            isBroken
+              ? props.history.push('/createpost')
+              : setVisibleModalCreate(!visibleModalCreate)
+          }
+          style={{
+            margin: '0 auto',
+            marginBottom: 15,
+            resize: 'none',
+            // background: rgb(0, 152, 218)',
+            boxShadow: '0px 0px 5px #1f7fc8'
+          }}
+          placeholder={`${me?.firstname} ơi, hôm nay bạn cần chia sẻ gì ?`}
+          // autoSize={{ minRows: 3, maxRows: 5 }}
+        />
+        // </>
+      )}
+      {data &&
+        data?.postsByCommunity.map((item, idx) => {
+          return <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
+        })}
 
       <ModalReport
         visible={visibleModalReport}
         handleCancel={handleCancel}
         handleOk={handleOk}
       ></ModalReport>
-      {/* <ModalCreatePost
+      <CreatePostDrawer
+        communityId={communityId}
+        isBroken={isBroken}
         handleCancel={handleCancel}
-        handleOk={handleOk}
         visible={visibleModalCreate}
-      ></ModalCreatePost> */}
+      />
     </>
   )
 }
