@@ -7,10 +7,11 @@ import { IContext } from '@tools'
 import { PostHaveGroup, PostNoGroup } from '@components'
 import { GET_SAVEDPOST_BY_USER } from '@shared'
 import { useQuery } from '@apollo/react-hooks'
+import { Skeleton } from 'antd'
 
 function SavedPosts(props) {
   const { me } = useContext(IContext)
-  const { data: dataSavedPost, refetch: refetchSavedPost } = useQuery(
+  const { data: dataSavedPost, refetch: refetchSavedPost, loading } = useQuery(
     GET_SAVEDPOST_BY_USER,
     {
       variables: { userId: me?._id },
@@ -19,23 +20,27 @@ function SavedPosts(props) {
   )
   return (
     <>
-      {dataSavedPost?.getSavedPostByUser?.reverse().map((item, idx) => {
-        return item?.post?.community ? (
-          <PostHaveGroup
-            refetch={refetchSavedPost}
-            key={idx}
-            item={item.post}
-            idx={idx}
-          ></PostHaveGroup>
-        ) : (
-          <PostNoGroup
-            refetch={refetchSavedPost}
-            key={idx}
-            item={item.post}
-            idx={idx}
-          ></PostNoGroup>
-        )
-      })}
+      {loading ? (
+        <Skeleton active />
+      ) : (
+        dataSavedPost?.getSavedPostByUser?.reverse().map((item, idx) => {
+          return item?.post?.community ? (
+            <PostHaveGroup
+              refetch={refetchSavedPost}
+              key={idx}
+              item={item.post}
+              idx={idx}
+            ></PostHaveGroup>
+          ) : (
+            <PostNoGroup
+              refetch={refetchSavedPost}
+              key={idx}
+              item={item.post}
+              idx={idx}
+            ></PostNoGroup>
+          )
+        })
+      )}
     </>
   )
 }

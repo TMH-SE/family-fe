@@ -79,10 +79,13 @@ function Profile(props) {
     avatar: null
   })
   const [updateUser] = useMutation(UPDATE_USER)
-  const { data: dataCommunity } = useQuery(GET_COMMUNITIES_BY_USER, {
-    variables: { userId: me?._id },
-    fetchPolicy: 'no-cache'
-  })
+  const { data: dataCommunity, loading: loadingJoined } = useQuery(
+    GET_COMMUNITIES_BY_USER,
+    {
+      variables: { userId: me?._id },
+      fetchPolicy: 'no-cache'
+    }
+  )
   const uploadButtonCover =
     isMe &&
     (!img.coverPhoto ? (
@@ -433,18 +436,21 @@ function Profile(props) {
         {type === 'savedposts' && (
           <SavedPosts history={history} userInfo={data?.getUser} />
         )}
-        {type === 'joinedGroup' && (
-          <List
-            itemLayout="horizontal"
-            dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser}
-            renderItem={item => (
-              <CommunityItem
-                item={item.community}
-                data={dataCommunity?.getCommunitiesByUser}
-              />
-            )}
-          />
-        )}
+        {type === 'joinedGroup' &&
+          (loadingJoined ? (
+            <Skeleton active />
+          ) : (
+            <List
+              itemLayout="horizontal"
+              dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser}
+              renderItem={item => (
+                <CommunityItem
+                  item={item.community}
+                  data={dataCommunity?.getCommunitiesByUser}
+                />
+              )}
+            />
+          ))}
       </div>
       <ModalPreviewImg
         previewImg={previewImg}

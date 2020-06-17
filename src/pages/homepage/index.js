@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
-import { Input, Spin } from 'antd'
+import { Input, Spin, Skeleton } from 'antd'
 
 import { withRouter } from 'react-router-dom'
 import { brokenContext } from '../../layouts/MainLayout'
@@ -22,17 +22,16 @@ const HomePage = ({ history }) => {
   const handleCancel = () => {
     setVisibleModalCreate(false)
   }
-  const { data: dataPosts, refetch: refetchPosts } = useQuery(GET_POSTS, {
-    fetchPolicy: 'no-cache'
-  })
-  const { loading: loadingCommunities, data: dataCom } = useQuery(
-    GET_COMMUNITIES_BY_USER,
+  const { data: dataPosts, refetch: refetchPosts, loading } = useQuery(
+    GET_POSTS,
     {
-      variables: { userId: me?._id },
       fetchPolicy: 'no-cache'
     }
   )
-  console.log(dataPosts, 'da')
+  const { data: dataCom } = useQuery(GET_COMMUNITIES_BY_USER, {
+    variables: { userId: me?._id },
+    fetchPolicy: 'no-cache'
+  })
   return (
     <>
       {isAuth && (
@@ -69,13 +68,27 @@ const HomePage = ({ history }) => {
       </p>
       <HighLightPost isBroken={isBroken}></HighLightPost>
 
-      {dataPosts?.posts.map((item, idx) => {
-        return item?.community ? (
-          <PostHaveGroup refetch={refetchPosts} key={idx} item={item} idx={idx}></PostHaveGroup>
-        ) : (
-          <PostNoGroup refetch={refetchPosts} key={idx} item={item} idx={idx}></PostNoGroup>
-        )
-      })}
+      {loading ? (
+        <Skeleton active />
+      ) : (
+        dataPosts?.posts.map((item, idx) => {
+          return item?.community ? (
+            <PostHaveGroup
+              refetch={refetchPosts}
+              key={idx}
+              item={item}
+              idx={idx}
+            ></PostHaveGroup>
+          ) : (
+            <PostNoGroup
+              refetch={refetchPosts}
+              key={idx}
+              item={item}
+              idx={idx}
+            ></PostNoGroup>
+          )
+        })
+      )}
 
       <CreatePostDrawer
         data={dataCom?.getCommunitiesByUser}
