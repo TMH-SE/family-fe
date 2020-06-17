@@ -32,7 +32,7 @@ export const GET_POST_BY_ID = gql`
 
 function PostDetail(props) {
   const { postId } = props.match.params
-  const { data } = useQuery(GET_POST_BY_ID, { variables: { id: postId } })
+  const { data, refetch } = useQuery(GET_POST_BY_ID, { variables: { id: postId } })
   return (
     <>
       <Tooltip title="Quay lại">
@@ -43,9 +43,9 @@ function PostDetail(props) {
       </Tooltip>
       {data.postById ? (
         data?.postById?.community ? (
-          <PostHaveGroup key={0} item={data?.postById} idx={0}></PostHaveGroup>
+          <PostHaveGroup refetch={refetch} key={0} item={data?.postById} idx={0}></PostHaveGroup>
         ) : (
-          <PostNoGroup key={0} item={data?.postById} idx={0}></PostNoGroup>
+          <PostNoGroup refetch={refetch} key={0} item={data?.postById} idx={0}></PostNoGroup>
         )
       ) : (
         <div>

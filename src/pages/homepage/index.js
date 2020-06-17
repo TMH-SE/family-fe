@@ -5,49 +5,45 @@ import { Input, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { brokenContext } from '../../layouts/MainLayout'
 import './index.scss'
-import { HighLightPost, PostHaveGroup, PostNoGroup } from '@components'
+import {
+  HighLightPost,
+  PostHaveGroup,
+  PostNoGroup,
+  CreatePostDrawer
+} from '@components'
 import { IContext } from '@tools'
-import CreatePostDrawer from './createPostDrawer'
-// import { SumComment } from '../../components/Comment'
-// const { Meta } = Card
-// var moment = require('moment')
-// const data = [
-//   {
-//     title: 'Ant Design Title 1',
-//     groupId: '111',
-//     postId: 'post1'
-//   },
-//   {
-//     title: 'Ant Design Title 2',
-//     groupId: '222',
-//     postId: 'post2'
-//   },
-//   {
-//     title: 'Ant Design Title 3',
-//     groupId: '111',
-//     postId: 'post3'
-//   },
-//   {
-//     title: 'Ant Design Title 4',
-//     groupId: '222',
-//     postId: 'post4'
-//   }
-// ]
+import { GET_POSTS, GET_COMMUNITIES_BY_USER } from '@shared'
+import { useQuery } from '@apollo/react-hooks'
 
 const HomePage = ({ history }) => {
   const isBroken = useContext(brokenContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
-  const { me, isAuth, dataPosts } = useContext(IContext)
-
+  const { me, isAuth } = useContext(IContext)
   const handleCancel = () => {
     setVisibleModalCreate(false)
   }
-
+  const { data: dataPosts, refetch: refetchPosts } = useQuery(GET_POSTS, {
+    fetchPolicy: 'no-cache'
+  })
+  const { loading: loadingCommunities, data: dataCom } = useQuery(
+    GET_COMMUNITIES_BY_USER,
+    {
+      variables: { userId: me?._id },
+      fetchPolicy: 'no-cache'
+    }
+  )
+  console.log(dataPosts, 'da')
   return (
     <>
       {isAuth && (
         <>
-          <p style={{ fontSize: 16, color: 'rgba(0,0,0,0.6)', fontWeight: 'bold' }}>
+          <p
+            style={{
+              fontSize: 16,
+              color: 'rgba(0,0,0,0.6)',
+              fontWeight: 'bold'
+            }}
+          >
             Tạo bài viết
           </p>
           <Input.TextArea
@@ -68,18 +64,22 @@ const HomePage = ({ history }) => {
           />
         </>
       )}
-      <p style={{ fontSize: 16, color: 'rgba(0,0,0,0.6)', fontWeight: 'bold' }}>Bài viết từ FAMILY</p>
+      <p style={{ fontSize: 16, color: 'rgba(0,0,0,0.6)', fontWeight: 'bold' }}>
+        Bài viết từ FAMILY
+      </p>
       <HighLightPost isBroken={isBroken}></HighLightPost>
 
       {dataPosts?.posts.map((item, idx) => {
         return item?.community ? (
-          <PostHaveGroup key={idx} item={item} idx={idx}></PostHaveGroup>
+          <PostHaveGroup refetch={refetchPosts} key={idx} item={item} idx={idx}></PostHaveGroup>
         ) : (
-          <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
+          <PostNoGroup refetch={refetchPosts} key={idx} item={item} idx={idx}></PostNoGroup>
         )
       })}
 
       <CreatePostDrawer
+        data={dataCom?.getCommunitiesByUser}
+        refetch={refetchPosts}
         isBroken={isBroken}
         handleCancel={handleCancel}
         visible={visibleModalCreate}

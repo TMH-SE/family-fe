@@ -84,7 +84,7 @@ function index() {
                 deleteSavedPostsByPost({ variables: { postId: id } })
                 firebase.database().ref(`reports/${id}`).remove()
               }
-              refetchPosts()
+              // refetchPosts()
               refetchMyPosts()
             })
             .catch(notificationError)

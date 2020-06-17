@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext, useEffect } from 'react'
-import { Avatar, Input } from 'antd'
+import { Avatar, Input, Skeleton } from 'antd'
 
 import { withRouter } from 'react-router-dom'
-import { ModalReport, PostNoGroup, JoinBtn } from '@components'
+import { ModalReport, PostNoGroup, JoinBtn, CreatePostDrawer } from '@components'
 
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
@@ -13,7 +13,6 @@ import {
   GET_POST_BY_COMMUNITY,
   CHECK_IS_MEMBER
 } from '@shared'
-import CreatePostDrawer from './createPostDrawer'
 import { brokenContext } from '../../layouts/MainLayout'
 
 export const GET_COMMUNITY_BY_ID = gql`
@@ -43,10 +42,13 @@ function PageGroup(props) {
     variables: { communityId },
     fetchPolicy: 'no-cache'
   })
-  const { data: dataCommunity, refetch } = useQuery(GET_COMMUNITY_BY_ID, {
-    variables: { id: communityId },
-    fetchPolicy: 'no-cache'
-  })
+  const { data: dataCommunity, refetch, loading } = useQuery(
+    GET_COMMUNITY_BY_ID,
+    {
+      variables: { id: communityId },
+      fetchPolicy: 'no-cache'
+    }
+  )
   const { data: dataMemberCount, refetch: refetchMemberCount } = useQuery(
     GET_MEMBERS_BY_COMMUNITY,
     {
@@ -71,7 +73,9 @@ function PageGroup(props) {
     setRefetchCount('')
     setRefetchSumPosts('')
   }, [refetchCount, setRefetchSumPosts])
-  return (
+  return loading ? (
+    <Skeleton active />
+  ) : (
     <>
       <div
         style={{
@@ -168,8 +172,8 @@ function PageGroup(props) {
         handleOk={handleOk}
       ></ModalReport>
       <CreatePostDrawer
-        refetchPostsByCom={refetchPostsByCom}
-        communityId={communityId}
+        refetch={refetchPostsByCom}
+        data={dataCommunity?.communityById}
         isBroken={isBroken}
         handleCancel={handleCancel}
         visible={visibleModalCreate}

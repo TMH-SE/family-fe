@@ -5,16 +5,35 @@ import { withRouter } from 'react-router-dom'
 // import Reaction from '../../../components/reaction'
 import { IContext } from '@tools'
 import { PostHaveGroup, PostNoGroup } from '@components'
+import { GET_SAVEDPOST_BY_USER } from '@shared'
+import { useQuery } from '@apollo/react-hooks'
 
 function SavedPosts(props) {
-  const { dataSavedPost } = useContext(IContext)
+  const { me } = useContext(IContext)
+  const { data: dataSavedPost, refetch: refetchSavedPost } = useQuery(
+    GET_SAVEDPOST_BY_USER,
+    {
+      variables: { userId: me?._id },
+      fetchPolicy: 'no-cache'
+    }
+  )
   return (
     <>
       {dataSavedPost?.getSavedPostByUser?.reverse().map((item, idx) => {
         return item?.post?.community ? (
-          <PostHaveGroup key={idx} item={item.post} idx={idx}></PostHaveGroup>
+          <PostHaveGroup
+            refetch={refetchSavedPost}
+            key={idx}
+            item={item.post}
+            idx={idx}
+          ></PostHaveGroup>
         ) : (
-          <PostNoGroup key={idx} item={item.post} idx={idx}></PostNoGroup>
+          <PostNoGroup
+            refetch={refetchSavedPost}
+            key={idx}
+            item={item.post}
+            idx={idx}
+          ></PostNoGroup>
         )
       })}
     </>

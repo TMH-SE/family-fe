@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-import { CreatePostForm } from '@components'
+// import { CreatePostForm } from '@components'
 import { Button, Typography } from 'antd'
 
 const CreatePost = props => {
@@ -11,7 +11,7 @@ const CreatePost = props => {
   return (
     <>
       <Typography.Title level={3}>Bài Viết Mới</Typography.Title>
-      <CreatePostForm ref={formRef} setConfirmLoading={setConfirmLoading} />
+      {/* <CreatePostForm ref={formRef} setConfirmLoading={setConfirmLoading} /> */}
       <div
         style={{
           margin: '15px 0',

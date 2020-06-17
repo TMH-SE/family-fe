@@ -1,6 +1,14 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState } from 'react'
-import { Avatar, Button, Upload, notification, List, Spin } from 'antd'
+import {
+  Avatar,
+  Button,
+  Upload,
+  notification,
+  List,
+  Spin,
+  Skeleton
+} from 'antd'
 import { withRouter } from 'react-router-dom'
 import {
   LoadingOutlined,
@@ -47,7 +55,7 @@ function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
   const isBroken = useContext(brokenContext)
-  const { data, refetch } = useQuery(GET_USER, {
+  const { data, refetch, loading } = useQuery(GET_USER, {
     variables: { userId: userId }
   })
   const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(
@@ -240,7 +248,9 @@ function Profile(props) {
       coverPhoto: null
     })
   }
-  return (
+  return loading ? (
+    <Skeleton active />
+  ) : (
     <>
       {type !== 'messenger' && (
         <div>

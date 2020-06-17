@@ -17,7 +17,7 @@ function PostHaveGroup(props) {
   const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, idx } = props
+  const { item, idx, refetch } = props
   const history = useHistory()
   useLayoutEffect(() => {
     getSum(item?._id)
@@ -99,6 +99,7 @@ function PostHaveGroup(props) {
           </div>,
           <SharePost key="share" idPost={item?._id} />,
           <SaveAndReport
+            refetch={refetch}
             key="saveandreport"
             postId={item?._id}
             postItem={item}

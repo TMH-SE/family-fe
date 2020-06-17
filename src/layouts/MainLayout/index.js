@@ -154,7 +154,7 @@ const index = ({ children }) => {
               isBroken={isBroken}
               size="medium"
               onClick={() => {
-                refetchPosts()
+                // refetchPosts()
                 history.push('/homepage')
               }}
             />
@@ -195,14 +195,14 @@ const index = ({ children }) => {
               <Menu
                 style={{
                   backgroundColor: 'initial',
-                  width: isBroken ? 50 : 120
+                  // width: 50
                 }}
                 overflowedIndicator={
                   <UnorderedListOutlined style={{ fontSize: 23 }} />
                 }
                 mode="horizontal"
               >
-                <Menu.Item onClick={() => history.push('/createpost')}>
+                {/* <Menu.Item onClick={() => history.push('/createpost')}>
                   {isBroken ? (
                     <>
                       <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
@@ -220,7 +220,7 @@ const index = ({ children }) => {
                       />
                     </Tooltip>
                   )}
-                </Menu.Item>
+                </Menu.Item> */}
                 <Menu.Item>
                   <Noti history={history} isBroken={isBroken} />
                 </Menu.Item>

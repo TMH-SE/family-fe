@@ -26,28 +26,11 @@ import { uploadImg, beforeUpload } from '@shared'
 import postTemplate from '@assets/templates/post.html'
 import { Editor, UploadButton } from '@components'
 import firebase from 'firebase/app'
-import { GET_COMMUNITY_BY_ID } from '@pages/pageGroup'
 const CREATE_POST = gql`
   mutation createPost($newPost: NewPost) {
     createPost(newPost: $newPost) {
       _id
       title
-    }
-  }
-`
-
-const GET_COMMUNITIES_BY_USER = gql`
-  query getCommunitiesByUser($userId: String) {
-    getCommunitiesByUser(userId: $userId) {
-      _id {
-        userId
-      }
-      community {
-        _id
-        name
-        avatar
-        coverPhoto
-      }
     }
   }
 `
@@ -67,11 +50,9 @@ const GET_SUM_FOLLOWER_BY_USER = gql`
 `
 
 const CreatePostForm = forwardRef((props, ref) => {
-  const { setConfirmLoading, handleCancel } = props
+  const { setConfirmLoading, handleCancel, data, refetch } = props
   const keywordRef = useRef()
-  const { me, refetchMyPosts, refetchPosts, setRefetchSumPosts } = useContext(
-    IContext
-  )
+  const { me, setRefetchSumPosts } = useContext(IContext)
   const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(
     GET_SUM_FOLLOWER_BY_USER,
     {
@@ -86,14 +67,6 @@ const CreatePostForm = forwardRef((props, ref) => {
   const [keywords, setKeywords] = useState([])
   const [form] = Form.useForm()
   const [createPost] = useMutation(CREATE_POST)
-  const { loading: loadingCommunities, data, refetch } = useQuery(
-    GET_COMMUNITIES_BY_USER,
-    {
-      variables: { userId: me?._id },
-      fetchPolicy: 'no-cache'
-    }
-  )
-  console.log(data, 'k')
   useImperativeHandle(ref, () => ({
     handleOk: () => {
       form.submit()
@@ -116,17 +89,18 @@ const CreatePostForm = forwardRef((props, ref) => {
   }
   const notifyToUser = (item, postId) => {
     try {
-      firebase
-        .database()
-        .ref(`notifications/${item?._id}/${+new Date()}`)
-        .set({
-          action: 'post',
-          reciever: item?._id,
-          link: `/postdetail/${postId}`,
-          content: `${me?.firstname} đã đăng bài viết mới`,
-          seen: false,
-          createdAt: +new Date()
-        })
+      item?._id !== me?._id &&
+        firebase
+          .database()
+          .ref(`notifications/${item?._id}/${+new Date()}`)
+          .set({
+            action: 'post',
+            reciever: item?._id,
+            link: `/postdetail/${postId}`,
+            content: `${me?.firstname} đã đăng bài viết mới`,
+            seen: false,
+            createdAt: +new Date()
+          })
     } catch (err) {
       console.log(err)
     }
@@ -148,17 +122,14 @@ const CreatePostForm = forwardRef((props, ref) => {
         }
       }
     })
-      .then(({ data }) => {
+      .then(async({ data }) => {
         if (data?.createPost) {
-          console.log(data?.createPost)
           notification.success({ message: 'Tạo bài viết thành công' })
-          refetchPosts()
-          refetchMyPosts()
           setRefetchSumPosts(communityId)
           dataCountFollow?.getFollowerByUser?.map(item => {
             notifyToUser(item.follower, data?.createPost?._id)
           })
-          // notifyToUser()
+          await refetch()
           setConfirmLoading(false)
           handleCancel && handleCancel()
         }
@@ -188,31 +159,38 @@ const CreatePostForm = forwardRef((props, ref) => {
       layout="horizontal"
       onFinish={submitCreatePost}
       initialValues={{
-        communityId: { key: props?.communityId }
+        communityId: {
+          key: !Array.isArray(data) && data?._id,
+          value: !Array.isArray(data) && data?.name
+        }
       }}
     >
       <Form.Item name="communityId" label="Cộng đồng">
-        <Select
-          allowClear
-          labelInValue
-          loading={loadingCommunities}
-          placeholder="Chọn cộng đồng"
-          showArrow={false}
-          options={data?.getCommunitiesByUser?.map(
-            communityUser =>
-              ({
-                label: communityUser?.community?.name,
-                value: communityUser?.community?._id
-              } || [])
-          )}
-          showSearch
-          onDropdownVisibleChange={open => open && refetch()}
-          filterOption={(inputValue, option) =>
-            option.label
-              .toLocaleLowerCase()
-              .indexOf(inputValue.toLowerCase()) !== -1
-          }
-        />
+        {Array.isArray(data) ? (
+          <Select
+            allowClear
+            labelInValue
+            // loading={loadingCommunities}
+            placeholder="Chọn cộng đồng"
+            showArrow={false}
+            options={data?.map(
+              communityUser =>
+                ({
+                  label: communityUser?.community?.name,
+                  value: communityUser?.community?._id
+                } || [])
+            )}
+            showSearch
+            // onDropdownVisibleChange={open => open && refetch()}
+            filterOption={(inputValue, option) =>
+              option.label
+                .toLocaleLowerCase()
+                .indexOf(inputValue.toLowerCase()) !== -1
+            }
+          />
+        ) : (
+          <Select labelInValue disabled/>
+        )}
       </Form.Item>
       <Form.Item
         label="Tiêu đề"
