@@ -78,7 +78,7 @@ function PostHaveGroup(props) {
             ></JoinBtn>
           )
         }
-        style={{ maxWidth: '100%' }}
+        style={{ maxWidth: '100%', marginBottom: 10 }}
         actions={process.env.ADMIN_SERVER === 'false' && [
           <div id="like-post" key="like">
             <Reaction idPost={item?._id} postItem={item} />

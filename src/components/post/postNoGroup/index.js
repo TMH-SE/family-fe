@@ -53,7 +53,7 @@ function PostNoGroup(props) {
             </div>
           </div>
         }
-        style={{ maxWidth: '100%' }}
+        style={{ maxWidth: '100%', marginBottom: 10 }}
         actions={
           process.env.ADMIN_SERVER === 'false' && [
             <div

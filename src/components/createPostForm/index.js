@@ -182,7 +182,8 @@ const CreatePostForm = forwardRef((props, ref) => {
   return (
     <Form
       form={form}
-      layout="vertical"
+      labelCol={{ span: 2 }}
+      layout="horizontal"
       onFinish={submitCreatePost}
       initialValues={{
         communityId: { key: props?.communityId }

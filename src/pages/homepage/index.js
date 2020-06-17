@@ -56,7 +56,13 @@ const HomePage = ({ history }) => {
                 ? history.push('/createpost')
                 : setVisibleModalCreate(!visibleModalCreate)
             }
-            style={{ margin: '0 auto', marginBottom: 10, resize: 'none' }}
+            style={{
+              margin: '0 auto',
+              marginBottom: 15,
+              resize: 'none',
+              // background: rgb(0, 152, 218)',
+              boxShadow: '0px 0px 5px #1f7fc8'
+            }}
             placeholder={`${me?.firstname} ơi, hôm nay bạn cần chia sẻ gì ?`}
             // autoSize={{ minRows: 3, maxRows: 5 }}
           />
