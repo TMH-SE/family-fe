@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
-import { Card, Carousel } from 'antd'
+import { Carousel } from 'antd'
 import firebase from 'firebase/app'
 import 'antd/dist/antd.css'
 import './index.scss'

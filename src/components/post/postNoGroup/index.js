@@ -87,6 +87,7 @@ function PostNoGroup(props) {
         }
       >
         <Meta
+           className='post-meta'
           title={
             <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
               <Typography.Title level={4}>{item?.title}</Typography.Title>

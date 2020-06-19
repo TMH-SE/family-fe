@@ -213,6 +213,10 @@ ul {
     border-radius: 10px 10px 0 0;
   }
 } 
-.ant-card-meta-title{
-  white-space: normal;
+.post-meta {
+  .ant-card-meta-detail{
+      .ant-card-meta-title{
+        white-space: normal;
+      }
+  }
 }
