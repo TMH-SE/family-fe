@@ -1,11 +1,15 @@
-import React, { useRef, useEffect, useContext } from 'react'
+/* eslint-disable no-prototype-builtins */
+import React, { useEffect, useContext, useState } from 'react'
+import { Button, Tooltip } from 'antd'
+import { LogoutOutlined } from '@ant-design/icons'
 import firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
+import Video from '../video'
 import { IContext } from '@tools'
 
-function index() {
+const JoinSenimar = () => {
   const { me, history } = useContext(IContext)
-  const remoteVideo = useRef()
+  const [remoteStream, setRemoteStream] = useState(null)
   const idSeminar = '1'
   const idUser = me?._id
   console.log(me)
@@ -15,8 +19,7 @@ function index() {
     const pc = new RTCPeerConnection(configRTCPeerConnection)
 
     pc.ontrack = e => {
-      console.log(e.streams[0].getVideoTracks()[0], remoteVideo.current)
-      remoteVideo.current.srcObject = new MediaStream(e.streams[0])
+      setRemoteStream(e.streams[0])
       console.log('pc2 received remote stream')
     }
 
@@ -37,7 +40,10 @@ function index() {
         console.log(snapshot.val())
         if (!snapshot.val()) {
           firebase.database().ref(`seminars/${idSeminar}/isStart`).off()
-          firebase.database().ref(`seminars/${idSeminar}/participants/${idUser}`).remove()
+          firebase
+            .database()
+            .ref(`seminars/${idSeminar}/participants/${idUser}`)
+            .remove()
           pc.close()
           history.push('/waitroom')
         } else {
@@ -47,18 +53,20 @@ function index() {
             pc.createOffer({
               offerToReceiveAudio: true,
               offerToReceiveVideo: true
-            }).then(sdp => {
-              console.log('index -> sdp', sdp)
-              pc.setLocalDescription(sdp)
-              firebase
-                .database()
-                .ref(`seminars/${idSeminar}/participants/${idUser}`)
-                .set({
-                  _id: me?._id,
-                  fullName: `${me?.firstname} ${me?.lastname}`,
-                  offer: JSON.stringify(sdp)
-                })
-            }).catch(err => console.log(err))
+            })
+              .then(sdp => {
+                console.log('index -> sdp', sdp)
+                pc.setLocalDescription(sdp)
+                firebase
+                  .database()
+                  .ref(`seminars/${idSeminar}/participants/${idUser}`)
+                  .set({
+                    _id: me?._id,
+                    fullName: `${me?.firstname} ${me?.lastname}`,
+                    offer: JSON.stringify(sdp)
+                  })
+              })
+              .catch(err => console.log(err))
             firebase
               .database()
               .ref(`seminars/${idSeminar}/participants/${idUser}/answer`)
@@ -80,15 +88,18 @@ function index() {
   }, [])
 
   return (
-    <div style={{ padding: 50 }}>
-      <video
-        ref={remoteVideo}
-        autoPlay
-        playsInline
-        style={{ width: 360, height: 240, background: '#000' }}
-      />
+    <div style={{ height: '100%', position: 'relative' }}>
+      <Video videoStream={remoteStream} />
+      <Tooltip title="Thoát">
+        <Button
+          style={{ position: 'absolute', top: 0, right: 10 }}
+          icon={<LogoutOutlined />}
+          shape="circle"
+          ghost
+        />
+      </Tooltip>
     </div>
   )
 }
 
-export default index
+export default JoinSenimar

@@ -149,7 +149,6 @@ function InputCustomize(props) {
           id={`input-custom-${idElement}`}
           className="textMention"
           placeholder={placeholder}
-          autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(event, newValue, newPlainTextValue, mentions) => {
             setText(newValue)
             setArrMentions(mentions)

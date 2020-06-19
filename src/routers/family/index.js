@@ -28,7 +28,7 @@ const FamilyRoutes = () => {
   ]
   const authRoutesNoLayout = [
     {
-      path: '/seminars/:idSeminar',
+      path: '/seminar/:idSeminar',
       component: 'seminar',
       title: 'Hội thảo'
     },

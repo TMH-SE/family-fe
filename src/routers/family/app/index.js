@@ -33,6 +33,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
       path: '/notify',
       component: 'notify',
       title: 'Thông báo'
+    },
+    {
+      // exact: true,
+      path: '/seminars',
+      component: 'seminars',
+      title: 'Hội thảo'
     }
   ]
 
