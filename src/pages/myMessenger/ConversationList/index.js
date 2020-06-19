@@ -14,7 +14,7 @@ export default function ConversationList(props) {
   const [dataChat, setDataChat] = useState([])
   const [searchdataChat, setSearchdataChat] = useState(null)
   const [dataChatConver, setdataChatConver] = useState([])
-
+  const { chooseConversation } = props
   useEffect(() => {
     firebase
       .database()
@@ -63,6 +63,9 @@ export default function ConversationList(props) {
         dataSource={searchdataChat || dataChat}
         renderItem={(dataChat, idx) => (
           <ConversationListItem
+            chooseConversation={(idChat, userId) =>
+              chooseConversation(idChat, userId)
+            }
             addSearch={addSearch}
             key={idx}
             chat={dataChat}

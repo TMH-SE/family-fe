@@ -27,7 +27,7 @@ import {
 // import { brokenContext } from '../../../layouts/MainLayout'
 import gql from 'graphql-tag'
 import EditPostForm from '../editPostForm'
-
+import firebase from 'firebase/app'
 export const DELETE_POST = gql`
   mutation deletePost($postId: String) {
     deletePost(postId: $postId)
@@ -83,6 +83,7 @@ function SaveAndReport(props) {
           .then(async ({ data }) => {
             if (data?.deletePost) {
               deleteSavedPostsByPost({ variables: { postId: postId } })
+              firebase.database().ref(`posts/${postId}`).remove()
               await refetch()
               notification.success({ message: 'xóa bài viết thành công' })
             }

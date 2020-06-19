@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react'
 import { Input, Spin, Skeleton } from 'antd'
 
 import { withRouter } from 'react-router-dom'
-import { brokenContext } from '../../layouts/MainLayout'
+import { MainContext } from '../../layouts/MainLayout'
 import './index.scss'
 import {
   HighLightPost,
@@ -15,8 +15,9 @@ import { IContext } from '@tools'
 import { GET_POSTS, GET_COMMUNITIES_BY_USER } from '@shared'
 import { useQuery } from '@apollo/react-hooks'
 
-const HomePage = ({ history }) => {
-  const isBroken = useContext(brokenContext)
+const HomePage = (props) => {
+  const { history } = props
+  const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const { me, isAuth } = useContext(IContext)
   const handleCancel = () => {
@@ -66,7 +67,7 @@ const HomePage = ({ history }) => {
       <p style={{ fontSize: 16, color: 'rgba(0,0,0,0.6)', fontWeight: 'bold' }}>
         Bài viết từ FAMILY
       </p>
-      <HighLightPost isBroken={isBroken}></HighLightPost>
+      <HighLightPost history={history} isBroken={isBroken}></HighLightPost>
 
       {loading ? (
         <Skeleton active />

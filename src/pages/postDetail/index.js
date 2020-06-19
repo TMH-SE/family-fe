@@ -32,7 +32,11 @@ export const GET_POST_BY_ID = gql`
 
 function PostDetail(props) {
   const { postId } = props.match.params
-  const { data, refetch } = useQuery(GET_POST_BY_ID, { variables: { id: postId } })
+  const { data, refetch } = useQuery(GET_POST_BY_ID, {
+    variables: { id: postId },
+    fetchPolicy: 'no-cache',
+    skip: !postId
+  })
   return (
     <>
       <Tooltip title="Quay lại">
@@ -41,15 +45,25 @@ function PostDetail(props) {
           onClick={() => props.history.goBack()}
         />
       </Tooltip>
-      {data.postById ? (
+      {data?.postById ? (
         data?.postById?.community ? (
-          <PostHaveGroup refetch={refetch} key={0} item={data?.postById} idx={0}></PostHaveGroup>
+          <PostHaveGroup
+            refetch={refetch}
+            key={0}
+            item={data?.postById}
+            idx={0}
+          ></PostHaveGroup>
         ) : (
-          <PostNoGroup refetch={refetch} key={0} item={data?.postById} idx={0}></PostNoGroup>
+          <PostNoGroup
+            refetch={refetch}
+            key={0}
+            item={data?.postById}
+            idx={0}
+          ></PostNoGroup>
         )
       ) : (
         <div>
-          <Empty description={'Bài đăng không còn khả dụng'}/>
+          <Empty description={'Bài đăng không còn khả dụng'} />
         </div>
       )}
     </>

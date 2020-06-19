@@ -1,6 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, useEffect } from 'react'
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  isValidElement,
+  cloneElement
+} from 'react'
 import {
   Layout,
   Menu,
@@ -26,7 +34,8 @@ import {
   FileTextTwoTone,
   LogoutOutlined,
   BookTwoTone,
-  HeartTwoTone
+  HeartTwoTone,
+  ArrowRightOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -44,31 +53,20 @@ import reactStringReplace from 'react-string-replace'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_CHAT_BY_USER } from '@shared'
 import SignIn from '@pages/signIn'
+import Messboxes from './messBoxes'
 const { Header, Content, Sider } = Layout
 
-export const brokenContext = React.createContext(null)
+export const MainContext = React.createContext(null)
 // const MY_USER_ID =
 const index = ({ children }) => {
-  const {
-    logout,
-    me,
-    isAuth,
-    messbox,
-    onCancelMessbox,
-    showLogin,
-    closeLoginModal,
-    refetchPosts
-  } = useContext(IContext)
+  const { logout, me, isAuth, showLogin, closeLoginModal } = useContext(
+    IContext
+  )
 
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
-  // const [messbox, setMessbox] = useState([])
-  // const { data, refetch } = useQuery(GET_CHAT_BY_USER, {
-  //   variables: { userId: me?._id },
-  //   fetchPolicy: "no-cache"
-  // })
+  const messBoxesRef = useRef()
   const [notifications, setNotifications] = useState([])
-
   useEffect(() => {
     getNotification()
   }, [me])
@@ -194,7 +192,7 @@ const index = ({ children }) => {
             {isAuth && (
               <Menu
                 style={{
-                  backgroundColor: 'initial',
+                  backgroundColor: 'initial'
                   // width: 50
                 }}
                 overflowedIndicator={
@@ -317,6 +315,7 @@ const index = ({ children }) => {
             <div className="highlight-group">
               <Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
               <HighLightGroup></HighLightGroup>
+              
             </div>
           )}
           {/* </div>} */}
@@ -328,14 +327,29 @@ const index = ({ children }) => {
             marginTop: 0
           }}
         >
-          <brokenContext.Provider value={isBroken}>
+          <MainContext.Provider
+            value={{
+              isBroken,
+              chooseConversation: (idChat, userId) =>
+                messBoxesRef.current.chooseConversation(idChat, userId)
+            }}
+          >
             {children}
-          </brokenContext.Provider>
+            {/* {React.Children.map(children, child => {
+              return React.cloneElement(child, {
+                chooseConversation: () => messBoxesRef.current.chooseConversation()
+              })
+            })} */}
+          </MainContext.Provider>
         </Content>
         {!isBroken && isAuth ? (
           <Sider width="18%">
             <div className="sidebarMess-mainLayout">
-              <ConversationList />
+              <ConversationList
+                chooseConversation={(idChat, userId) =>
+                  messBoxesRef.current.chooseConversation(idChat, userId)
+                }
+              />
             </div>
           </Sider>
         ) : (
@@ -344,7 +358,7 @@ const index = ({ children }) => {
         {!isBroken && (
           <div className="messenger-main">
             <div className="contentMess-mainLayout">
-              {messbox.map((mess, idx) => {
+              {/* {messbox.map((mess, idx) => {
                 return (
                   <div
                     key={idx}
@@ -354,12 +368,13 @@ const index = ({ children }) => {
                     <MessageList
                       history={history}
                       idx={idx}
-                      onCancelMessbox={() => onCancelMessbox(mess.idChat)}
+                      // onCancelMessbox={() => onCancelMessbox(mess.idChat)}
                       chatBox={mess}
                     />
                   </div>
                 )
-              })}
+              })} */}
+              <Messboxes ref={messBoxesRef} />
             </div>
           </div>
         )}

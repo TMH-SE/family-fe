@@ -122,7 +122,6 @@ const CommentList = ({ comments, showMore, idPost }) => {
                       placeholder="Nhập bình luận"
                       mentions={comment.mention}
                       onAdd={onAdd}
-                      // value={value}
                     />
                   }
                 />
@@ -182,7 +181,7 @@ function CommentPost(props) {
   const { me, isAuth, openLoginModal } = useContext(IContext)
   const { idPost, postItem } = props
   useLayoutEffect(() => {
-    getComment()
+    idPost && getComment()
   }, [idPost])
   const getComment = () => {
     firebase
@@ -190,7 +189,6 @@ function CommentPost(props) {
       .ref(`posts/${idPost}/comments`)
       .orderByKey()
       .on('value', snapshot => {
-        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({
               ...snapshot.val()[key],

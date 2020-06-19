@@ -4,15 +4,15 @@ import { MessageTwoTone } from '@ant-design/icons'
 import { IContext } from '@tools'
 import firebase from 'firebase/app'
 function Chat(props) {
-  const { members, history, isBroken } = props
-  const { chooseConversation, me, isAuth, openLoginModal } = useContext(IContext)
+  const { members, history, isBroken, chooseConversation } = props
+  const { me, isAuth, openLoginModal } = useContext(IContext)
 
   const openChat = async e => {
     const idChat = `${members[0]}${members[1]}`
-    firebase
+    await firebase
       .database()
       .ref(`messenger/`)
-      .once('value', snapshot => {
+      .on('value', snapshot => {
         const temp = Object.keys(snapshot.val()).map(key => ({
           ...snapshot.val()[key],
           id: key
@@ -28,7 +28,7 @@ function Chat(props) {
           return true
         }
       })
-    firebase
+    await firebase
       .database()
       .ref(`messenger/${idChat}`)
       .set({

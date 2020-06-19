@@ -122,8 +122,11 @@ const CreatePostForm = forwardRef((props, ref) => {
         }
       }
     })
-      .then(async({ data }) => {
+      .then(async ({ data }) => {
         if (data?.createPost) {
+          firebase.database().ref(`posts/${data?.createPost?._id}`).set({
+            createdAt: +new Date()
+          })
           notification.success({ message: 'Tạo bài viết thành công' })
           setRefetchSumPosts(communityId)
           dataCountFollow?.getFollowerByUser?.map(item => {
@@ -189,7 +192,7 @@ const CreatePostForm = forwardRef((props, ref) => {
             }
           />
         ) : (
-          <Select labelInValue disabled/>
+          <Select labelInValue disabled />
         )}
       </Form.Item>
       <Form.Item

@@ -6,11 +6,13 @@
     // line-height: 160px;
     background:aliceblue;
     overflow: hidden;
+    margin-bottom: 10px;
   
   }
   .slick-dots{
     background-color: lightblue;
     z-index: 0 !important;
+    bottom: -10px !important;
   }
 }
   .ant-card-actions{

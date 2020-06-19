@@ -13,7 +13,7 @@ import {
   GET_POST_BY_COMMUNITY,
   CHECK_IS_MEMBER
 } from '@shared'
-import { brokenContext } from '../../layouts/MainLayout'
+import { MainContext } from '../../layouts/MainLayout'
 
 export const GET_COMMUNITY_BY_ID = gql`
   query communityById($id: String) {
@@ -36,24 +36,27 @@ function PageGroup(props) {
     setRefetchSumPosts,
     refetchSumPosts
   } = useContext(IContext)
-  const isBroken = useContext(brokenContext)
+  const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const { data, refetch: refetchPostsByCom } = useQuery(GET_POST_BY_COMMUNITY, {
     variables: { communityId },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'no-cache',
+    skip: !communityId
   })
   const { data: dataCommunity, refetch, loading } = useQuery(
     GET_COMMUNITY_BY_ID,
     {
       variables: { id: communityId },
-      fetchPolicy: 'no-cache'
+      // fetchPolicy: 'no-cache',
+      skip: !communityId
     }
   )
   const { data: dataMemberCount, refetch: refetchMemberCount } = useQuery(
     GET_MEMBERS_BY_COMMUNITY,
     {
       variables: { communityId },
-      fetchPolicy: 'no-cache'
+      fetchPolicy: 'no-cache',
+      skip: !communityId
     }
   )
   const { data: dataIsMember } = useQuery(CHECK_IS_MEMBER, {

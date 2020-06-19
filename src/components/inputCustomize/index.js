@@ -15,7 +15,7 @@ import { Picker } from 'emoji-mart'
 import './index.scss'
 import { MentionsInput, Mention } from 'react-mentions'
 import { uploadImg } from '@shared'
-import { brokenContext } from '../../layouts/MainLayout'
+import { MainContext } from '../../layouts/MainLayout'
 
 function InputCustomize(props) {
   const {
@@ -57,7 +57,7 @@ function InputCustomize(props) {
     replyAuthor && document.getElementById(`input-custom-${idElement}`).focus()
     // onAdd && onAdd([{ id: replyAuthor.id, display: replyAuthor.name }])
   }, [replyAuthor])
-  const isBroken = useContext(brokenContext)
+  // const { isBroken } = useContext(MainContext)
   const deleteImg = () => {
     setImage({ ...image, srcImg: '' })
   }
@@ -201,7 +201,7 @@ function InputCustomize(props) {
             className="textMention__mention"
           />
         </MentionsInput>
-        {!isBroken && (
+        {/* {!isBroken && ( */}
           <Space>
             <Popover
               placement="bottomRight"
@@ -222,7 +222,7 @@ function InputCustomize(props) {
               <FileImageOutlined style={{ color: '#bbb', fontSize: 16 }} />
             </Upload>
           </Space>
-        )}
+        {/* )} */}
       </div>
     </div>
   )
