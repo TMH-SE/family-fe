@@ -43,6 +43,7 @@ function HighlightItem(props) {
       ]}
     >
       <Meta
+        className='high-light-meta'
         //   avatar={<Avatar size={64} shape='square' src='https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png' />}
         title={data?.postById?.title}
       />
