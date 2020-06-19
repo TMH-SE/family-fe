@@ -13,7 +13,6 @@ function ItemReport({ data }) {
   })
   return (
     <List.Item
-      //   onClick={() => history.push('/pagegroup/111')}
       style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}
     >
       <List.Item.Meta

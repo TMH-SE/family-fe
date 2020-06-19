@@ -10,6 +10,7 @@ import {
   GET_POSTS_BY_USER
 } from '@shared'
 import MyPosts from '@pages/profile/myPosts'
+import { notification } from 'antd'
 export const IContext = React.createContext()
 
 const GET_ME = gql`
@@ -33,28 +34,13 @@ const GET_ME = gql`
     }
   }
 `
+console.log('context')
 const ContextWrapper = ({ children, history }) => {
   const [messbox, setMessbox] = useState([])
   const [isAuth, setIsAuth] = useState(
     !!window.localStorage.getItem('access-token')
   )
   const [showLogin, setShowLogin] = useState(false)
-  const chooseConversation = (idChat, userId) => {
-    console.log('messbox')
-    if (messbox.findIndex(mess => mess.idChat === idChat) === -1) {
-      const a = [...messbox]
-      a.push({ idChat, userId })
-      setMessbox(a)
-    }
-    document.getElementById(`input-custom-${idChat}`) &&
-      document.getElementById(`input-custom-${idChat}`).focus()
-  }
-  const onCancelMessbox = idChat => {
-    const idx = messbox.findIndex(mess => mess.idChat === idChat)
-    var arr = [...messbox]
-    arr.splice(idx, 1)
-    setMessbox([...arr])
-  }
   const { data, refetch } = useQuery(GET_ME, {
     skip: !isAuth
   })
@@ -94,8 +80,6 @@ const ContextWrapper = ({ children, history }) => {
         history,
         refetchMe: refetch,
         messbox: messbox,
-        chooseConversation: chooseConversation,
-        onCancelMessbox: onCancelMessbox,
         showLogin: showLogin,
         openLoginModal: openLoginModal,
         closeLoginModal: closeLoginModal,

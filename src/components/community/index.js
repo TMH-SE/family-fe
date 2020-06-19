@@ -12,11 +12,13 @@ function CommunityItem(props) {
   // const [ dataMems, setDataMems ] = useState(null)
   const { data, refetch, loading } = useQuery(GET_POST_BY_COMMUNITY, {
     variables: { communityId: item?._id },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'no-cache',
+    skip: !item?._id
   })
   const { data: dataMemberCount, refetch: refetchDataMemberCount, loading: loadingSumMem } = useQuery(GET_MEMBERS_BY_COMMUNITY, {
     variables: { communityId: item?._id },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'no-cache',
+    skip: !item?._id
   })
   useEffect(() => {
     refetchCount !== '' && refetchDataMemberCount({ variables: refetchCount })
@@ -25,7 +27,7 @@ function CommunityItem(props) {
     setRefetchSumPosts('')
   }, [refetchCount, refetchSumPosts])
   return (
-    (loading || loadingSumMem ) ? <Skeleton active></Skeleton> :
+    (loading || loadingSumMem) ? <Skeleton active></Skeleton> :
     <List.Item
       onClick={() => history.push(`/pagegroup/${item?._id}`)}
       style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}

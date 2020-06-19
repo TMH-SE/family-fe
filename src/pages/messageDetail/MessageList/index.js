@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, useLayoutEffect } from 'react'
+import React, { useState, useContext, useLayoutEffect, useEffect } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
@@ -15,21 +15,24 @@ moment().format()
 
 export default function MessageList(props) {
   const [messages, setMessages] = useState([])
-  const { chatBox } = props
+  const { chatBox, onCancelMessbox } = props
   const { idChat, userId } = chatBox
-  const { me, onCancelMessbox } = useContext(IContext)
-
+  const { me } = useContext(IContext)
+  const [ showMore, setShowMore ] = useState(10)
   useLayoutEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
   }, [chatBox])
+  useEffect(() => {
+    getMessages()
+  }, [showMore])
   const { data } = useQuery(GET_USER, { variables: { userId } })
   const getMessages = () => {
     firebase
       .database()
       .ref(`messenger/${idChat}/listmessages`)
       .orderByKey()
-      // .limitToLast(100)
+      .limitToLast(showMore)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = snapshot.val()

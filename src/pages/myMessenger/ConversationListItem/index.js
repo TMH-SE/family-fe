@@ -1,17 +1,16 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import firebase from 'firebase/app'
 import './ConversationListItem.css'
 import { List, Badge, Avatar } from 'antd'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import { IContext } from '@tools'
-import { brokenContext } from '../../../layouts/MainLayout'
 
 export default function ConversationListItem(props) {
   const { id, members, lastMess } = props.chat
-  const { me, chooseConversation } = useContext(IContext)
-  const isBroken = useContext(brokenContext)
+  const { chooseConversation, isBroken } = props
+  const { me } = useContext(IContext)
   const { data } = useQuery(GET_USER, {
     variables: { userId: members.filter(item => item !== me?._id)[0] }
   })

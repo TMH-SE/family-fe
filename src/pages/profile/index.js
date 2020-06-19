@@ -22,7 +22,7 @@ import MyMessenger from '@pages/myMessenger'
 import MyPosts from './myPosts'
 import SavedPosts from './savedPosts'
 import { ModalPreviewImg, Chat, Follow, CommunityItem } from '@components'
-import { brokenContext } from '../../layouts/MainLayout'
+import { MainContext } from '../../layouts/MainLayout'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import {
   GET_USER,
@@ -54,7 +54,7 @@ export const GET_SUM_FOLLOWER_BY_USER = gql`
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
-  const isBroken = useContext(brokenContext)
+  const { isBroken, chooseConversation } = useContext(MainContext)
   const { data, refetch, loading } = useQuery(GET_USER, {
     variables: { userId: userId }
   })
@@ -252,7 +252,7 @@ function Profile(props) {
     })
   }
   return loading ? (
-    <Skeleton active />
+    <Skeleton active avatar/>
   ) : (
     <>
       {type !== 'messenger' && (
@@ -392,6 +392,7 @@ function Profile(props) {
                           follower={{ userId: userId, followerId: me?._id }}
                         />
                         <Chat
+                        chooseConversation={(idChat, userId) => chooseConversation(idChat, userId)}
                           members={[me?._id, userId]}
                           history={history}
                           isBroken={isBroken}

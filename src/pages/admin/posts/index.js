@@ -34,7 +34,6 @@ export const DELETE_SAVEPOSTS_BY_POST = gql`
 
 function index() {
   const searchRef = useRef()
-  const { refetchPosts, refetchMyPosts } = useContext(IContext)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [data, setData] = useState([])
   const [selectedRow, setSelectedRow] = useState(null)
@@ -84,8 +83,6 @@ function index() {
                 deleteSavedPostsByPost({ variables: { postId: id } })
                 firebase.database().ref(`reports/${id}`).remove()
               }
-              // refetchPosts()
-              refetchMyPosts()
             })
             .catch(notificationError)
         })
