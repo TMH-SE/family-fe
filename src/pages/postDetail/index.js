@@ -5,7 +5,7 @@ import { PostHaveGroup, PostNoGroup } from '@components'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { LeftSquareOutlined } from '@ant-design/icons'
-import { Tooltip, Empty } from 'antd'
+import { Tooltip, Empty, Skeleton } from 'antd'
 
 export const GET_POST_BY_ID = gql`
   query postById($id: String) {
@@ -32,12 +32,14 @@ export const GET_POST_BY_ID = gql`
 
 function PostDetail(props) {
   const { postId } = props.match.params
-  const { data, refetch } = useQuery(GET_POST_BY_ID, {
+  const { data, refetch, loading } = useQuery(GET_POST_BY_ID, {
     variables: { id: postId },
     fetchPolicy: 'no-cache',
     skip: !postId
   })
-  return (
+  return loading ? (
+    <Skeleton active avatar />
+  ) : (
     <>
       <Tooltip title="Quay lại">
         <LeftSquareOutlined

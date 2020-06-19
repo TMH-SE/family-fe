@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState, useLayoutEffect } from 'react'
-import { Avatar, List, Skeleton } from 'antd'
-import { useHistory, useLocation } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Avatar, List, Skeleton, Button } from 'antd'
+import { useHistory } from 'react-router-dom'
 import { GET_POST_BY_COMMUNITY, GET_MEMBERS_BY_COMMUNITY } from '@shared'
 import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
+import JoinBtn from '../joinBtn'
 
 function CommunityItem(props) {
   const { item } = props
-  const { refetchCount, setRefetchCount, refetchSumPosts, setRefetchSumPosts } = useContext(IContext)
+  const { refetchCount, setRefetchCount, refetchSumPosts, setRefetchSumPosts, me } = useContext(IContext)
   const history = useHistory()
   // const [ dataMems, setDataMems ] = useState(null)
   const { data, refetch, loading } = useQuery(GET_POST_BY_COMMUNITY, {
@@ -45,6 +46,7 @@ function CommunityItem(props) {
         }
         description={`${dataMemberCount?.getMembersByCommunity} thành viên - ${data?.postsByCommunity?.length} bài viết`}
       />
+       {props.isActionJoin && <JoinBtn id={{ userId: me?._id, communityId: item?._id }}/>}
     </List.Item>
     // )}
     // />

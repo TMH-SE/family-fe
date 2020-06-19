@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Avatar, List, Skeleton } from 'antd'
-import { useHistory } from 'react-router-dom'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
-import CommunityItem from '../community'
+
 import { ArrowRightOutlined } from '@ant-design/icons'
+import { CommunityItem, HighLightPost } from '@components'
+import { MainContext } from '../../layouts/MainLayout'
 
 const GET_COMMUNITIES = gql`
   query communities {
@@ -23,26 +24,24 @@ const GET_COMMUNITIES = gql`
     }
   }
 `
-function HighlightGroup(props) {
+function AllCommunities(props) {
   const { data, loading } = useQuery(GET_COMMUNITIES)
+  const { isBroken } = useContext(MainContext)
   return loading ? (
     <Skeleton active avatar />
   ) : (
     <>
+    <HighLightPost history={props.history} isBroken={isBroken}></HighLightPost>
+      <p>Tất cả cộng đồng </p>
       <List
+        pagination={{
+          pageSize: 10
+        }}
         itemLayout="horizontal"
-        dataSource={data?.communities
-          ?.sort(
-            (a, b) =>
-              b.countMember + b.countPost - (a.countMember + a.countPost)
-          )
-          .slice(0, 3)}
-        renderItem={item => <CommunityItem item={item} />}
+        dataSource={data?.communities}
+        renderItem={item => <CommunityItem isActionJoin={true} item={item} />}
       />
-      <a onClick={() => props.history.push('/communities')}>
-        Xem tất cả cộng đồng <ArrowRightOutlined />
-      </a>
     </>
   )
 }
-export default HighlightGroup
+export default AllCommunities

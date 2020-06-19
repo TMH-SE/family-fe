@@ -31,7 +31,8 @@ const HomePage = (props) => {
   )
   const { data: dataCom } = useQuery(GET_COMMUNITIES_BY_USER, {
     variables: { userId: me?._id },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'no-cache',
+    skip: !me?._id
   })
   return (
     <>

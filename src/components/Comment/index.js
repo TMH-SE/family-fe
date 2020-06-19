@@ -103,6 +103,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
           return (
             <>
               <CommentItem
+                id={comment.id}
                 key={comment.id}
                 comment={comment}
                 idParent={comment.id}

@@ -204,9 +204,8 @@ function InputCustomize(props) {
         {/* {!isBroken && ( */}
           <Space>
             <Popover
-              placement="bottomRight"
-              // content={<a onClick>Close</a>}
-              title={<Picker onSelect={e => addEmoji(e)} />}
+              placement="topRight"
+              title={<Picker showPreview={false} showSkinTones={false} sheetSize={16} onSelect={e => addEmoji(e)} />}
               trigger="click"
               visible={emoji.showEmoji}
               onVisibleChange={() =>

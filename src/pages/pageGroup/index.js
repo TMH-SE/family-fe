@@ -3,7 +3,12 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Avatar, Input, Skeleton } from 'antd'
 
 import { withRouter } from 'react-router-dom'
-import { ModalReport, PostNoGroup, JoinBtn, CreatePostDrawer } from '@components'
+import {
+  ModalReport,
+  PostNoGroup,
+  JoinBtn,
+  CreatePostDrawer
+} from '@components'
 
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
@@ -22,6 +27,8 @@ export const GET_COMMUNITY_BY_ID = gql`
       name
       avatar
       coverPhoto
+      countMember
+      countPost
     }
   }
 `
@@ -29,33 +36,24 @@ export const GET_COMMUNITY_BY_ID = gql`
 function PageGroup(props) {
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const { communityId } = props.match.params
-  const {
-    me,
-    refetchCount,
-    setRefetchCount,
-    setRefetchSumPosts,
-    refetchSumPosts
-  } = useContext(IContext)
+  const { me, refetchCount, setRefetchCount, setRefetchSumPosts } = useContext(
+    IContext
+  )
   const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
-  const { data, refetch: refetchPostsByCom } = useQuery(GET_POST_BY_COMMUNITY, {
-    variables: { communityId },
-    fetchPolicy: 'no-cache',
-    skip: !communityId
-  })
+  const { data, refetch: refetchPostsByCom, loading: loađingPost } = useQuery(
+    GET_POST_BY_COMMUNITY,
+    {
+      variables: { communityId },
+      fetchPolicy: 'no-cache',
+      skip: !communityId
+    }
+  )
   const { data: dataCommunity, refetch, loading } = useQuery(
     GET_COMMUNITY_BY_ID,
     {
       variables: { id: communityId },
       // fetchPolicy: 'no-cache',
-      skip: !communityId
-    }
-  )
-  const { data: dataMemberCount, refetch: refetchMemberCount } = useQuery(
-    GET_MEMBERS_BY_COMMUNITY,
-    {
-      variables: { communityId },
-      fetchPolicy: 'no-cache',
       skip: !communityId
     }
   )
@@ -71,8 +69,7 @@ function PageGroup(props) {
     setVisibleModalReport(false)
   }
   useEffect(() => {
-    refetchCount !== '' && refetchMemberCount({ variables: refetchCount })
-    refetchSumPosts !== '' && refetch({ variables: refetchSumPosts })
+    refetch()
     setRefetchCount('')
     setRefetchSumPosts('')
   }, [refetchCount, setRefetchSumPosts])
@@ -128,24 +125,16 @@ function PageGroup(props) {
             }}
           >
             {' '}
-            {dataMemberCount?.getMembersByCommunity} thành viên -{' '}
-            {data?.postsByCommunity?.length} bài viết
+            {/* {dataMemberCount?.getMembersByCommunity} thành viên -{' '}
+            {data?.postsByCommunity?.length} bài viết */}
+            {dataCommunity?.communityById?.countMember} thành viên -{' '}
+            {dataCommunity?.communityById?.countPost} bài viết
           </p>
           <JoinBtn id={{ userId: me?._id, communityId: communityId }}></JoinBtn>
         </div>
       </div>
       <br />
       {dataIsMember?.checkIsMember && (
-        // <>
-        //   <p
-        //     style={{
-        //       fontSize: 16,
-        //       color: 'rgba(0,0,0,0.6)',
-        //       fontWeight: 'bold'
-        //     }}
-        //   >
-        //     Tạo bài viết
-        //   </p>
         <Input.TextArea
           onClick={() =>
             isBroken
@@ -164,10 +153,14 @@ function PageGroup(props) {
         />
         // </>
       )}
-      {data &&
+      {loađingPost ? (
+        <Skeleton active avatar />
+      ) : (
+        data &&
         data?.postsByCommunity.map((item, idx) => {
           return <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
-        })}
+        })
+      )}
 
       <ModalReport
         visible={visibleModalReport}

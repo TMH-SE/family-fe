@@ -1,30 +1,38 @@
 import React, { useState, useEffect, useContext } from 'react'
 
 import firebase from 'firebase/app'
-import { HeartTwoTone, MessageTwoTone, LikeTwoTone, FileTextTwoTone } from '@ant-design/icons'
+import {
+  HeartTwoTone,
+  MessageTwoTone,
+  LikeTwoTone,
+  FileTextTwoTone
+} from '@ant-design/icons'
 import { List, Avatar } from 'antd'
 import '../index.scss'
+import { IContext } from '@tools'
 
-const arrType = [{
+const arrType = [
+  {
     type: 'cmt' || 'tag',
     icon: <MessageTwoTone />
-},
-{
+  },
+  {
     type: 'follow',
     icon: <HeartTwoTone />
-},
-{
+  },
+  {
     type: 'reaction',
     icon: <LikeTwoTone />
-},
-{
+  },
+  {
     type: 'post',
     icon: <FileTextTwoTone />
-}
+  }
 ]
 
 const NotiList = props => {
-    const { noti } = props
+  const { me } = useContext(IContext)
+  const { noti, history } = props
   return (
     <List.Item
       className="noti-item"
@@ -38,7 +46,7 @@ const NotiList = props => {
           .update({
             seen: true
           })
-        history.push(noti.link)
+        history.push(`${noti.link}`)
         // setVisible(false)
       }}
     >
@@ -47,13 +55,15 @@ const NotiList = props => {
         avatar={
           <Avatar
             style={{ backgroundColor: 'initial' }}
-            icon={arrType.filter(item => noti?.action === item.type)[0]?.icon }
+            icon={arrType.filter(item => noti?.action === item.type)[0]?.icon}
           />
         }
         title={
-          <a onClick={() => history.push(`/${noti?.link}`)}>
-            {noti.content.trim()}
-          </a>
+          // <a
+          // onClick={() => history.push(`${noti?.link}`)}
+          // >
+          noti.content.trim()
+          // </a>
         }
         description={
           <p style={{ fontSize: 10 }}>
