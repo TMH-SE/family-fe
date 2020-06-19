@@ -80,6 +80,7 @@ function index() {
                   message: 'Xóa bài viết thành công',
                   placement: 'bottomRight'
                 })
+                firebase.database().ref(`posts/${id}}`).remove()
                 deleteSavedPostsByPost({ variables: { postId: id } })
                 firebase.database().ref(`reports/${id}`).remove()
               }

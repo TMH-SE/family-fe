@@ -7,7 +7,8 @@ import { SdkUtils } from '@utils'
 import { Client, ContextWrapper } from '@tools'
 import Routers from '@routers'
 import './app.scss'
-
+import { ReactDOMServer , renderToString} from 'react-dom/server';
+// import { renderToString } from 'react-dom/server'
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY || 'AIzaSyAzni8DvqLlDB_rnt1nxtCpIEeHocXHaZA',
   authDomain: process.env.FIREBASE_AUTH_DOMAIN || 'graduation-project-2020.firebaseapp.com',

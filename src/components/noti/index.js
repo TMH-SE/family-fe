@@ -65,7 +65,7 @@ const Noti = props => {
             // loadMore={loadMore}
             dataSource={notifications}
             renderItem={noti => (
-              <NotiList noti={noti}></NotiList>
+              <NotiList noti={noti} history={history}></NotiList>
             )}
           />
         )

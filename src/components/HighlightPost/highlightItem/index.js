@@ -34,7 +34,7 @@ function HighlightItem(props) {
       }
       actions={[
         <a
-          onClick={() => history.push(`/postdetail/${item}`)}
+          // onClick={() => history.push(`/postdetail/${item}`)}
           key="detail"
           style={{ color: '#1890ff' }}
         >
