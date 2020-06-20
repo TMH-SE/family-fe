@@ -56,13 +56,10 @@ const authLink = setContext((_, { headers }) => ({
 
 const link = ApolloLink.from([errorMiddleware, linkSplit])
 
-// app.use((req, res) => {
 const Client = new ApolloClient({
   // ssrMode: true,
   link: authLink.concat(link),
   cache: new InMemoryCache(),
-  // initialState: window.__APOLLO_STATE__,
-  // ssrForceFetchDelay: 100
 })
 // s
 export { Client }
