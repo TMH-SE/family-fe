@@ -43,7 +43,7 @@ function Chat(props) {
       style={{ fontSize: 20, marginLeft: 10 }}
       onClick={() => {
         history.push(
-          `/${me?._id}/messenger/${members.filter(mem => mem !== me?._id)[0]}`
+          `/${me?._id}/messenger/${members[0]}${members[1]}`
         )
       }}
     />

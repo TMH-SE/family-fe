@@ -4,7 +4,7 @@ import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'
-import { Card, Avatar } from 'antd'
+import { Card, Avatar, Skeleton, Spin } from 'antd'
 
 import { InputCustomize } from '@components'
 import Message from '../Message'
@@ -18,9 +18,10 @@ export default function MessageList(props) {
   const { chatBox, onCancelMessbox } = props
   const { idChat, userId } = chatBox
   const { me } = useContext(IContext)
-  const [ showMore, setShowMore ] = useState(10)
+  const [showMore, setShowMore] = useState(10)
+  const [loading, setLoading] = useState(false)
   useLayoutEffect(() => {
-    getMessages()
+    showMore <= messages.length && getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
   }, [chatBox])
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function MessageList(props) {
   }, [showMore])
   const { data } = useQuery(GET_USER, { variables: { userId } })
   const getMessages = () => {
+    setLoading(true)
     firebase
       .database()
       .ref(`messenger/${idChat}/listmessages`)
@@ -41,7 +43,9 @@ export default function MessageList(props) {
               id: key
             }))
           : []
-        // temp.sort((a, b) => a.timestamp - b.timestamp)
+        if (showMore > temp.length + 5) {
+          setLoading(false)
+        }
         setMessages(temp)
       })
   }
@@ -110,10 +114,6 @@ export default function MessageList(props) {
   const handleSubmit = async (value, imgList) => {
     // const chatId = `${idChat}` + '/'
     const message = +new Date()
-    console.log(
-      value.trim() !== '' ? value.trim() : imgList ? 'Bạn đã gửi 1 hình' : '',
-      'lastmessageeeê'
-    )
     try {
       await firebase
         .database()
@@ -150,7 +150,7 @@ export default function MessageList(props) {
   const { isBroken, history } = props
 
   return (
-    <div className="message-list">
+    <div className={`message-list ${idChat}`}>
       <Card
         title={
           <>
@@ -177,8 +177,6 @@ export default function MessageList(props) {
             />
           )
         }
-        // </div>}
-        // style={{ 10 }}
         actions={[
           <InputCustomize
             minRows={1}
@@ -191,7 +189,22 @@ export default function MessageList(props) {
           />
         ]}
       >
-        <div className={`message-list-container ${idChat}`}>
+        <div
+          className={`message-list-container ${idChat}`}
+          onScroll={() => {
+            const ele = document.getElementsByClassName(
+              `message-list-container ${idChat}`
+            )[0]
+            if (showMore <= messages.length && ele.scrollTop === 0) {
+              setShowMore(showMore + 3)
+              ele.scrollTop = 30
+            }
+            if (showMore > messages.length) {
+              setLoading(false)
+            }
+          }}
+        >
+          <div className='spin-chat' ><Spin spinning={loading} /></div>
           {renderMessages()}
         </div>
       </Card>
