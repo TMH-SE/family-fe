@@ -34,6 +34,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
       component: 'notify',
       title: 'Thông báo'
     },
+    {
+      // exact: true,
+      path: '/seminars',
+      component: 'seminars',
+      title: 'Hội thảo'
+    }
   ]
 
   const commonRoutes = [

@@ -1,6 +1,6 @@
 import React, { useContext, Suspense, lazy } from 'react'
 import { IContext } from '@tools'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import { Result, Button } from 'antd'
 import FamilyAppRoutes from './app'
 
@@ -26,6 +26,20 @@ const FamilyRoutes = () => {
       title: 'Đăng ký thành viên'
     }
   ]
+
+  const authRoutesNoLayout = [
+    {
+      path: '/seminar/:idSeminar',
+      component: 'seminar',
+      title: 'Hội thảo'
+    },
+    {
+      path: '/joinseminar/:idSeminar',
+      component: 'joinSeminar',
+      title: 'Tham dự hội thảo'
+    }
+  ]
+
   return (
     <Suspense fallback={null}>
       <Switch>
@@ -35,6 +49,21 @@ const FamilyRoutes = () => {
             exact={route.exact}
             path={route.path}
             render={() => {
+              const Component = lazy(() => import(`@pages/${route.component}`))
+              document.title = route.title
+              return <Component />
+            }}
+          />
+        ))}
+        {authRoutesNoLayout.map((route, idx) => (
+          <Route
+            key={idx}
+            exact={route.exact}
+            path={route.path}
+            render={() => {
+              if (!isAuth) {
+                return <Redirect to="/login" />
+              }
               const Component = lazy(() => import(`@pages/${route.component}`))
               document.title = route.title
               return <Component />
@@ -65,10 +94,16 @@ const FamilyRoutes = () => {
                 title="Đăng ký thành viên thành công!"
                 subTitle="Vui lòng kiểm tra mail để xác minh tài khoản."
                 extra={[
-                  <Button onClick={() => history.push('/login')} type="primary" key="login">
+                  <Button
+                    onClick={() => history.push('/login')}
+                    type="primary"
+                    key="login"
+                  >
                     Đăng nhập
                   </Button>,
-                  <Button onClick={() => history.push('/homepage')} key="home">Về trang chủ</Button>,
+                  <Button onClick={() => history.push('/homepage')} key="home">
+                    Về trang chủ
+                  </Button>
                 ]}
               />
             )
