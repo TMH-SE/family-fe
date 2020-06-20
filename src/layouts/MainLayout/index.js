@@ -314,8 +314,7 @@ const index = ({ children }) => {
           {isBroken ? null : (
             <div className="highlight-group">
               <Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
-              <HighLightGroup></HighLightGroup>
-              
+              <HighLightGroup history={history}></HighLightGroup>
             </div>
           )}
           {/* </div>} */}

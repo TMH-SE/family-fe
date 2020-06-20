@@ -51,6 +51,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
+      path: '/communities',
+      component: 'allCommunities',
+      title: 'Cộng đồng'
+    },
+    {
+      exact: true,
       path: '/popular',
       component: 'popularposts',
       title: 'Thịnh hành'

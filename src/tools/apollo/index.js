@@ -6,7 +6,6 @@ import { setContext } from 'apollo-link-context'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import { onError } from 'apollo-link-error'
-
 const domain = window.location.host
 const endPoint = process.env.GRAPHQL_END_POINT
 const urn = process.env.GRAPHQL_URN || `${domain}/${endPoint}`
@@ -57,9 +56,13 @@ const authLink = setContext((_, { headers }) => ({
 
 const link = ApolloLink.from([errorMiddleware, linkSplit])
 
+// app.use((req, res) => {
 const Client = new ApolloClient({
+  // ssrMode: true,
   link: authLink.concat(link),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  // initialState: window.__APOLLO_STATE__,
+  // ssrForceFetchDelay: 100
 })
-
+// s
 export { Client }

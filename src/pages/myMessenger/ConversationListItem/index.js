@@ -12,7 +12,8 @@ export default function ConversationListItem(props) {
   const { chooseConversation, isBroken } = props
   const { me } = useContext(IContext)
   const { data } = useQuery(GET_USER, {
-    variables: { userId: members.filter(item => item !== me?._id)[0] }
+    variables: { userId: members.filter(item => item !== me?._id)[0] },
+    skip: !members.filter(item => item !== me?._id)[0]
   })
   useEffect(() => {
     data && props.addSearch({ ...props.chat, name: data?.getUser?.firstname })

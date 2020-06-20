@@ -443,7 +443,7 @@ function Profile(props) {
           ) : (
             <List
               itemLayout="horizontal"
-              dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser}
+              dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser?.reverse()}
               renderItem={item => (
                 <CommunityItem
                   item={item.community}
