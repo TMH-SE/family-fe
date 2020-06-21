@@ -40,7 +40,7 @@ export default function ConversationListItem(props) {
             <Avatar size={42} src={data?.getUser?.avatar} />
           </Badge>
         }
-        title={data?.getUser?.firstname}
+        title={data?.getUser?.firstname || 'Người dùng không tồn tại'}
         description={
           lastMess?.content?.message.trim() !== ''
             ? lastMess?.content?.message.trim()
