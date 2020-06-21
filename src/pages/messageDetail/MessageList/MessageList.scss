@@ -1,19 +1,22 @@
 .message-list-container {
-  height: 50vh;
+  height: 30vh;
   width: 100%;
   padding: 0 10px;
   overflow-y: auto;
   // padding-bottom: 10px;
-  
 }
-.message-list{
-  .ant-card-body{
-  padding: 0 !important;
-  // background-color: #e6f4ff
+.message-list {
+  .ant-card-body {
+    padding: 0 !important;
+    // height: 30vh;
+    // overflow: auto;
+  }
+  .ant-card-head {
+    padding: 0 10px !important;
+    // background-color: #e6f4ff
+  }
 }
-.ant-card-head{
-  padding: 0 10px !important;
-  // background-color: #e6f4ff
-}
-
+ .spin-chat{
+  display: flex;
+    justify-content: center;
 }

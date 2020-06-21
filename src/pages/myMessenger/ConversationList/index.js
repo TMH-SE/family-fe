@@ -27,13 +27,13 @@ export default function ConversationList(props) {
             }))
           : []
         const arr = temp.filter(
-          item => item.members.findIndex(mem => mem === me?._id) !== -1
+          item => item?.members?.findIndex(mem => mem === me?._id) !== -1
         )
         arr.sort((a, b) => b.lastActivity - a.lastActivity)
         setDataChat(arr)
         setdataChatConver(arr)
       })
-  }, [])
+  }, [me])
 
   const onSearch = data => {
     const arrResult = [...dataChatConver]
