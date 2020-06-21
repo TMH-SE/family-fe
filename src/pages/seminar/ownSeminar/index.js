@@ -29,6 +29,7 @@ const OwnSeminar = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(stream => {
+        console.log(stream)
         // videoTrack = pc.addTrack(stream.getVideoTracks()[0], stream)
         // pc.addTrack(stream.getAudioTracks()[0], stream)
         setLocalStream(stream)

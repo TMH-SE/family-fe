@@ -12,13 +12,12 @@ const JoinSenimar = () => {
   const [remoteStream, setRemoteStream] = useState(null)
   const idSeminar = '1'
   const idUser = me?._id
-  console.log(me)
 
   useEffect(() => {
-    console.log(1)
     const pc = new RTCPeerConnection(configRTCPeerConnection)
 
     pc.ontrack = e => {
+      console.log(e.streams)
       setRemoteStream(e.streams[0])
       console.log('pc2 received remote stream')
     }
