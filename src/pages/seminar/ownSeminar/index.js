@@ -47,6 +47,20 @@ const OwnSeminar = () => {
                 .remove()
             } else if (snapshot.val()) {
               const pc = new RTCPeerConnection(configRTCPeerConnection)
+              if (stream) {
+                setVideoTrack(
+                  pc.addTrack(stream.getVideoTracks()[0], stream)
+                )
+                pc.addTrack(stream.getAudioTracks()[0], stream)
+              }
+              pc.onicecandidate = e => {
+                if (e.candidate) {
+                  firebase
+                    .database()
+                    .ref(`seminars/${idSeminar}/participants/${_id}/candidate`)
+                    .set(JSON.stringify(e.candidate))
+                }
+              }
               setParticipant({ _id, fullName, offer, pc })
             }
           })
@@ -61,31 +75,9 @@ const OwnSeminar = () => {
   }, [])
 
   useEffect(() => {
-    if (videoTrack) {
-      // videoTrack.replaceTrack(currentStream.getVideoTracks()[0], currentStream)
-      setVideoTracks([...videoTracks, videoTrack])
-    }
-  }, [videoTrack])
-
-  useEffect(() => {
     const id = participant?._id
     if (participant && !!id && !participants.hasOwnProperty(id)) {
       const { _id, fullName, offer, pc } = participant
-      pc.onicecandidate = e => {
-        if (e.candidate) {
-          firebase
-            .database()
-            .ref(`seminars/${idSeminar}/participants/${_id}/candidate`)
-            .set(JSON.stringify(e.candidate))
-        }
-      }
-      if (currentStream) {
-        console.log(videoTrack)
-        setVideoTrack(
-          pc.addTrack(currentStream.getVideoTracks()[0], currentStream)
-        )
-        pc.addTrack(currentStream.getAudioTracks()[0], currentStream)
-      }
       pc.setRemoteDescription(
         new RTCSessionDescription(JSON.parse(offer))
       ).then(() => {
@@ -106,6 +98,14 @@ const OwnSeminar = () => {
   }, [participant])
 
   useEffect(() => {
+    if (videoTrack) {
+      console.log(videoTrack)
+      videoTrack.replaceTrack(currentStream.getVideoTracks()[0], currentStream)
+      setVideoTracks([...videoTracks, videoTrack])
+    }
+  }, [videoTrack])
+
+  useEffect(() => {
     videoTracks.map(track => {
       track.replaceTrack(currentStream.getVideoTracks()[0])
     })
@@ -119,7 +119,7 @@ const OwnSeminar = () => {
         const { _id } = snapshot.val()
         if (!!_id && participants.hasOwnProperty(_id)) {
           const cloneParts = { ...participants }
-          cloneParts[_id].close()
+          // cloneParts[_id].close()
           delete cloneParts[_id]
           setParticipants(cloneParts)
         }
