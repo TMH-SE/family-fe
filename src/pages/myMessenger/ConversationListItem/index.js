@@ -8,23 +8,23 @@ import { GET_USER } from '@shared'
 import { IContext } from '@tools'
 
 export default function ConversationListItem(props) {
-  const { id, members, lastMess } = props.chat
+  const { id, members, lastMess } = props?.chat
   const { chooseConversation, isBroken } = props
   const { me } = useContext(IContext)
   const { data } = useQuery(GET_USER, {
-    variables: { userId: members.filter(item => item !== me?._id)[0] },
+    variables: { userId: members?.filter(item => item !== me?._id)[0] },
     skip: !members.filter(item => item !== me?._id)[0]
   })
   useEffect(() => {
-    data && props.addSearch({ ...props.chat, name: data?.getUser?.firstname })
+    data && props?.addSearch({ ...props?.chat, name: data?.getUser?.firstname })
   }, [data])
 
   const selectHandler = () => {
     isBroken
       ? props.history.push(
-          `/${members.filter(item => item !== me?._id)[0]}/messenger/${id}`
+          `/${members?.filter(item => item !== me?._id)[0]}/messenger/${id}`
         )
-      : chooseConversation(id, members.filter(item => item !== me?._id)[0])
+      : chooseConversation(id, members?.filter(item => item !== me?._id)[0])
     firebase
       .database()
       .ref(`messenger/${id}`)
@@ -36,7 +36,7 @@ export default function ConversationListItem(props) {
     <List.Item onClick={() => selectHandler()}>
       <List.Item.Meta
         avatar={
-          <Badge dot={lastMess.author !== me?._id && !lastMess.seen}>
+          <Badge dot={lastMess?.author !== me?._id && !lastMess?.seen}>
             <Avatar size={42} src={data?.getUser?.avatar} />
           </Badge>
         }
@@ -45,7 +45,7 @@ export default function ConversationListItem(props) {
           lastMess?.content?.message.trim() !== ''
             ? lastMess?.content?.message.trim()
             : lastMess?.content?.img
-            ? lastMess.author === me?._id
+            ? lastMess?.author === me?._id
               ? 'Bạn đã gửi 1 hình'
               : `${data?.getUser?.firstname} đã gửi cho bạn 1 ảnh`
             : ''
@@ -57,8 +57,8 @@ export default function ConversationListItem(props) {
     <List.Item
       onClick={() => {
         isBroken
-          ? props.history.push(
-              `/${members.filter(item => item !== me?._id)[0]}/messenger/${id}`
+          ? props?.history.push(
+              `/${members?.filter(item => item !== me?._id)[0]}/messenger/${id}`
             )
           : chooseConversation(id, members.filter(item => item !== me?._id)[0])
       }}
