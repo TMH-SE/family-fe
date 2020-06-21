@@ -21,9 +21,10 @@ export default function MessageList(props) {
   const [showMore, setShowMore] = useState(10)
   const [loading, setLoading] = useState(false)
   useLayoutEffect(() => {
-    showMore <= messages.length && getMessages()
+    getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
   }, [chatBox])
+
   useEffect(() => {
     getMessages()
   }, [showMore])
@@ -195,6 +196,7 @@ export default function MessageList(props) {
             const ele = document.getElementsByClassName(
               `message-list-container ${idChat}`
             )[0]
+            console.log(showMore <= messages.length, ele.scrollTop )
             if (showMore <= messages.length && ele.scrollTop === 0) {
               setShowMore(showMore + 3)
               ele.scrollTop = 30
