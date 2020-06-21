@@ -13,7 +13,7 @@ export default function ConversationListItem(props) {
   const { me } = useContext(IContext)
   const { data } = useQuery(GET_USER, {
     variables: { userId: members?.filter(item => item !== me?._id)[0] },
-    skip: !members.filter(item => item !== me?._id)[0]
+    skip: !members?.filter(item => item !== me?._id)[0]
   })
   useEffect(() => {
     data && props?.addSearch({ ...props?.chat, name: data?.getUser?.firstname })
@@ -60,7 +60,7 @@ export default function ConversationListItem(props) {
           ? props?.history.push(
               `/${members?.filter(item => item !== me?._id)[0]}/messenger/${id}`
             )
-          : chooseConversation(id, members.filter(item => item !== me?._id)[0])
+          : chooseConversation(id, members?.filter(item => item !== me?._id)[0])
       }}
     >
       <List.Item.Meta
