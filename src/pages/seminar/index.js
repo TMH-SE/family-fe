@@ -49,7 +49,6 @@ function index({ match }) {
       return me?._id === data?.seminar?.createdBy?._id
     }
   }, [data?.seminar, me])
-  console.log(me, isOwner)
   if (loading) {
     return (
       <Result

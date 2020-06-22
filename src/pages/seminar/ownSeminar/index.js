@@ -51,14 +51,6 @@ const OwnSeminar = ({ idSeminar }) => {
                 setVideoTrack(pc.addTrack(stream.getVideoTracks()[0], stream))
                 pc.addTrack(stream.getAudioTracks()[0], stream)
               }
-              pc.onicecandidate = e => {
-                if (e.candidate) {
-                  firebase
-                    .database()
-                    .ref(`seminars/${idSeminar}/participants/${_id}/candidate`)
-                    .set(JSON.stringify(e.candidate))
-                }
-              }
               setParticipant({ _id, fullName, offer, pc })
             }
           })
@@ -76,6 +68,14 @@ const OwnSeminar = ({ idSeminar }) => {
     const id = participant?._id
     if (participant && !!id && !participants.hasOwnProperty(id)) {
       const { _id, fullName, offer, pc } = participant
+      pc.onicecandidate = e => {
+        if (e.candidate) {
+          firebase
+            .database()
+            .ref(`seminars/${idSeminar}/participants/${_id}/candidate`)
+            .set(JSON.stringify(e.candidate))
+        }
+      }
       pc.setRemoteDescription(
         new RTCSessionDescription(JSON.parse(offer))
       ).then(() => {

@@ -4,12 +4,6 @@ import { SdkUtils } from '@utils'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import {
-  GET_SAVEDPOST_BY_USER,
-  GET_POSTS,
-  GET_POSTS_BY_USER
-} from '@shared'
-import MyPosts from '@pages/profile/myPosts'
 import { notification } from 'antd'
 export const IContext = React.createContext()
 
@@ -34,7 +28,6 @@ const GET_ME = gql`
     }
   }
 `
-console.log('context')
 const ContextWrapper = ({ children, history }) => {
   const [messbox, setMessbox] = useState([])
   const [isAuth, setIsAuth] = useState(
