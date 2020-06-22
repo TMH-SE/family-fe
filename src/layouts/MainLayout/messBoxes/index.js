@@ -26,7 +26,10 @@ const Messboxes = forwardRef((props, ref) => {
   const chooseConversation = (idChat, userId) => {
     if (messbox.findIndex(mess => mess.idChat === idChat) === -1) {
       const a = [...messbox]
-      a.push({ idChat, userId })
+      if (messbox?.length === 3) {
+        a.pop({ idChat, userId })
+      }
+      a.unshift({ idChat, userId })
       setMessbox(a)
     }
     document.getElementById(`input-custom-${idChat}`) &&
@@ -50,6 +53,7 @@ const Messboxes = forwardRef((props, ref) => {
         style={{ display: 'flex', flexDirection: 'column' }}
       >
         <MessageList
+          messbox={messbox}
           history={history}
           idx={idx}
           onCancelMessbox={() => onCancelMessbox(mess.idChat)}

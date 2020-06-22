@@ -13,7 +13,11 @@ import { IContext } from '@tools'
 
 const arrType = [
   {
-    type: 'cmt' || 'tag',
+    type: 'cmt',
+    icon: <MessageTwoTone />
+  },
+  {
+    type: 'tag',
     icon: <MessageTwoTone />
   },
   {

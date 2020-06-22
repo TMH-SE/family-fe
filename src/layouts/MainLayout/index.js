@@ -20,7 +20,9 @@ import {
   Tooltip,
   Badge,
   Popover,
-  Modal
+  Modal,
+  Drawer,
+  Space
   // Switch
 } from 'antd'
 import {
@@ -35,7 +37,8 @@ import {
   LogoutOutlined,
   BookTwoTone,
   HeartTwoTone,
-  ArrowRightOutlined
+  ArrowRightOutlined,
+  MenuUnfoldOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -65,6 +68,8 @@ const index = ({ children }) => {
 
   const [isBroken, setIsBroken] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [showCommunities, setShowCommunities] = useState(false)
+
   const messBoxesRef = useRef()
   const [notifications, setNotifications] = useState([])
   useEffect(() => {
@@ -289,7 +294,6 @@ const index = ({ children }) => {
           </div>
         </div>
       </Header>
-
       <Layout
         className="home"
         style={{
@@ -333,6 +337,12 @@ const index = ({ children }) => {
                 messBoxesRef.current.chooseConversation(idChat, userId)
             }}
           >
+            {isBroken && (
+              <MenuUnfoldOutlined
+                style={{ fontSize: 23 }}
+                onClick={() => setShowCommunities(true)}
+              />
+            )}
             {children}
             {/* {React.Children.map(children, child => {
               return React.cloneElement(child, {
@@ -387,6 +397,18 @@ const index = ({ children }) => {
       >
         <Login></Login>
       </Modal>
+      <Drawer
+        width="90%"
+        closable={false}
+        visible={showCommunities}
+        onClose={() => setShowCommunities(false)}
+        title="Cộng đồng nổi bật"
+        placement='left'
+        footer={null}
+      >
+        <HighLightGroup history={history} setShowCommunities={setShowCommunities}/>
+
+      </Drawer>
     </Layout>
   )
 }

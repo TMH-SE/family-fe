@@ -37,9 +37,14 @@ function HighlightGroup(props) {
               b.countMember + b.countPost - (a.countMember + a.countPost)
           )
           .slice(0, 3)}
-        renderItem={item => <CommunityItem item={item} />}
+        renderItem={item => <CommunityItem item={item} setShowCommunities={props?.setShowCommunities}/>}
       />
-      <a onClick={() => props.history.push('/communities')}>
+      <a
+        onClick={() => {
+          props?.setShowCommunities && props.setShowCommunities(false)
+          props.history.push('/communities')
+        }}
+      >
         Xem tất cả cộng đồng <ArrowRightOutlined />
       </a>
     </>
