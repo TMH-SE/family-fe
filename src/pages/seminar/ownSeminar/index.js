@@ -73,7 +73,7 @@ const OwnSeminar = ({ idSeminar }) => {
           firebase
             .database()
             .ref(`seminars/${idSeminar}/participants/${_id}/candidate`)
-            .set(JSON.stringify(e.candidate))
+            .push(JSON.stringify(e.candidate))
         }
       }
       pc.setRemoteDescription(

@@ -22,7 +22,7 @@ const JoinSenimar = ({ idSeminar }) => {
     firebase
       .database()
       .ref(`seminars/${idSeminar}/participants/${idUser}/candidate`)
-      .on('value', snap => {
+      .on('child_added', snap => {
         const candidate = JSON.parse(snap.val())
         if (candidate) {
           pc.addIceCandidate(new RTCIceCandidate(candidate))
