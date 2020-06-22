@@ -7,19 +7,16 @@ import { configRTCPeerConnection } from '@constants'
 import Video from '../video'
 import { IContext } from '@tools'
 
-const JoinSenimar = () => {
+const JoinSenimar = ({ idSeminar }) => {
   const { me, history } = useContext(IContext)
   const [remoteStream, setRemoteStream] = useState(null)
-  const idSeminar = '1'
   const idUser = me?._id
 
   useEffect(() => {
     const pc = new RTCPeerConnection(configRTCPeerConnection)
 
     pc.ontrack = e => {
-      console.log(e.streams)
       setRemoteStream(e.streams[0])
-      console.log('pc2 received remote stream')
     }
 
     firebase
@@ -36,7 +33,6 @@ const JoinSenimar = () => {
       .database()
       .ref(`seminars/${idSeminar}/isStart`)
       .on('value', snapshot => {
-        console.log(snapshot.val())
         if (!snapshot.val()) {
           firebase.database().ref(`seminars/${idSeminar}/isStart`).off()
           firebase
@@ -46,15 +42,12 @@ const JoinSenimar = () => {
           pc.close()
           history.push('/waitroom')
         } else {
-          console.log(123456)
-          console.log(idUser)
           if (idUser) {
             pc.createOffer({
               offerToReceiveAudio: true,
               offerToReceiveVideo: true
             })
               .then(sdp => {
-                console.log('index -> sdp', sdp)
                 pc.setLocalDescription(sdp)
                 firebase
                   .database()
@@ -71,7 +64,6 @@ const JoinSenimar = () => {
               .ref(`seminars/${idSeminar}/participants/${idUser}/answer`)
               .on('value', snapshot => {
                 const answerSdp = JSON.parse(snapshot.val())
-                console.log('index -> answerSdp', answerSdp)
                 if (answerSdp) {
                   pc.setRemoteDescription(new RTCSessionDescription(answerSdp))
                 }
@@ -93,7 +85,7 @@ const JoinSenimar = () => {
         <Button
           style={{ position: 'absolute', top: '5%', right: '5%' }}
           icon={<LogoutOutlined />}
-          shape="circle"
+          shape="circle-outline"
           ghost
         />
       </Tooltip>

@@ -1,9 +1,23 @@
 import React from 'react'
-import { Comment, Row, Col, Avatar, Input, List } from 'antd'
+import { Row, Col, Avatar, Input, Form } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
-import moment from 'moment'
+import firebase from 'firebase/app'
+import ListComments from './listComments'
 
-const Comments = ({ breakPoint }) => {
+const Comments = ({ breakPoint, dataSeminar, me }) => {
+  const [form] = Form.useForm()
+  const submitComment = ({ comment }) => {
+    firebase
+      .database()
+      .ref(`seminars/${dataSeminar?._id}/comments/${+new Date()}`)
+      .set({
+        author: `${me?.firstname} ${me?.lastname}`,
+        avatar: me?.avatar,
+        content: comment,
+        createdAt: +new Date()
+      })
+    form.resetFields()
+  }
   return (
     <div
       style={{
@@ -16,8 +30,10 @@ const Comments = ({ breakPoint }) => {
     >
       <div style={{ flex: '1 1 auto' }}>
         <div style={{ borderBottom: '1px solid #ccc', padding: 10 }}>
-          <h1 style={{ fontSize: 18 }}>Hội thảo dinh dưỡng cho trẻ</h1>
-          <div>Bs. Trần Minh H</div>
+          <h1 style={{ fontSize: 18 }}>{dataSeminar?.title}</h1>
+          <div
+            style={{ fontWeight: 'bold' }}
+          >{`${dataSeminar?.createdBy?.expert?.jobTitle} ${dataSeminar?.createdBy?.firstname} ${dataSeminar?.createdBy?.lastname}`}</div>
         </div>
         <div
           style={{
@@ -30,181 +46,27 @@ const Comments = ({ breakPoint }) => {
         </div>
       </div>
       <div style={{ overflow: 'auto' }}>
-        <List
-          dataSource={[
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            },
-            {
-              author: 'Han Solo',
-              avatar:
-                'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-              content: (
-                <p>
-                  We supply a series of design principles, practical patterns
-                  and high quality design resources
-                </p>
-              ),
-              datetime: moment().fromNow()
-            }
-          ]}
-          itemLayout="horizontal"
-          renderItem={props => <Comment style={{ margin: 10 }} {...props} />}
-        />
+        <ListComments idSeminar={dataSeminar?._id} />
       </div>
       <Row style={{ padding: 10, borderTop: '1px solid #ccc' }}>
         <Col xs={0} lg={4}>
           <Avatar icon={<UserOutlined />} />
         </Col>
         <Col xs={24} lg={20}>
-          <Input.TextArea
-            autoFocus
-            onPressEnter={e => console.log(e.target.value)}
-            style={{ width: '100%', resize: 'none' }}
-            placeholder="Bạn muốn hỏi gì?"
-            autoSize={{ maxRows: 4, minRows: 1 }}
-          />
+          <Form onFinish={submitComment} form={form}>
+            <Form.Item style={{ margin: 0 }} name="comment">
+              <Input.TextArea
+                autoFocus
+                onPressEnter={e => {
+                  e.preventDefault()
+                  form.submit()
+                }}
+                style={{ width: '100%', resize: 'none' }}
+                placeholder="Bạn muốn hỏi gì?"
+                autoSize={{ maxRows: 4, minRows: 1 }}
+              />
+            </Form.Item>
+          </Form>
         </Col>
       </Row>
     </div>

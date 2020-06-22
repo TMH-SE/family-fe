@@ -65,10 +65,10 @@ function index({ match }) {
         xs={24}
         lg={18}
       >
-        {isOwner ? <OwnSeminar /> : <JoinSenimar />}
+        {isOwner ? <OwnSeminar idSeminar={data?.seminar?._id} /> : <JoinSenimar idSeminar={data?.seminar?._id} />}
       </Col>
       <Col xs={24} lg={6}>
-        <Comments breakPoint={breakPoint} />
+        <Comments breakPoint={breakPoint} dataSeminar={data?.seminar} me={me} />
       </Col>
     </Row>
   )

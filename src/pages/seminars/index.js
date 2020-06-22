@@ -1,12 +1,6 @@
 import React, { useContext, useRef, useEffect, useState, useMemo } from 'react'
-import { Card, Button, Space, Menu, Dropdown, Avatar } from 'antd'
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  MoreOutlined,
-  UserOutlined
-} from '@ant-design/icons'
+import { Card, Button } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import './index.scss'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
@@ -44,7 +38,9 @@ function index() {
     firebase
       .database()
       .ref('seminars')
-      .on('value', snapshot => setFirebaseSeminars(snapshot.val()))
+      .on('value', snapshot => {
+        snapshot.val() && setFirebaseSeminars(Object.values(snapshot.val()))
+      })
   }, [])
   const seminars = useMemo(() => {
     if (data?.seminars && firebaseSeminars) {
@@ -56,23 +52,28 @@ function index() {
         .map(v => v._id)
       const excludeIndex = []
       const startSeminars = data?.seminars?.filter((v, idx) => {
-        excludeIndex.push(idx)
-        return startSeminarIds.includes(v._id)
+        if (startSeminarIds.includes(v._id)) {
+          excludeIndex.push(idx)
+          return true
+        }
+        return false
       })
       const endSeminars = data?.seminars?.filter((v, idx) => {
-        excludeIndex.push(idx)
-        return endSeminarIds.includes(v._id)
+        if (endSeminarIds.includes(v._id)) {
+          excludeIndex.push(idx)
+          return true
+        }
+        return false
       })
       return {
         startSeminars,
         endSeminars,
-        upcomingSeminars: data?.seminars?.filter((v, idx) =>
-          excludeIndex.includes(idx)
+        upcomingSeminars: data?.seminars?.filter(
+          (v, idx) => !excludeIndex.includes(idx)
         )
       }
     }
   }, [firebaseSeminars, data?.seminars])
-  console.log(me)
   return (
     <Card
       title="Hội thảo"

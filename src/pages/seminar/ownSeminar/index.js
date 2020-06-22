@@ -14,7 +14,7 @@ import firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
 import Video from '../video'
 
-const OwnSeminar = () => {
+const OwnSeminar = ({ idSeminar }) => {
   const [participant, setParticipant] = useState({})
   const [participants, setParticipants] = useState({})
   const [localStream, setLocalStream] = useState(null)
@@ -23,18 +23,18 @@ const OwnSeminar = () => {
   const [videoTracks, setVideoTracks] = useState([])
   const [audioEnable, setAudioEnable] = useState(true)
   const [videoEnable, setVideoEnable] = useState(true)
-  const idSeminar = '1'
   useEffect(() => {
-    console.log(1)
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(stream => {
-        console.log(stream)
         // videoTrack = pc.addTrack(stream.getVideoTracks()[0], stream)
         // pc.addTrack(stream.getAudioTracks()[0], stream)
         setLocalStream(stream)
         setCurrentStream(stream)
-        firebase.database().ref(`seminars/${idSeminar}`).set({ _id: idSeminar, isStart: true })
+        firebase
+          .database()
+          .ref(`seminars/${idSeminar}`)
+          .set({ _id: idSeminar, isStart: true })
         firebase
           .database()
           .ref(`seminars/${idSeminar}/participants`)
@@ -48,9 +48,7 @@ const OwnSeminar = () => {
             } else if (snapshot.val()) {
               const pc = new RTCPeerConnection(configRTCPeerConnection)
               if (stream) {
-                setVideoTrack(
-                  pc.addTrack(stream.getVideoTracks()[0], stream)
-                )
+                setVideoTrack(pc.addTrack(stream.getVideoTracks()[0], stream))
                 pc.addTrack(stream.getAudioTracks()[0], stream)
               }
               pc.onicecandidate = e => {
@@ -99,7 +97,6 @@ const OwnSeminar = () => {
 
   useEffect(() => {
     if (videoTrack) {
-      console.log(videoTrack)
       videoTrack.replaceTrack(currentStream.getVideoTracks()[0], currentStream)
       setVideoTracks([...videoTracks, videoTrack])
     }
@@ -160,7 +157,7 @@ const OwnSeminar = () => {
         <Tooltip title={videoEnable ? 'Tắt camera' : 'Mở camera'}>
           <Button
             icon={videoEnable ? <CameraOutlined /> : <StopOutlined />}
-            shape="circle"
+            shape="circle-outline"
             ghost
             onClick={() => {
               localStream.getVideoTracks()[0].enabled = !localStream.getVideoTracks()[0]
@@ -172,7 +169,7 @@ const OwnSeminar = () => {
         <Tooltip title={audioEnable ? 'Tắt micro' : 'Mở micro'}>
           <Button
             icon={audioEnable ? <AudioOutlined /> : <AudioMutedOutlined />}
-            shape="circle"
+            shape="circle-outline"
             ghost
             onClick={() => {
               localStream.getAudioTracks()[0].enabled = !localStream.getAudioTracks()[0]
@@ -184,7 +181,7 @@ const OwnSeminar = () => {
         <Tooltip title="Chia sẻ màn hình">
           <Button
             icon={<ShareAltOutlined />}
-            shape="circle"
+            shape="circle-outline"
             ghost
             onClick={handleShareScreen}
           />
@@ -192,13 +189,13 @@ const OwnSeminar = () => {
         <Tooltip title="Ghi màn hình">
           <Button
             icon={<YoutubeOutlined />}
-            shape="circle"
+            shape="circle-outline"
             ghost
             onClick={handleShareScreen}
           />
         </Tooltip>
         <Tooltip title="Thoát">
-          <Button icon={<LogoutOutlined />} shape="circle" ghost />
+          <Button icon={<LogoutOutlined />} shape="circle-outline" ghost />
         </Tooltip>
       </Space>
     </div>
