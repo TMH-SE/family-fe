@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Row, Col, Avatar, Input, Form } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import firebase from 'firebase/app'
@@ -6,6 +6,7 @@ import ListComments from './listComments'
 
 const Comments = ({ breakPoint, dataSeminar, me }) => {
   const [form] = Form.useForm()
+  const listRef = useRef()
   const submitComment = ({ comment }) => {
     firebase
       .database()
@@ -17,6 +18,9 @@ const Comments = ({ breakPoint, dataSeminar, me }) => {
         createdAt: +new Date()
       })
     form.resetFields()
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current?.scrollHeight
+    }
   }
   return (
     <div
@@ -45,7 +49,7 @@ const Comments = ({ breakPoint, dataSeminar, me }) => {
           Câu hỏi và bình luận:
         </div>
       </div>
-      <div style={{ overflow: 'auto' }}>
+      <div ref={listRef} style={{ overflow: 'auto' }}>
         <ListComments idSeminar={dataSeminar?._id} />
       </div>
       <Row style={{ padding: 10, borderTop: '1px solid #ccc' }}>
