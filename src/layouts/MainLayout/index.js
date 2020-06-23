@@ -1,14 +1,5 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  isValidElement,
-  cloneElement
-} from 'react'
+import React, { useState, useContext, useEffect, useRef, useMemo } from 'react'
 import {
   Layout,
   Menu,
@@ -18,16 +9,13 @@ import {
   Typography,
   Button,
   Tooltip,
-  Badge,
-  Popover,
   Modal,
   Drawer,
-  Space
-  // Switch
+  Row,
+  Col
 } from 'antd'
 import {
   UnorderedListOutlined,
-  FormOutlined,
   BellOutlined,
   CaretDownOutlined,
   SearchOutlined,
@@ -37,25 +25,19 @@ import {
   LogoutOutlined,
   BookTwoTone,
   HeartTwoTone,
-  ArrowRightOutlined,
-  MenuUnfoldOutlined
+  YoutubeOutlined,
+  HomeOutlined,
+  TeamOutlined,
+  HomeFilled,
+  YoutubeFilled,
+  BellFilled
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { Logo, HighLightGroup, Noti, Login } from '@components'
 import './mainlayout.scss'
-
 import { IContext } from '@tools'
 import ConversationList from '@pages/myMessenger/ConversationList'
-import MessageList from '@pages/messageDetail/MessageList'
-// import { ThemeContext } from '../../router'
-// import HomePage from '../MainLayout/HomePage'
-// import HighLightPost from '../MainLayout/HighlightPost'
-// import ModalCreatePost from '../MainLayout/ModalCreatePost'
-import reactStringReplace from 'react-string-replace'
-import { useQuery } from '@apollo/react-hooks'
-import { GET_CHAT_BY_USER } from '@shared'
-import SignIn from '@pages/signIn'
 import Messboxes from './messBoxes'
 const { Header, Content, Sider } = Layout
 
@@ -67,7 +49,6 @@ const index = ({ children }) => {
   )
 
   const [isBroken, setIsBroken] = useState(false)
-  const [visible, setVisible] = useState(false)
   const [showCommunities, setShowCommunities] = useState(false)
 
   const messBoxesRef = useRef()
@@ -94,30 +75,34 @@ const index = ({ children }) => {
       })
   }
   const history = useHistory()
+  const location = useMemo(() => {
+    return history.location.pathname.split('/')[1]
+  }, [history.location.pathname])
+  console.log(location)
   const menu = (
     <Menu>
       <Menu.Item key="0" onClick={() => history.push(`/${me?._id}/info`)}>
-        <InfoCircleTwoTone /> Thông tin cá nhân{' '}
+        <InfoCircleTwoTone /> Thông tin cá nhân
       </Menu.Item>
       {isBroken && (
         <Menu.Item
           key="1"
           onClick={() => history.push(`/${me?._id}/messenger`)}
         >
-          <MessageTwoTone /> Tin nhắn{' '}
+          <MessageTwoTone /> Tin nhắn
         </Menu.Item>
       )}
       <Menu.Item key="2" onClick={() => history.push(`/${me?._id}/myposts`)}>
-        <FileTextTwoTone /> Bài viết của tôi{' '}
+        <FileTextTwoTone /> Bài viết của tôi
       </Menu.Item>
       <Menu.Item key="3" onClick={() => history.push(`/${me?._id}/savedposts`)}>
-        <BookTwoTone /> Bài viết đã lưu{' '}
+        <BookTwoTone /> Bài viết đã lưu
       </Menu.Item>
       <Menu.Item
         key="4"
         onClick={() => history.push(`/${me?._id}/joinedGroup`)}
       >
-        <HeartTwoTone /> Cộng đồng đã tham gia{' '}
+        <HeartTwoTone /> Cộng đồng đã tham gia
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="5" onClick={logout}>
@@ -135,6 +120,7 @@ const index = ({ children }) => {
           boxShadow: '0 1px 8px #f0f1f2',
           backgroundColor: 'lightskyblue',
           position: 'fixed',
+          top: 0,
           width: '100%',
           zIndex: 10
         }}
@@ -196,7 +182,7 @@ const index = ({ children }) => {
               marginRight: 10
             }}
           >
-            {isAuth && (
+            {isAuth && !isBroken && (
               <Menu
                 style={{
                   backgroundColor: 'initial'
@@ -207,6 +193,15 @@ const index = ({ children }) => {
                 }
                 mode="horizontal"
               >
+                <Menu.Item onClick={() => history.push('/seminars')}>
+                  <Tooltip title="Hội thảo" placement='bottom'>
+                    <Button
+                      className="btn-round"
+                      shape="circle"
+                      icon={<YoutubeOutlined />}
+                    />
+                  </Tooltip>
+                </Menu.Item>
                 <Menu.Item>
                   <Noti history={history} isBroken={isBroken} />
                 </Menu.Item>
@@ -216,27 +211,17 @@ const index = ({ children }) => {
               {isAuth ? (
                 isBroken ? (
                   <Dropdown overlay={menu} trigger={['click']}>
-                    <a
-                      className="ant-dropdown-link"
-                      style={{ paddingLeft: 5 }}
-                      onClick={e => e.preventDefault()}
-                    >
-                      <Avatar
-                        style={{
-                          top: '0.75em',
-                          color: 'white',
-                          backgroundColor: 'rgb(0, 152, 218)',
-                          fontSize: '15px',
-                          verticalAlign: 'sub'
-                        }}
-                        size={30}
-                        src={me?.avatar}
-                        onClick={() => history.push(`/${me?._id}/info`)}
-                      >
-                        {/* N */}
-                      </Avatar>
-                      <CaretDownOutlined />
-                    </a>
+                    <Avatar
+                      style={{
+                        top: '0.75em',
+                        color: 'white',
+                        backgroundColor: 'rgb(0, 152, 218)',
+                        fontSize: '15px',
+                        verticalAlign: 'sub'
+                      }}
+                      size={30}
+                      src={me?.avatar}
+                    />
                   </Dropdown>
                 ) : (
                   <>
@@ -277,6 +262,78 @@ const index = ({ children }) => {
           </div>
         </div>
       </Header>
+      {isBroken && (
+        <Row
+          style={{
+            position: 'sticky',
+            top: 64,
+            zIndex: 100,
+            background: '#fff',
+            fontSize: 20,
+             color: '#000'
+          }}
+          className='row-menu'
+          gutter={16}
+        >
+          <Col
+            style={{
+              textAlign: 'center',
+              borderBottom: location === 'homepage' ? '1px solid blue' : 'none'
+            }}
+            span={6}
+            onClick={() => history.push('/homepage')}
+          >
+            {location === 'homepage' ? (
+              <HomeFilled style={{ color: 'blue' }} />
+            ) : (
+              <HomeOutlined />
+            )}
+          </Col>
+          <Col
+            style={{
+              textAlign: 'center',
+              borderBottom: location === 'notify' ? '1px solid blue' : 'none'
+            }}
+            span={6}
+            onClick={() => history.push('/notify')}
+          >
+            {location === 'notify' ? (
+              <BellFilled style={{ color: 'blue' }} />
+            ) : (
+              <BellOutlined />
+            )}
+          </Col>
+          <Col
+            style={{
+              textAlign: 'center',
+              borderBottom:
+                location === 'communities' ? '1px solid blue' : 'none'
+            }}
+            span={6}
+            onClick={() => history.push('/communities')}
+          >
+            <TeamOutlined
+              style={{
+                color: location === 'communities' ? 'blue' : 'black'
+              }}
+            />
+          </Col>
+          <Col
+            style={{
+              textAlign: 'center',
+              borderBottom: location === 'seminars' ? '1px solid blue' : 'none'
+            }}
+            span={6}
+            onClick={() => history.push('/seminars')}
+          >
+            {location === 'seminars' ? (
+              <YoutubeFilled style={{ color: 'blue' }} />
+            ) : (
+              <YoutubeOutlined />
+            )}
+          </Col>
+        </Row>
+      )}
       <Layout
         className="home"
         style={{
@@ -292,9 +349,6 @@ const index = ({ children }) => {
           collapsedWidth={0}
           width={isBroken ? 0 : '18%'}
           onBreakpoint={broken => setIsBroken(broken)}
-          onCollapse={collapsed => {
-            setVisible(!collapsed)
-          }}
           trigger={null}
         >
           {/* { !isBroken && <div style={{ position: 'fixed' }}> */}
@@ -322,18 +376,7 @@ const index = ({ children }) => {
                 messBoxesRef.current.chooseConversation(idChat, userId)
             }}
           >
-            {isBroken && (
-              <MenuUnfoldOutlined
-                style={{ fontSize: 23 }}
-                onClick={() => setShowCommunities(true)}
-              />
-            )}
             {children}
-            {/* {React.Children.map(children, child => {
-              return React.cloneElement(child, {
-                chooseConversation: () => messBoxesRef.current.chooseConversation()
-              })
-            })} */}
           </MainContext.Provider>
         </Content>
         {!isBroken && isAuth ? (
@@ -388,11 +431,13 @@ const index = ({ children }) => {
         visible={showCommunities}
         onClose={() => setShowCommunities(false)}
         title="Cộng đồng nổi bật"
-        placement='left'
+        placement="left"
         footer={null}
       >
-        <HighLightGroup history={history} setShowCommunities={setShowCommunities}/>
-
+        <HighLightGroup
+          history={history}
+          setShowCommunities={setShowCommunities}
+        />
       </Drawer>
     </Layout>
   )
