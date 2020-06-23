@@ -127,7 +127,9 @@ const index = ({ children }) => {
   )
 
   return (
-    <Layout>
+    <Layout onScroll= {() => {
+      console.log('aaa')
+    }}>
       <Header
         style={{
           boxShadow: '0 1px 8px #f0f1f2',
@@ -205,25 +207,6 @@ const index = ({ children }) => {
                 }
                 mode="horizontal"
               >
-                {/* <Menu.Item onClick={() => history.push('/createpost')}>
-                  {isBroken ? (
-                    <>
-                      <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
-                      <span>Thêm bài viết</span>
-                    </>
-                  ) : (
-                    <Tooltip title="Thêm bài viết" placement="bottomRight">
-                      <Button
-                        className="btn-round"
-                        shape="circle"
-                        icon={
-                          <FormOutlined style={{ color: 'rgb(0, 152, 218)' }} />
-                        }
-                        // onClick={() => history.push('/createpost')}
-                      />
-                    </Tooltip>
-                  )}
-                </Menu.Item> */}
                 <Menu.Item>
                   <Noti history={history} isBroken={isBroken} />
                 </Menu.Item>
@@ -324,6 +307,8 @@ const index = ({ children }) => {
           {/* </div>} */}
         </Sider>
         <Content
+          id='content-main'
+         
           style={{
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,

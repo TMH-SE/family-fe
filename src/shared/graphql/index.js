@@ -74,8 +74,8 @@ export const DELETE_FOLLOWER = gql`
   }
 `
 export const GET_POSTS = gql`
-  query posts {
-    posts {
+  query posts($quantity: Int) {
+    posts(quantity: $quantity) {
       _id
       title
       thumbnail
