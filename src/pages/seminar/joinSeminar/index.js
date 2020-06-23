@@ -19,6 +19,15 @@ const JoinSenimar = ({ idSeminar }) => {
       setRemoteStream(e.streams[0])
     }
 
+    pc.onicecandidate = e => {
+      if (e.candidate) {
+        firebase
+          .database()
+          .ref(`seminars/${idSeminar}/participants/${idUser}/joinCandidate`)
+          .push(JSON.stringify(e.candidate))
+      }
+    }
+
     firebase
       .database()
       .ref(`seminars/${idSeminar}/participants/${idUser}/candidate`)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Card, Space, Button, Dropdown, Menu, Avatar } from 'antd'
 import {
   EditOutlined,
@@ -7,7 +7,69 @@ import {
   UserOutlined
 } from '@ant-design/icons'
 
-function SeminarDetail({ me, seminarData }) {
+function SeminarDetail({ me, seminarData, state }) {
+  const extra = useMemo(() => {
+    console.log(state)
+    switch (state) {
+      case 'upcoming': {
+        console.log(123)
+        if (me?._id === seminarData?.createdBy?._id) {
+          return (
+            <Space>
+              <Button
+                onClick={() =>
+                  window.open(`${window.origin}/seminar/${seminarData._id}`)
+                }
+                key="start"
+                type="primary"
+              >
+                Bắt đầu
+              </Button>
+              <Dropdown
+                placement="bottomCenter"
+                overlay={
+                  <Menu>
+                    <Menu.Item key="0">
+                      <EditOutlined />
+                      <span>Sửa</span>
+                    </Menu.Item>
+                    <Menu.Item key="1">
+                      <DeleteOutlined />
+                      <span>Xóa</span>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <Button icon={<MoreOutlined />} type="link" />
+              </Dropdown>
+            </Space>
+          )
+        }
+        return
+      }
+      case 'start': {
+        if (me?._id !== seminarData?.createdBy?._id) {
+          return (
+            <Button
+              onClick={() =>
+                window.open(`${window.origin}/seminar/${seminarData._id}`)
+              }
+              key="start"
+              type="primary"
+            >
+              Tham dự
+            </Button>
+          )
+        }
+        return null
+      }
+      case 'end':
+        break
+      default:
+        break
+    }
+  }, [state])
+  console.log(extra)
   return (
     <Card
       style={{ marginBottom: 10 }}
@@ -23,48 +85,7 @@ function SeminarDetail({ me, seminarData }) {
           {seminarData.title}
         </div>
       }
-      extra={
-        me?._id === seminarData?.createdBy?._id ? (
-          <Space>
-            <Button
-              onClick={() =>
-                window.open(`${window.origin}/seminar/${seminarData._id}`)
-              }
-              key="start"
-              type="primary"
-            >
-              Bắt đầu
-            </Button>
-            <Dropdown
-              placement="bottomCenter"
-              overlay={
-                <Menu>
-                  <Menu.Item key="0">
-                    <EditOutlined />
-                    <span>Sửa</span>
-                  </Menu.Item>
-                  <Menu.Item key="1">
-                    <DeleteOutlined />
-                    <span>Xóa</span>
-                  </Menu.Item>
-                </Menu>
-              }
-            >
-              <Button icon={<MoreOutlined />} type="link" />
-            </Dropdown>
-          </Space>
-        ) : (
-          <Button
-            onClick={() =>
-              window.open(`${window.origin}/seminar/${seminarData._id}`)
-            }
-            key="start"
-            type="primary"
-          >
-            Tham dự
-          </Button>
-        )
-      }
+      extra={extra}
     >
       <Card.Meta
         avatar={

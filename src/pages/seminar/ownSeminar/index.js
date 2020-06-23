@@ -76,6 +76,15 @@ const OwnSeminar = ({ idSeminar }) => {
             .push(JSON.stringify(e.candidate))
         }
       }
+      firebase
+        .database()
+        .ref(`seminars/${idSeminar}/participants/${_id}/joinCandidate`)
+        .on('child_added', snap => {
+          const candidate = JSON.parse(snap.val())
+          if (candidate) {
+            pc.addIceCandidate(new RTCIceCandidate(candidate))
+          }
+        })
       pc.setRemoteDescription(
         new RTCSessionDescription(JSON.parse(offer))
       ).then(() => {
