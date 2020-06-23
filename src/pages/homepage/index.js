@@ -58,7 +58,7 @@ const HomePage = props => {
   }, [dataPosts])
   useEffect(() => {
     setQuantityPosts(quantityPosts + 5)
-    fetchMoreListItems()
+    quantityPosts !== 0 && fetchMoreListItems()
   }, [loadMore])
   function fetchMoreListItems() {
     setTimeout(async () => {

@@ -362,7 +362,6 @@ const index = ({ children }) => {
         </Sider>
         <Content
           id='content-main'
-         
           style={{
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
