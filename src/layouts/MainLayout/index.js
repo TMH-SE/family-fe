@@ -112,7 +112,9 @@ const index = ({ children }) => {
   )
 
   return (
-    <Layout>
+    <Layout onScroll= {() => {
+      console.log('aaa')
+    }}>
       <Header
         style={{
           boxShadow: '0 1px 8px #f0f1f2',
@@ -266,9 +268,11 @@ const index = ({ children }) => {
             position: 'sticky',
             top: 64,
             zIndex: 100,
-            background: 'aliceblue'
-            // marginBottom: 10
+            background: '#fff',
+            fontSize: 20,
+             color: '#000'
           }}
+          className='row-menu'
           gutter={16}
         >
           <Col
@@ -357,6 +361,7 @@ const index = ({ children }) => {
           {/* </div>} */}
         </Sider>
         <Content
+          id='content-main'
           style={{
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,

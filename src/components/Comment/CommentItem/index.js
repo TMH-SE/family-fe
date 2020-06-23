@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Comment } from 'antd'
 import { ModalPreviewImg } from '@components'
 import { useQuery } from '@apollo/react-hooks'
-import { GET_USER } from '@shared'
+import { GET_USER, replaceToxicWords } from '@shared'
 import moment from 'moment'
 // import noAvatar from '@assets/images/noavata.jpg'
 const CommentItem = props => {
@@ -70,7 +70,7 @@ const CommentItem = props => {
             </div>
             <p
               dangerouslySetInnerHTML={{
-                __html: comment?.content?.message.trim()
+                __html: replaceToxicWords(comment?.content?.message.trim())
               }}
               style={{ margin: 5 }}
               className="rep-content"

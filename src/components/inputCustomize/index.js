@@ -202,25 +202,34 @@ function InputCustomize(props) {
           />
         </MentionsInput>
         {/* {!isBroken && ( */}
-          <Space>
-            <Popover
-              placement="topRight"
-              title={<Picker showPreview={false} showSkinTones={false} sheetSize={16} onSelect={e => addEmoji(e)} />}
-              trigger="click"
-              visible={emoji.showEmoji}
-              onVisibleChange={() =>
-                setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })
-              }
-            >
-              <SmileOutlined
-                style={{ color: '#bbb', fontSize: 16 }}
-                onClick={() => setEmoji({ ...setEmoji, showEmoji: true })}
+        <Space>
+          <Popover
+            overlayStyle={{ position: 'fixed' }}
+            style={{ position: 'fixed' }}
+            placement="topRight"
+            title={
+              <Picker
+                showPreview={false}
+                showSkinTones={false}
+                sheetSize={16}
+                onSelect={e => addEmoji(e)}
               />
-            </Popover>
-            <Upload action={handleUpload} beforeUpload={beforeUpload}>
-              <FileImageOutlined style={{ color: '#bbb', fontSize: 16 }} />
-            </Upload>
-          </Space>
+            }
+            trigger="click"
+            visible={emoji.showEmoji}
+            onVisibleChange={() =>
+              setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })
+            }
+          >
+            <SmileOutlined
+              style={{ color: '#bbb', fontSize: 16 }}
+              onClick={() => setEmoji({ ...setEmoji, showEmoji: true })}
+            />
+          </Popover>
+          <Upload action={handleUpload} beforeUpload={beforeUpload}>
+            <FileImageOutlined style={{ color: '#bbb', fontSize: 16 }} />
+          </Upload>
+        </Space>
         {/* )} */}
       </div>
     </div>

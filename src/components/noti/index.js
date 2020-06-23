@@ -53,7 +53,7 @@ const Noti = props => {
     <Popover
       placement="bottomLeft"
       id="noti-popover"
-      // visible={visible}
+      overlayStyle={{ position: 'fixed'}}
       content={
         notifications?.length === 0 ? (
           <p>Chưa có thông báo nào</p>
