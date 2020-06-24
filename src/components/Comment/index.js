@@ -1,15 +1,14 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, useLayoutEffect } from 'react'
+import React, { useState, useContext, useLayoutEffect, useEffect } from 'react'
 import { Comment, Avatar, List } from 'antd'
 import firebase from 'firebase/app'
-import * as uuid from 'uuid'
 import './index.scss'
 import { InputCustomize } from '@components'
 import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
 import CommentItem from './CommentItem'
 
-const CommentList = ({ comments, showMore, idPost }) => {
+const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
   const history = useHistory()
   const { me, isAuth, openLoginModal } = useContext(IContext)
   const [rep, setRep] = useState({})
@@ -20,39 +19,41 @@ const CommentList = ({ comments, showMore, idPost }) => {
   // lessComment = comments.slice(comments?.length - showMore, comments?.length)
   lessComment =
     showMore < comments.length ? comments.slice(0, showMore) : comments
-
+  useEffect(() => {
+    var elmnt = hashNoti && hashNoti.length !== 1 ? document.getElementById(`parent-cmt-${hashNoti[1]}`) : null
+    elmnt && elmnt.scrollIntoView()
+    hashNoti && hashNoti?.length !== 1 && document.getElementById(`input-custom-${idPost}`).focus()
+  }, [])
   const onAdd = mentions => {
     setArrTag(mentions)
   }
   const replyTo = repTo => {
     setRep(repTo)
   }
-  const sendNotiTagReply = async (userId, postId) => {
+  const sendNotiTagReply = async (postId, idCmt) => {
     const notificationId = +new Date()
     arrTag &&
       arrTag.map(async item => {
         try {
-          item?.id !== me?._id && await firebase
-            .database()
-            .ref('notifications/' + item?.id + '/' + notificationId)
-            .set({
-              action: 'tag',
-              reciever: item?.id,
-              link: `/postdetail/${postId}`,
-              content: `${me?.firstname} đã nhắc đến bạn trong bình luận`,
-              seen: false,
-              createdAt: +new Date()
-            })
+          item?.id !== me?._id &&
+            (await firebase
+              .database()
+              .ref('notifications/' + item?.id + '/' + notificationId)
+              .set({
+                action: 'tag',
+                id: rep.commentId,
+                reciever: item?.id,
+                link: `/postdetail/${postId}#${rep.commentId}#${idCmt}`,
+                content: `${me?.firstname} đã nhắc đến bạn trong bình luận`,
+                seen: false,
+                createdAt: +new Date()
+              }))
         } catch (err) {
           console.log(err)
         }
       })
   }
   const reply = async (value, img) => {
-    const cmt = (await comments.filter(item => item.id === rep.commentId)[0]
-      .replies)
-      ? comments.filter(item => item.id === rep.commentId)[0].replies
-      : []
     const cmtMention = (await comments.filter(
       item => item.id === rep.commentId
     )[0].mention)
@@ -69,28 +70,26 @@ const CommentList = ({ comments, showMore, idPost }) => {
             }
           ]
         : [...cmtMention]
-    // lessCommentRep = cmt.slice(cmt?.length - showMoreRep, cmt?.length - 1)
-    const repValue = [
-      ...cmt,
-      {
-        content: { message: value, img: img && img },
-        timestamp: new Date().getTime(),
-        author: me?._id
-        // photo: me?.avatar
-      }
-    ]
+    const idCmt = new Date().getTime()
     try {
+      await firebase
+        .database()
+        .ref(`posts/${idPost}/comments/${rep.commentId}/replies/${idCmt}`)
+        .set({
+          content: { message: value, img: img && img },
+          timestamp: new Date().getTime(),
+          author: me?._id
+        })
       await firebase
         .database()
         .ref(`posts/${idPost}/comments/` + rep.commentId)
         .update({
-          mention: mentions,
-          replies: repValue
+          mention: mentions // replies: repValue
         })
     } catch (error) {
       console.log(error)
     }
-    await sendNotiTagReply(value, idPost)
+    await sendNotiTagReply(idPost, idCmt)
     setRep({})
   }
   return (
@@ -103,6 +102,7 @@ const CommentList = ({ comments, showMore, idPost }) => {
           return (
             <>
               <CommentItem
+                idPost={idPost}
                 id={comment.id}
                 key={comment.id}
                 comment={comment}
@@ -127,11 +127,11 @@ const CommentList = ({ comments, showMore, idPost }) => {
                   }
                 />
               )}
-              {comment.replies &&
-                comment.replies?.length - 1 > showMoreRep.rows && (
+              {comment.repliesArr &&
+                comment.repliesArr?.length - 1 > showMoreRep.rows && (
                   <a
                     style={{ textAlign: 'left', marginLeft: '10%' }}
-                    onClick={() =>
+                    onClick={() => {
                       setShowMoreRep({
                         idParent: comment.id,
                         rows:
@@ -139,34 +139,50 @@ const CommentList = ({ comments, showMore, idPost }) => {
                             ? showMoreRep.rows + 1
                             : 1
                       })
-                    }
+                      setHashNoti([])
+                    }}
                   >
                     Xem thêm{' '}
                     {comment.id === showMoreRep.idParent
-                      ? comment.replies?.length - showMoreRep.rows - 1
-                      : comment.replies?.length - 1}{' '}
+                      ? comment.repliesArr?.length - showMoreRep.rows - 1
+                      : comment.repliesArr?.length - 1}{' '}
                     câu trả lời
                   </a>
                 )}
-              {comment.replies &&
-                comment.replies
-                  .sort((a, b) => a.timestamp - b.timestamp)
-                  .slice(
-                    comment.id === showMoreRep?.idParent
-                      ? comment.replies.length - showMoreRep.rows - 1
-                      : comment.replies.length - 1,
-                    comment.replies.length
-                  )
-                  .map((reply, idx) => (
-                    <CommentItem
-                      key={idx}
-                      comment={reply}
-                      idParent={comment.id}
-                      replyTo={replyTo}
-                      type="reply"
-                      history={history}
-                    />
-                  ))}
+              {comment.repliesArr &&
+                (hashNoti && hashNoti[2]
+                  ? comment.repliesArr
+                      .filter(item => item.id === hashNoti[2])
+                      .map((reply, idx) => (
+                        <CommentItem
+                          idPost={idPost}
+                          key={idx}
+                          comment={reply}
+                          idParent={comment.id}
+                          replyTo={replyTo}
+                          type="reply"
+                          history={history}
+                        />
+                      ))
+                  : comment.repliesArr
+                      .sort((a, b) => a.timestamp - b.timestamp)
+                      .slice(
+                        comment.id === showMoreRep?.idParent
+                          ? comment.repliesArr.length - showMoreRep.rows - 1
+                          : comment.repliesArr.length - 1,
+                        comment.repliesArr.length
+                      )
+                      .map((reply, idx) => (
+                        <CommentItem
+                          idPost={idPost}
+                          key={idx}
+                          comment={reply}
+                          idParent={comment.id}
+                          replyTo={replyTo}
+                          type="reply"
+                          history={history}
+                        />
+                      )))}
             </>
           )
         }}
@@ -180,7 +196,9 @@ function CommentPost(props) {
   const [showMore, setShowMore] = useState(1)
 
   const { me, isAuth, openLoginModal } = useContext(IContext)
-  const { idPost, postItem } = props
+  const { idPost, postItem, hashNoti } = props
+  const [hash, setHash] = useState(hashNoti)
+  const [cmtNoti, setCmtNoti] = useState(null)
   useLayoutEffect(() => {
     idPost && getComment()
   }, [idPost])
@@ -193,9 +211,18 @@ function CommentPost(props) {
         const temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({
               ...snapshot.val()[key],
-              id: key
+              id: key,
+              repliesArr: snapshot.val()[key].replies
+                ? Object.keys(snapshot.val()[key].replies).map(keyA => ({
+                    ...snapshot.val()[key].replies[keyA],
+                    id: keyA
+                  }))
+                : []
             }))
           : []
+        // console.log(temp)
+
+        hash && hash[1] && setCmtNoti(temp.filter(item => item.id === hash[1]))
         setComments(temp.reverse())
       })
   }
@@ -220,17 +247,19 @@ function CommentPost(props) {
           mention: mentions,
           replies: []
         })
-        postItem?.createdBy?._id !== me?._id && await firebase
-        .database()
-        .ref(`notifications/${postItem?.createdBy?._id}/${+new Date()}`)
-        .set({
-          action: 'cmt',
-          reciever: postItem?.createdBy?._id,
-          link: `/postdetail/${postId}`,
-          content: `${me?.firstname} đã bình luận bài viết của bạn`,
-          seen: false,
-          createdAt: +new Date()
-        })
+      postItem?.createdBy?._id !== me?._id &&
+        (await firebase
+          .database()
+          .ref(`notifications/${postItem?.createdBy?._id}/${+new Date()}`)
+          .set({
+            action: 'cmt',
+            id: commentId,
+            reciever: postItem?.createdBy?._id,
+            link: `/postdetail/${postId}#${commentId}`,
+            content: `${me?.firstname} đã bình luận bài viết của bạn`,
+            seen: false,
+            createdAt: +new Date()
+          }))
     } catch (error) {
       console.log(error)
     }
@@ -252,13 +281,22 @@ function CommentPost(props) {
       />
       {comments?.length > 0 && (
         <CommentList
+          setHashNoti={setHash}
+          hashNoti={hash}
           showMore={showMore}
           idPost={props.idPost}
-          comments={comments}
+          comments={cmtNoti || comments}
         />
       )}
       {comments?.length > showMore && (
-        <a onClick={() => setShowMore(showMore + 2)}>Xem thêm </a>
+        <a
+          onClick={() => {
+            setShowMore(showMore + 2)
+            setCmtNoti(null)
+          }}
+        >
+          Xem thêm{' '}
+        </a>
       )}
     </div>
   )

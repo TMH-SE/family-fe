@@ -21,5 +21,26 @@ export const replaceToxicWords = value => {
   toxicWords.map(word => {
     b = b.replace(word, replaceWord(word))
   })
+  // onClick={() => {
+  //   if (value.trim() !== '') {
+      // firebase
+      //   .database()
+      //   .ref(`reports/${me?._id}/${me?._id}`)
+      //   .set({
+      //     reason: value,
+      //     createdAt: +new Date()
+      //   })
+      // notification.success({
+      //   message: 'Bạn đã báo cáo bài viết',
+      //   duration: 1.5
+      // })
+      // props.handleOk()
+    // } else {
+    //   notification.success({
+    //     message: 'Bạn chưa báo cáo bài viết',
+    //     duration: 1.5
+    //   })
+    // }
+  // }}
   return b
 }
