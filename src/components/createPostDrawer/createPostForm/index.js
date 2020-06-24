@@ -116,7 +116,7 @@ const CreatePostForm = forwardRef((props, ref) => {
           content: html({
             title,
             author: `${me?.firstname} ${me?.lastname}`,
-            content: editor.getData()
+            content: `<div>${editor.getData()}</div>`
           }),
           thumbnail: imageUrl
         }
@@ -124,9 +124,12 @@ const CreatePostForm = forwardRef((props, ref) => {
     })
       .then(async ({ data }) => {
         if (data?.createPost) {
-          firebase.database().ref(`posts/${data?.createPost?._id}`).set({
-            createdAt: +new Date()
-          })
+          firebase
+            .database()
+            .ref(`posts/${data?.createPost?._id}`)
+            .set({
+              createdAt: +new Date()
+            })
           notification.success({ message: 'Tạo bài viết thành công' })
           setRefetchSumPosts(communityId)
           dataCountFollow?.getFollowerByUser?.map(item => {

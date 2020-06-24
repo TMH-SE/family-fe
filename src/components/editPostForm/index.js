@@ -36,7 +36,7 @@ const EditPostForm = forwardRef((props, ref) => {
         postId: postItem?._id,
         updatePost: {
           title,
-          content: editor.getData(),
+          content: `<div>${editor.getData()}</div>`,
           thumbnail: imageUrl
         }
       }

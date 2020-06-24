@@ -32,16 +32,13 @@ const Notify = props => {
     <p>Chưa có thông báo nào</p>
   ) : (
     <List
-    style={{ overflowY: 'visible'}}
-    className="demo-loadmore-list"
-    // loading={initLoading}
-    itemLayout="horizontal"
-    // loadMore={loadMore}
-    dataSource={notifications}
-    renderItem={noti => (
-      <NotiList noti={noti}></NotiList>
-    )}
-  />
-    )
+      style={{ overflowY: 'visible' }}
+      className="demo-loadmore-list"
+      // loading={initLoading}
+      itemLayout="horizontal"
+      dataSource={notifications}
+      renderItem={noti => <NotiList noti={noti} history={history}></NotiList>}
+    />
+  )
 }
 export default withRouter(Notify)

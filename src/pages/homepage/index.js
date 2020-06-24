@@ -53,6 +53,7 @@ const HomePage = props => {
         : document.documentElement.scrollTop
     }
   }
+
   useEffect(() => {
     setDataPostLoad(dataPosts)
   }, [dataPosts])
@@ -89,7 +90,7 @@ const HomePage = props => {
   }, [])
 
   return (
-    <div id="list-posts" onScroll={() => console.log('aaaaaaaâ')}>
+    <div id="list-posts" >
       {isAuth && (
         <>
           <p
@@ -134,6 +135,7 @@ const HomePage = props => {
               key={idx}
               item={item}
               idx={idx}
+              dataPosts={dataPosts}
             ></PostHaveGroup>
           ) : (
             <PostNoGroup

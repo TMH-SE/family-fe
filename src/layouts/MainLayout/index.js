@@ -78,7 +78,7 @@ const index = ({ children }) => {
   const location = useMemo(() => {
     return history.location.pathname.split('/')[1]
   }, [history.location.pathname])
-  console.log(location)
+  // console.log(location)
   const menu = (
     <Menu>
       <Menu.Item key="0" onClick={() => history.push(`/${me?._id}/info`)}>
@@ -112,9 +112,7 @@ const index = ({ children }) => {
   )
 
   return (
-    <Layout onScroll= {() => {
-      console.log('aaa')
-    }}>
+    <Layout >
       <Header
         style={{
           boxShadow: '0 1px 8px #f0f1f2',
