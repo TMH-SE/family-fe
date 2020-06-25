@@ -19,7 +19,7 @@ cache:
 #     - rsync -azvhq build/ /home/${DEPLOY_USER}/services/test-family-fe/build --delete
 #     - bash /home/${DEPLOY_USER}/scripts/test-family-fe.sh
 
-deployFamily:
+deployAdminFamily:
   only:
     - admin
   stage: deployAdmin
