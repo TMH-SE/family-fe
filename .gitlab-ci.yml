@@ -26,7 +26,7 @@ deployAdminFamily:
   script:
     - npm i
     - cat $FAMILY_ENV > .env.production
-    - cat "ADMIN_SERVER=true" >> .env.production
+    - echo "ADMIN_SERVER=true" >> .env.production
     - npm run build
     - rsync -azvhq build/ /home/devops/services/family-admin-fe/build --delete
     - bash /home/devops/scripts/family-admin-fe.sh
@@ -38,7 +38,7 @@ deployFamily:
   script:
     - npm i
     - cat $FAMILY_ENV > .env.production
-    - cat "ADMIN_SERVER=false" >> .env.production
+    - echo "ADMIN_SERVER=false" >> .env.production
     - npm run build
     - rsync -azvhq build/ /home/devops/services/family-fe/build --delete
     - bash /home/devops/scripts/family-fe.sh
