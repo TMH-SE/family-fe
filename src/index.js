@@ -11,4 +11,4 @@ setConfig({
   showReactDomPatchNotification: false
 })
 
-ReactDOM.render(<Main />, document.querySelector('#root'))
+ReactDOM.render(<Main/>, document.querySelector('#root'))

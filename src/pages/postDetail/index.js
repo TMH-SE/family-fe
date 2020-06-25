@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { PostHaveGroup, PostNoGroup } from '@components'
 import gql from 'graphql-tag'
@@ -37,6 +37,9 @@ function PostDetail(props) {
     fetchPolicy: 'no-cache',
     skip: !postId
   })
+  const { hash } = props.history.location
+ 
+  const arrHash = hash.split('#')
   return loading ? (
     <Skeleton active avatar />
   ) : (
@@ -50,10 +53,12 @@ function PostDetail(props) {
       {data?.postById ? (
         data?.postById?.community ? (
           <PostHaveGroup
+            hashNoti={arrHash}
             refetch={refetch}
             key={0}
             item={data?.postById}
             idx={0}
+            showText={true}
           ></PostHaveGroup>
         ) : (
           <PostNoGroup

@@ -196,7 +196,6 @@ export default function MessageList(props) {
             const ele = document.getElementsByClassName(
               `message-list-container ${idChat}`
             )[0]
-            console.log(showMore <= messages.length, ele.scrollTop )
             if (showMore <= messages.length && ele.scrollTop === 0) {
               setShowMore(showMore + 3)
               ele.scrollTop = 30

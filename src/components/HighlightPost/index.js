@@ -38,7 +38,6 @@ function HighlightPost(props) {
               (a.countComment + a.countReaction)
           )
         )
-        console.log(data, 'data', temp)
       })
   }, [])
   return (

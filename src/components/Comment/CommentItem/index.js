@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
-import { Comment } from 'antd'
+import React, { useState, useContext } from 'react'
+import { Comment, Popconfirm } from 'antd'
 import { ModalPreviewImg } from '@components'
 import { useQuery } from '@apollo/react-hooks'
-import { GET_USER } from '@shared'
+import { GET_USER, replaceToxicWords } from '@shared'
 import moment from 'moment'
+import { IContext } from '@tools'
+import firebase from 'firebase/app'
+
 // import noAvatar from '@assets/images/noavata.jpg'
 const CommentItem = props => {
   const { author } = props.comment
-  const { comment, replyTo, type, idParent, history } = props
+  const { comment, replyTo, type, idParent, history, idPost } = props
   const { data } = useQuery(GET_USER, {
     variables: { userId: author }
   })
+  const { me } = useContext(IContext)
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
@@ -32,8 +36,33 @@ const CommentItem = props => {
             }}
             key="comment-basic-reply-to"
           >
-            Reply to
-          </span>
+            Trả lời
+          </span>,
+          comment?.author === me?._id && (
+            <span
+              key="comment-basic-del"
+            >
+              <Popconfirm
+                title="Bạn muốn xóa bình luận này?"
+                onConfirm={() =>
+                  type === 'parent'
+                    ? firebase
+                        .database()
+                        .ref(`posts/${idPost}/comments/${comment.id}`)
+                        .remove()
+                    : firebase
+                        .database()
+                        .ref(`posts/${idPost}/comments/${idParent}/replies/${comment.id}`)
+                        .remove()
+                }
+                // onCancel={cancel}
+                okText="Đồng ý"
+                cancelText="Hủy"
+              >
+                Xóa
+              </Popconfirm>
+            </span>
+          )
         ]}
         author={
           <a
@@ -43,7 +72,7 @@ const CommentItem = props => {
             {data?.getUser?.firstname}
           </a>
         }
-      avatar={data?.getUser?.avatar}
+        avatar={data?.getUser?.avatar}
         content={
           <>
             <div style={{ display: 'flex', overflowX: 'auto' }}>
@@ -70,7 +99,7 @@ const CommentItem = props => {
             </div>
             <p
               dangerouslySetInnerHTML={{
-                __html: comment?.content?.message.trim()
+                __html: replaceToxicWords(comment?.content?.message.trim())
               }}
               style={{ margin: 5 }}
               className="rep-content"

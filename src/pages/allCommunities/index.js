@@ -35,7 +35,7 @@ function AllCommunities(props) {
       <p>Tất cả cộng đồng </p>
       <List
         pagination={{
-          pageSize: 10
+          pageSize: 4
         }}
         itemLayout="horizontal"
         dataSource={data?.communities}
