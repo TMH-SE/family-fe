@@ -5,7 +5,7 @@ import { Route, Redirect, Switch } from 'react-router-dom'
 import { Result, Button } from 'antd'
 
 const AdminRoutes = () => {
-  const { isAuth } = useContext(IContext)
+  const context = useContext(IContext)
   return (
     <Suspense fallback={null}>
       <Switch>
@@ -13,7 +13,7 @@ const AdminRoutes = () => {
           exact
           path="/login"
           render={() => {
-            if (isAuth) {
+            if (context.isAuth) {
               return <Redirect to="/" />
             }
             const Component = lazy(() => import(`@pages/admin/login`))
@@ -30,7 +30,6 @@ const AdminRoutes = () => {
                 status="403"
                 title="403"
                 subTitle="Sorry, you are not authorized to access this page."
-                extra={<Button type="primary">Back Home</Button>}
               />
             )
           }}
@@ -44,12 +43,16 @@ const AdminRoutes = () => {
                 status="404"
                 title="404"
                 subTitle="Sorry, the page you visited does not exist."
-                extra={<Button type="primary">Back Home</Button>}
               />
             )
           }}
         />
-        <Route path="/" render={() => <AdminAuthRoutes isAuth={isAuth} />} />
+        <Route
+          path="/"
+          render={() => (
+            <AdminAuthRoutes context={context} />
+          )}
+        />
       </Switch>
     </Suspense>
   )

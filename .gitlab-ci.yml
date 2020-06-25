@@ -1,23 +1,34 @@
 image: node:latest
 
 stages:
-  - deployTest
+  - deployAdmin
   - deploy
 
 cache:
   paths:
   - node_modules/
 
-deployFamilyTest:
+# deployFamilyTest:
+#   only:
+#     - test
+#   stage: deployTest
+#   script:
+#     - npm i
+#     - cat $TEST_FAMILY_CLIENT > .env.production
+#     - npm run build
+#     - rsync -azvhq build/ /home/${DEPLOY_USER}/services/test-family-fe/build --delete
+#     - bash /home/${DEPLOY_USER}/scripts/test-family-fe.sh
+
+deployFamily:
   only:
-    - test
-  stage: deployTest
+    - admin
+  stage: deployAdmin
   script:
     - npm i
-    - cat $TEST_FAMILY_CLIENT > .env.production
+    - cat $FAMILY_ADMIN > .env.production
     - npm run build
-    - rsync -azvhq build/ /home/${DEPLOY_USER}/services/test-family-fe/build --delete
-    - bash /home/${DEPLOY_USER}/scripts/test-family-fe.sh
+    - rsync -azvhq build/ /home/devops/services/family-admin-fe/build --delete
+    - bash /home/devops/scripts/family-admin-fe.sh
 
 deployFamily:
   only:
@@ -27,5 +38,5 @@ deployFamily:
     - npm i
     - cat $FAMILY_CLIENT > .env.production
     - npm run build
-    - rsync -azvhq build/ /home/${DEPLOY_USER}/services/family-fe/build --delete
-    - bash /home/${DEPLOY_USER}/scripts/family-fe.sh
+    - rsync -azvhq build/ /home/devops/services/family-fe/build --delete
+    - bash /home/devops/scripts/family-fe.sh

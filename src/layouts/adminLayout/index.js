@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
 import { PageHeader, Dropdown, Menu, Avatar, Divider, Layout } from 'antd'
 import {
   UserOutlined,
@@ -10,14 +10,16 @@ import {
 } from '@ant-design/icons'
 import logoImgSrc from '@assets/images/logo.png'
 import { withRouter } from 'react-router-dom'
+import { IContext } from '@tools'
 
 const AdminLayout = ({ children, history }) => {
+  const { isSuper, logout, me } = useContext(IContext)
   const info = (
     <Menu>
       <Menu.Item disabled style={{}}>
         <Avatar src={logoImgSrc} />
         <span style={{ color: '#000', fontWeight: 'bold', marginLeft: '1em' }}>
-          Admin
+          {me?.firstname ? `${me?.lastname} ${me?.firstname}` : 'Super Admin'}
         </span>
       </Menu.Item>
       <Menu.Divider />
@@ -27,6 +29,7 @@ const AdminLayout = ({ children, history }) => {
       </Menu.Item>
       <Menu.Item
         onClick={() => {
+          logout()
           history.push('/login')
         }}
       >
@@ -35,6 +38,11 @@ const AdminLayout = ({ children, history }) => {
       </Menu.Item>
     </Menu>
   )
+
+  const location = useMemo(() => history.location.pathname.split('/')[1], [
+    history.location.pathname
+  ])
+
   return (
     <>
       <PageHeader
@@ -60,24 +68,51 @@ const AdminLayout = ({ children, history }) => {
         <Layout.Sider>
           <Menu
             mode="inline"
-            defaultSelectedKeys={[window.location.pathname.split('/')[1]]}
+            defaultSelectedKeys={[location]}
             style={{ height: '100%' }}
           >
-            <Menu.Item key="dashboard" onClick={() => history.push('/dashboard')} icon={<AreaChartOutlined />}>
+            <Menu.Item
+              key="dashboard"
+              onClick={() => history.push('/dashboard')}
+              icon={<AreaChartOutlined />}
+            >
               Tổng quát
             </Menu.Item>
-            <Menu.Item key="posts" onClick={() => history.push('/posts')} icon={<ReadOutlined />}>
+            <Menu.Item
+              key="posts"
+              onClick={() => history.push('/posts')}
+              icon={<ReadOutlined />}
+            >
               Bài viết
             </Menu.Item>
-            <Menu.Item key="members" onClick={() => history.push('/members')} icon={<UserOutlined />}>
+            <Menu.Item
+              key="members"
+              onClick={() => history.push('/members')}
+              icon={<UserOutlined />}
+            >
               Thành viên
             </Menu.Item>
-            <Menu.Item key="communities" onClick={() => history.push('/communities')} icon={<GlobalOutlined />}>
+            <Menu.Item
+              key="communities"
+              onClick={() => history.push('/communities')}
+              icon={<GlobalOutlined />}
+            >
               Cộng đồng
             </Menu.Item>
+            {isSuper && (
+              <Menu.Item
+                key="manage-admin"
+                onClick={() => history.push('/manage-admin')}
+                icon={<GlobalOutlined />}
+              >
+                Quản lý admin
+              </Menu.Item>
+            )}
           </Menu>
         </Layout.Sider>
-        <Layout.Content style={{ overflow: 'auto', padding: '10px 25px' }}>{children}</Layout.Content>
+        <Layout.Content style={{ overflow: 'auto', padding: '10px 25px' }}>
+          {children}
+        </Layout.Content>
       </Layout>
     </>
   )

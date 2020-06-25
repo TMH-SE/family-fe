@@ -11,7 +11,7 @@ const SdkUtils = {
   initFacebookSdk() {
     this.importSdk('https://connect.facebook.net/en_US/sdk.js', () => {
       FB.init({
-        appId: '2569214810002562',
+        appId: process.env.FACEBOOK_APP_ID,
         autoLogAppEvents: true,
         xfbml: true,
         version: 'v7.0'
@@ -23,8 +23,7 @@ const SdkUtils = {
       gapi.load('auth2', () => {
         gapi.auth2
           .init({
-            client_id:
-              '817522585821-m2s87dbeatldlecao9pavqtm98a87tse.apps.googleusercontent.com'
+            client_id: process.env.GOOGLE_OAUTH_CLIENT_ID
           })
           .then(
             () => {},

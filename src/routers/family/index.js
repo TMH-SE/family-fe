@@ -71,6 +71,26 @@ const FamilyRoutes = () => {
           />
         ))}
         <Route
+          path="/ket-thuc"
+          render={() => {
+            document.title = 'Phòng chờ'
+            return (
+              <Result
+                title="Hội thảo đã kết thúc"
+                subTitle="Người thuyết trình đã kết thúc buổi hội thảo hoặc có sự cố khiến buổi hội thảo tạm dừng. Xin cảm ơn!"
+                extra={
+                  <Button
+                    onClick={() => history.push('/homepage')}
+                    type="primary"
+                  >
+                    Trở về trang chủ
+                  </Button>
+                }
+              />
+            )
+          }}
+        />
+        <Route
           path="/404"
           render={() => {
             document.title = '404'

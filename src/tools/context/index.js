@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { SdkUtils } from '@utils'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
@@ -19,6 +19,7 @@ const GET_ME = gql`
       gender
       phoneNumber
       birthday
+      role
       expert {
         areasOfExpertise
         jobTitle
@@ -34,7 +35,7 @@ const ContextWrapper = ({ children, history }) => {
     !!window.localStorage.getItem('access-token')
   )
   const [showLogin, setShowLogin] = useState(false)
-  const { data, refetch } = useQuery(GET_ME, {
+  const { loading, data, refetch } = useQuery(GET_ME, {
     skip: !isAuth
   })
   const authenticate = token => {
@@ -63,10 +64,25 @@ const ContextWrapper = ({ children, history }) => {
 
   const [refetchCount, setRefetchCount] = useState('')
   const [refetchSumPosts, setRefetchSumPosts] = useState('')
+  const isSuper = useMemo(() => {
+    if (data?.me) {
+      return data?.me?.role === 'SUPERADMIN'
+    }
+  }, [data])
+  const isAdmin = useMemo(() => {
+    if (data?.me) {
+      return data?.me?.role === 'ADMIN'
+    }
+  }, [data])
+  if (loading) {
+    return null
+  }
   return (
     <IContext.Provider
       value={{
         isAuth,
+        isAdmin: isAdmin,
+        isSuper: isSuper,
         authenticate,
         logout,
         me: data?.me,
