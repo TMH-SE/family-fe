@@ -6,7 +6,9 @@ import {
   DatePicker,
   Radio,
   Button,
-  notification
+  notification,
+  Checkbox,
+  InputNumber
 } from 'antd'
 import { IContext } from '@tools'
 import moment from 'moment'
@@ -126,6 +128,37 @@ const EditUser = props => {
           <Input />
         </Form.Item>
         <Form.Item>
+        <Form.Item name="isExpert" valuePropName="checked">
+                <Checkbox>Tôi là một chuyên gia</Checkbox>
+              </Form.Item>
+              <Form.Item
+                noStyle
+                shouldUpdate={(prevValues, currentValues) =>
+                  prevValues.isExpert !== currentValues.isExpert
+                }
+              >
+                {({ getFieldValue }) => {
+                  return !!getFieldValue('isExpert') ? (
+                    <>
+                      <Form.Item
+                        name="areasOfExpertise"
+                        label="Lĩnh vực chuyên môn"
+                      >
+                        <Input />
+                      </Form.Item>
+                      <Form.Item name="jobTitle" label="Chức danh">
+                        <Input />
+                      </Form.Item>
+                      <Form.Item
+                        name="yearsExperience"
+                        label="Số năm kinh nghiệm"
+                      >
+                        <InputNumber style={{ width: '100%' }} />
+                      </Form.Item>
+                    </>
+                  ) : null
+                }}
+              </Form.Item>
           <Button type="primary" htmlType="submit">
             Lưu
           </Button>
