@@ -12,7 +12,6 @@ import {
 } from 'antd'
 import { withRouter } from 'react-router-dom'
 import {
-  LoadingOutlined,
   CameraFilled,
   CheckCircleTwoTone,
   CloseCircleTwoTone
@@ -253,7 +252,7 @@ function Profile(props) {
     })
   }
   return loading ? (
-    <Skeleton active avatar/>
+    <Skeleton active avatar />
   ) : data?.getUser ? (
     <>
       {type !== 'messenger' && (
@@ -382,7 +381,8 @@ function Profile(props) {
                       textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
                     }}
                   >
-                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`}
+                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`} {' '}
+                    {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone />}
                   </p>
                   <div>
                     {!isMe && (
@@ -393,7 +393,9 @@ function Profile(props) {
                           follower={{ userId: userId, followerId: me?._id }}
                         />
                         <Chat
-                        chooseConversation={(idChat, userId) => chooseConversation(idChat, userId)}
+                          chooseConversation={(idChat, userId) =>
+                            chooseConversation(idChat, userId)
+                          }
                           members={[me?._id, userId]}
                           history={history}
                           isBroken={isBroken}
@@ -444,7 +446,9 @@ function Profile(props) {
           ) : (
             <List
               itemLayout="horizontal"
-              dataSource={dataCommunity && dataCommunity?.getCommunitiesByUser?.reverse()}
+              dataSource={
+                dataCommunity && dataCommunity?.getCommunitiesByUser?.reverse()
+              }
               renderItem={item => (
                 <CommunityItem
                   item={item.community}
@@ -459,7 +463,9 @@ function Profile(props) {
         onCancel={() => setPreviewImg({ ...previewImg, isShow: false })}
       />
     </>
-  ) : <Empty description='Người dùng hiện không còn tồn tại'/>
+  ) : (
+    <Empty description="Người dùng hiện không còn tồn tại" />
+  )
 }
 
 export default withRouter(Profile)
