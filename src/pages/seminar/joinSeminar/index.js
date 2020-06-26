@@ -49,7 +49,7 @@ const JoinSenimar = ({ idSeminar }) => {
             .ref(`seminars/${idSeminar}/participants/${idUser}`)
             .remove()
           pc.close()
-          history.push('/waitroom')
+          history.push('/ket-thuc')
         } else {
           if (idUser) {
             pc.createOffer({

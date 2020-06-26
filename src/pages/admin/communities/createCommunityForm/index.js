@@ -97,7 +97,7 @@ const CreateCommunityForm = ({
 
   return (
     <Drawer
-      title="Cộng đồng mới"
+      title={communityData ? 'Cập nhật cộng đồng' : "Cộng đồng mới"}
       visible={visible}
       onClose={onClose}
       closable={false}

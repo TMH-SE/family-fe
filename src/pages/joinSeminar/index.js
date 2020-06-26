@@ -39,7 +39,7 @@ function index() {
           firebase.database().ref(`seminars/${idSeminar}/isStart`).off()
           firebase.database().ref(`seminars/${idSeminar}/participants/${idUser}`).remove()
           pc.close()
-          history.push('/waitroom')
+          history.push('/ket-thuc')
         } else {
           console.log(123456)
           console.log(idUser)
