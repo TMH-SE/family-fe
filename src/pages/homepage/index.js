@@ -90,7 +90,7 @@ const HomePage = props => {
   }, [])
 
   return (
-    <div id="list-posts" >
+    <div id="list-posts">
       {isAuth && (
         <>
           <p
@@ -143,6 +143,7 @@ const HomePage = props => {
               key={idx}
               item={item}
               idx={idx}
+              dataPosts={dataPosts}
             ></PostNoGroup>
           )
         })

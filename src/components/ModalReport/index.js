@@ -66,7 +66,7 @@ function ModalReport(props) {
             if (value.trim() !== '') {
               firebase
                 .database()
-                .ref(`reports/${props.postId}/${me?._id}`)
+                .ref(`reports/posts/${props.postId}/${me?._id}`)
                 .set({
                   reason: value,
                   createdAt: +new Date()
