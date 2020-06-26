@@ -56,6 +56,9 @@ const HomePage = props => {
 
   useEffect(() => {
     setDataPostLoad(dataPosts)
+    if (dataPosts?.posts.length < 5) {
+      setIsEnd(true)
+    }
   }, [dataPosts])
   useEffect(() => {
     setQuantityPosts(quantityPosts + 5)
