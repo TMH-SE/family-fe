@@ -10,6 +10,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { Skeleton } from 'antd'
 
 function SavedPosts(props) {
+  const { history } = props
   const { me } = useContext(IContext)
   const { data: dataSavedPost, refetch: refetchSavedPost, loading } = useQuery(
     GET_SAVEDPOST_BY_USER,
