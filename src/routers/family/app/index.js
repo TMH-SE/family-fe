@@ -68,7 +68,7 @@ const FamilyAppRoutes = ({ isAuth }) => {
       title: 'Cộng đồng'
     },
     {
-      exact: false,
+      exact: true,
       path: '/postdetail/:postId',
       component: 'postDetail',
       title: 'Chi tiết bài viết'
