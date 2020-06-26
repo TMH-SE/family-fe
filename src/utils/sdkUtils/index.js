@@ -13,6 +13,7 @@ const SdkUtils = {
       FB.init({
         appId: process.env.FACEBOOK_APP_ID,
         autoLogAppEvents: true,
+        cookie: true,
         xfbml: true,
         version: 'v7.0'
       })
@@ -43,9 +44,11 @@ const SdkUtils = {
               }
             },
             {
-              scope: 'email,user_birthday,user_gender,user_link'
+              scope: 'public_profile,email'
             }
           )
+        } else {
+          resolve(response.authResponse)
         }
       })
     })
@@ -58,7 +61,7 @@ const SdkUtils = {
         // href: 'http://localhost/8080',
       },
       // callback
-      function(response) {}
+      function (response) {}
     )
   },
   async logoutFB() {

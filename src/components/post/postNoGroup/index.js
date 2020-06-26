@@ -6,16 +6,14 @@ import { CommentOutlined } from '@ant-design/icons'
 import { Meta } from 'antd/lib/list/Item'
 import { useHistory } from 'react-router-dom'
 function PostNoGroup(props) {
-  const [showText, setShowText] = useState(false)
-  // const { me } = useContext(IContext)
+  const [showText, setShowText] = useState(props.showText || false)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  // const [visibleModalReport, setVisibleModalReport] = useState(false)
-  const { item, idx, refetch } = props
+  const { item, refetch } = props
   const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
-  }, [idx])
+  }, [item])
   const getSum = idPost => {
     let sumTemp = 0
     firebase
@@ -87,7 +85,7 @@ function PostNoGroup(props) {
         }
       >
         <Meta
-           className='post-meta'
+          className="post-meta"
           title={
             <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
               <Typography.Title level={4}>{item?.title}</Typography.Title>
@@ -99,24 +97,49 @@ function PostNoGroup(props) {
                 dangerouslySetInnerHTML={{
                   __html: item?.content
                 }}
-                className={`content ${nameEl}${idx}}`}
-              ></p>
-              <a
-                id={`${nameEl}${idx}}`}
-                onClick={async () => {
-                  setShowText(!showText)
-                  const content = await document.getElementsByClassName(
-                    `expand${idx}}`
-                  )
-                  const a = await document.getElementById(`expand${idx}}`)
-                  // console.log(a, content)
-                  content[0].setAttribute('style', 'height: auto !important')
-                  a.setAttribute('style', 'visibility: hidden')
-                  await setShowText(false)
+                className={`content ${nameEl}${item?._id}`}
+                style={{
+                  height: showText ? 'auto' : '3em',
+                  overflow: 'hidden'
                 }}
-              >
-                Xem thêm{' '}
-              </a>
+              ></p>
+              {/* {document.getElementsByClassName(`collapse${item?._id}`)[0] &&
+                            document.getElementsByClassName(`collapse${item?._id}`)[0]
+                              .lastElementChild.clientHeight > 30 && ( */}
+              {!showText && (
+                <a
+                  id={`${nameEl}${item?._id}`}
+                  onClick={async () => {
+                    if (
+                      document.getElementsByClassName(
+                        `collapse${item?._id}`
+                      )[0] &&
+                      document.getElementsByClassName(`collapse${item?._id}`)[0]
+                        .lastElementChild.clientHeight > 300
+                    ) {
+                      history.push(`./postdetail/${item?._id}`)
+                    } else {
+                      setShowText(!showText)
+                      const content = await document.getElementsByClassName(
+                        `expand${item?._id}`
+                      )
+                      const a = await document.getElementById(
+                        `expand${item?._id}`
+                      )
+                      // console.log(a, content)
+                      content[0].setAttribute(
+                        'style',
+                        'height: auto !important'
+                      )
+                      a.setAttribute('style', 'visibility: hidden')
+                      setShowText(false)
+                    }
+                  }}
+                >
+                  Xem thêm
+                </a>
+              )}
+              {/* )} */}
               <img
                 src={item?.thumbnail}
                 style={{ width: '100%', objectFit: 'cover' }}

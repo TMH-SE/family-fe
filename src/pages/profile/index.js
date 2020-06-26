@@ -7,7 +7,8 @@ import {
   notification,
   List,
   Spin,
-  Skeleton
+  Skeleton,
+  Empty
 } from 'antd'
 import { withRouter } from 'react-router-dom'
 import {
@@ -253,7 +254,7 @@ function Profile(props) {
   }
   return loading ? (
     <Skeleton active avatar/>
-  ) : (
+  ) : data?.getUser ? (
     <>
       {type !== 'messenger' && (
         <div>
@@ -458,7 +459,7 @@ function Profile(props) {
         onCancel={() => setPreviewImg({ ...previewImg, isShow: false })}
       />
     </>
-  )
+  ) : <Empty description='Người dùng hiện không còn tồn tại'/>
 }
 
 export default withRouter(Profile)
