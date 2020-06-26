@@ -43,7 +43,7 @@ function index() {
         console.log(temp, 'top')
         setDataUserReport(temp)
       })
-  }, [setSelectedRowKeys, dataUserReport])
+  }, [])
   const handleDeleteUser = () => {
     Modal.confirm({
       icon: <ExclamationCircleOutlined />,

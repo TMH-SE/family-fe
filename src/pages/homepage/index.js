@@ -75,12 +75,16 @@ const HomePage = props => {
           })
         }
       })
-      if (a?.data?.posts?.length + 5 < quantityPosts) {
+      if (a?.data?.posts?.length < 5) {
         setIsEnd(true)
       } else {
-        setDataPostLoad(a?.data)
-        setLoadMore(false)
-        setIsEnd(false)
+        if (a?.data?.posts?.length + 5 < quantityPosts) {
+          setIsEnd(true)
+        } else {
+          setDataPostLoad(a?.data)
+          setLoadMore(false)
+          setIsEnd(false)
+        }
       }
     }, 300)
   }
