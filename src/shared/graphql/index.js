@@ -31,6 +31,11 @@ export const UPDATE_USER_INFO = gql`
     updateUserInfo(userId: $userId, userInfo: $userInfo)
   }
 `
+export const VERIFY_OR_REJECT_EXPERT = gql`
+  mutation verifyOrRejectExpert($userId: ID, $isVerify: Boolean) {
+    verifyOrRejectExpert(userId: $userId, isVerify: $isVerify)
+  }
+`
 export const CREATE_CHAT = gql`
   mutation createChat($members: [String]) {
     createChat(members: $members) {

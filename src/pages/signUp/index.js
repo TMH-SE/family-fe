@@ -12,6 +12,7 @@ import {
   InputNumber,
   notification
 } from 'antd'
+import moment from 'moment'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 import { Logo } from '@components'
@@ -38,7 +39,7 @@ const index = () => {
       variables: {
         newUser: {
           ...values,
-          birthday: values.birthday.valueOf(),
+          birthday: values.birthday.valueOf() || null,
           expert
         }
       }
@@ -54,6 +55,10 @@ const index = () => {
   }
   const [form] = Form.useForm()
   const { getFieldValue, setFieldsValue } = form
+  const disabledDate = current => {
+    // Can not select days before today and today
+    return current && moment().year() - current.year() < 16
+  }
   return (
     <Row
       style={{
@@ -191,7 +196,14 @@ const index = () => {
                 <Input />
               </Form.Item>
               <Form.Item name="birthday" label="Ngày sinh">
-                <DatePicker style={{ width: '100%' }} />
+                <DatePicker
+                  showToday={false}
+                  defaultPickerValue={moment(
+                    `12/31/${new Date().getFullYear() - 16}`
+                  )}
+                  disabledDate={disabledDate}
+                  style={{ width: '100%' }}
+                />
               </Form.Item>
               <Form.Item
                 name="gender"

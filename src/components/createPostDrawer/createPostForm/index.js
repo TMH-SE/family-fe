@@ -3,8 +3,7 @@ import React, {
   useContext,
   useState,
   forwardRef,
-  useImperativeHandle,
-  useEffect
+  useImperativeHandle
 } from 'react'
 import {
   Form,
@@ -22,7 +21,7 @@ import { useMutation, useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import * as handlebars from 'handlebars'
 import { IContext } from '@tools'
-import { uploadImg, beforeUpload } from '@shared'
+import { uploadImg, beforeUpload, GET_COMMUNITIES_BY_USER } from '@shared'
 import postTemplate from '@assets/templates/post.html'
 import { Editor, UploadButton } from '@components'
 import firebase from 'firebase/app'
@@ -53,11 +52,16 @@ const CreatePostForm = forwardRef((props, ref) => {
   const { setConfirmLoading, handleCancel, data, refetch } = props
   const keywordRef = useRef()
   const { me, setRefetchSumPosts } = useContext(IContext)
-  const { data: dataCountFollow, refetch: refetchDataCountFollow } = useQuery(
-    GET_SUM_FOLLOWER_BY_USER,
+  const { data: dataCountFollow } = useQuery(GET_SUM_FOLLOWER_BY_USER, {
+    variables: { userId: me?._id },
+    fetchPolicy: 'no-cache'
+  })
+  const { data: dataCommunities, loading: loadingCommunities } = useQuery(
+    GET_COMMUNITIES_BY_USER,
     {
       variables: { userId: me?._id },
-      fetchPolicy: 'no-cache'
+      fetchPolicy: 'no-cache',
+      skip: !me?._id
     }
   )
   const [visibleInputKeyword, setVisibleInputKeyword] = useState(false)
@@ -108,17 +112,21 @@ const CreatePostForm = forwardRef((props, ref) => {
   const submitCreatePost = ({ title, communityId }) => {
     setConfirmLoading(true)
     const html = handlebars.compile(postTemplate)
+    const hashtags = keywords.map(key => key.replace(/\s/g, '_'))
     createPost({
       variables: {
         newPost: {
           title,
-          communityId: communityId.key,
+          communityId,
           content: html({
             title,
             author: `${me?.firstname} ${me?.lastname}`,
-            content: `<div>${editor.getData()}</div>`
+            content: editor.getData(),
+            keywords,
+            hashtags
           }),
-          thumbnail: imageUrl
+          thumbnail: imageUrl,
+          keywords
         }
       }
     })
@@ -140,7 +148,9 @@ const CreatePostForm = forwardRef((props, ref) => {
           handleCancel && handleCancel()
         }
       })
-      .catch(({ graphQLErrors }) => {
+      .catch(err => {
+        const { graphQLErrors } = err
+        console.log(err)
         notification.error({
           message: graphQLErrors[0].message,
           placement: 'bottomRight'
@@ -157,6 +167,9 @@ const CreatePostForm = forwardRef((props, ref) => {
       form.resetFields(['keyword'])
     }
   }
+
+  console.log(dataCommunities)
+
   return (
     <Form
       form={form}
@@ -165,39 +178,32 @@ const CreatePostForm = forwardRef((props, ref) => {
       layout="horizontal"
       onFinish={submitCreatePost}
       initialValues={{
-        communityId: {
-          key: !Array.isArray(data) && data?._id,
-          value: !Array.isArray(data) && data?.name
-        }
+        communityId: data?._id
       }}
     >
-      <Form.Item name="communityId" label="Cộng đồng">
-        {Array.isArray(data) ? (
+      {data !== null && (
+        <Form.Item name="communityId" label="Cộng đồng">
           <Select
+            disabled={!!data}
             allowClear
-            labelInValue
-            // loading={loadingCommunities}
+            loading={loadingCommunities}
             placeholder="Chọn cộng đồng"
             showArrow={false}
-            options={data?.map(
-              communityUser =>
-                ({
-                  label: communityUser?.community?.name,
-                  value: communityUser?.community?._id
-                } || [])
-            )}
             showSearch
-            // onDropdownVisibleChange={open => open && refetch()}
             filterOption={(inputValue, option) =>
               option.label
                 .toLocaleLowerCase()
                 .indexOf(inputValue.toLowerCase()) !== -1
             }
+            options={dataCommunities?.getCommunitiesByUser?.map(
+              ({ community }) => ({
+                label: community.name,
+                value: community._id
+              })
+            )}
           />
-        ) : (
-          <Select labelInValue disabled />
-        )}
-      </Form.Item>
+        </Form.Item>
+      )}
       <Form.Item
         label="Tiêu đề"
         name="title"
@@ -247,9 +253,15 @@ const CreatePostForm = forwardRef((props, ref) => {
       <Form.Item
         name="keyword"
         label="Từ khóa"
+        required
         rules={[
           {
             validator: (_, value) => {
+              if (!value && keywords.length === 0) {
+                return Promise.reject(
+                  'Thêm từ khóa để giúp bài viết của bạn dễ dàng được mọi người tìm thấy'
+                )
+              }
               if (value && keywords.includes(value.trim())) {
                 return Promise.reject('Từ khóa này đã có')
               }

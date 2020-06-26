@@ -83,6 +83,7 @@ function MyPosts(props) {
         handleOk={handleOk}
       ></ModalReport>
       <CreatePostDrawer
+        data={null}
         refetch={refetchMyPosts}
         isBroken={isBroken}
         handleCancel={handleCancel}
