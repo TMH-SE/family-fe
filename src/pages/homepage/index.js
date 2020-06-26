@@ -56,6 +56,9 @@ const HomePage = props => {
 
   useEffect(() => {
     setDataPostLoad(dataPosts)
+    if (dataPosts?.posts.length < 5) {
+      setIsEnd(true)
+    }
   }, [dataPosts])
   useEffect(() => {
     setQuantityPosts(quantityPosts + 5)
@@ -75,12 +78,16 @@ const HomePage = props => {
           })
         }
       })
-      if (a?.data?.posts?.length + 5 < quantityPosts) {
+      if (a?.data?.posts?.length < 5) {
         setIsEnd(true)
       } else {
-        setDataPostLoad(a?.data)
-        setLoadMore(false)
-        setIsEnd(false)
+        if (a?.data?.posts?.length + 5 < quantityPosts) {
+          setIsEnd(true)
+        } else {
+          setDataPostLoad(a?.data)
+          setLoadMore(false)
+          setIsEnd(false)
+        }
       }
     }, 300)
   }
@@ -90,7 +97,7 @@ const HomePage = props => {
   }, [])
 
   return (
-    <div id="list-posts" >
+    <div id="list-posts">
       {isAuth && (
         <>
           <p
@@ -143,6 +150,7 @@ const HomePage = props => {
               key={idx}
               item={item}
               idx={idx}
+              dataPosts={dataPosts}
             ></PostNoGroup>
           )
         })

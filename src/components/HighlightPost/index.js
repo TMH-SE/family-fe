@@ -18,7 +18,7 @@ function HighlightPost(props) {
       .orderByValue()
       .limitToLast(6)
       .once('value', snapshot => {
-        const temp = Object.keys(snapshot.val()).map(key => ({
+        const temp = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({
           ...snapshot.val()[key],
           countComment: snapshot.val()[key].comments
             ? Object.keys(snapshot.val()[key].comments).length
@@ -29,7 +29,7 @@ function HighlightPost(props) {
                 .reduce((a, b) => a.count + b.count).count
             : 0,
           id: key
-        }))
+        })) : []
         setData(
           temp.sort(
             (a, b) =>
