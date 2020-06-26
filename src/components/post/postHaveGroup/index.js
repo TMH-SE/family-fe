@@ -17,7 +17,7 @@ function PostHaveGroup(props) {
   const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, idx, refetch, dataPosts } = props
+  const { item, refetch } = props
   const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
