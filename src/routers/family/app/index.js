@@ -78,6 +78,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
       path: '/:userId/:type',
       component: 'profile',
       title: 'Trang cá nhân'
+    },
+    {
+      exact: true,
+      path: '/search-results',
+      component: 'searchResults',
+      title: 'Kết quả tìm kiếm'
     }
   ]
 

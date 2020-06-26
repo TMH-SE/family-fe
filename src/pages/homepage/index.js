@@ -12,7 +12,7 @@ import {
   CreatePostDrawer
 } from '@components'
 import { IContext } from '@tools'
-import { GET_POSTS, GET_COMMUNITIES_BY_USER } from '@shared'
+import { GET_POSTS } from '@shared'
 import { useQuery } from '@apollo/react-hooks'
 
 const HomePage = props => {
@@ -32,11 +32,6 @@ const HomePage = props => {
   } = useQuery(GET_POSTS, {
     variables: { quantity: 5 },
     fetchPolicy: 'no-cache'
-  })
-  const { data: dataCom } = useQuery(GET_COMMUNITIES_BY_USER, {
-    variables: { userId: me?._id },
-    fetchPolicy: 'no-cache',
-    skip: !me?._id
   })
   const [loadMore, setLoadMore] = useState(false)
   const [isEnd, setIsEnd] = useState(false)
@@ -161,7 +156,6 @@ const HomePage = props => {
         </div>
       )}
       <CreatePostDrawer
-        data={dataCom?.getCommunitiesByUser}
         refetch={refetchPosts}
         isBroken={isBroken}
         handleCancel={handleCancel}
