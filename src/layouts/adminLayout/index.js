@@ -6,7 +6,8 @@ import {
   LeftOutlined,
   GlobalOutlined,
   ReadOutlined,
-  AreaChartOutlined
+  AreaChartOutlined,
+  UserAddOutlined
 } from '@ant-design/icons'
 import logoImgSrc from '@assets/images/logo.png'
 import { withRouter } from 'react-router-dom'
@@ -91,6 +92,13 @@ const AdminLayout = ({ children, history }) => {
               icon={<UserOutlined />}
             >
               Thành viên
+            </Menu.Item>
+            <Menu.Item
+              key="experts"
+              onClick={() => history.push('/awaitVerifyExpert')}
+              icon={<UserAddOutlined />}
+            >
+              Chuyên gia
             </Menu.Item>
             <Menu.Item
               key="communities"
