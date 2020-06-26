@@ -10,9 +10,9 @@ const index = ({ setEditor, initialValue }) => {
       editor={FullEditor}
       onInit={editor => setEditor(editor)}
       data={initialValue || ''}
-      onChange={(event, editor) => {
-        console.log(editor.getData(), 'data')
-      }}
+      // onChange={(event, editor) => {
+      //   console.log(editor.getData(), 'data')
+      // }}
       config={{
         extraPlugins: [CustomUploadAdapterPlugin]
       }}
