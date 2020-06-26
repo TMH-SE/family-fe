@@ -1,14 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useContext, useState, useRef, useEffect } from 'react'
-import {
-  Button,
-  Table,
-  Space,
-  Row,
-  Tooltip,
-  Modal,
-  notification
-} from 'antd'
+import { Button, Table, Space, Row, Tooltip, Modal, notification } from 'antd'
 import {
   DeleteOutlined,
   ExclamationCircleOutlined,
@@ -44,19 +36,21 @@ function index() {
   useEffect(() => {
     firebase
       .database()
-      .ref(`reports`)
+      .ref(`reports/posts`)
       .on('value', snapshot => {
-        const temp = Object.keys(snapshot.val()).map(key => {
-          return {
-            detail: Object.keys(snapshot.val()[key]).map(keyA => ({
-              ...snapshot.val()[key][keyA],
-              id: keyA
-            })),
-            id: key,
-            count: Object.keys(snapshot.val()[key]).length
-          }
-        })
-        setData(temp)
+        const temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => {
+              return {
+                detail: Object.keys(snapshot.val()[key]).map(keyA => ({
+                  ...snapshot.val()[key][keyA],
+                  id: keyA
+                })),
+                id: key,
+                count: Object.keys(snapshot.val()[key]).length
+              }
+            })
+          : []
+        setData(temp.sort((a, b) => b.count - a.count))
       })
   }, [setSelectedRowKeys])
   const handleDeletePost = () => {
@@ -82,7 +76,7 @@ function index() {
                 })
                 firebase.database().ref(`posts/${id}}`).remove()
                 deleteSavedPostsByPost({ variables: { postId: id } })
-                firebase.database().ref(`reports/${id}`).remove()
+                firebase.database().ref(`reports/posts/${id}`).remove()
               }
             })
             .catch(notificationError)

@@ -1,3 +1,4 @@
+
 const toxicWords = [
   'dm',
   'cl',
@@ -19,28 +20,18 @@ const replaceWord = word => {
 export const replaceToxicWords = value => {
   let b = value
   toxicWords.map(word => {
-    b = b.replace(word, replaceWord(word))
+    const regex = new RegExp(`${word}`, 'gi')
+    b = b.replace(regex, replaceWord(word))
   })
   // onClick={() => {
-  //   if (value.trim() !== '') {
-      // firebase
-      //   .database()
-      //   .ref(`reports/${me?._id}/${me?._id}`)
-      //   .set({
-      //     reason: value,
-      //     createdAt: +new Date()
-      //   })
-      // notification.success({
-      //   message: 'Bạn đã báo cáo bài viết',
-      //   duration: 1.5
-      // })
-      // props.handleOk()
-    // } else {
-    //   notification.success({
-    //     message: 'Bạn chưa báo cáo bài viết',
-    //     duration: 1.5
-    //   })
-    // }
   // }}
+  return b
+}
+export const HighLightToxicWords = value => {
+  let b = value
+  toxicWords.map(word => {
+    const regex = new RegExp(`${word}`, 'gi')
+    b = b.replace(regex, `<span style="background-color:rgb(255, 10, 9, 0.7)">${word}</span>`)
+  })
   return b
 }

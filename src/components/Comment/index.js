@@ -7,6 +7,7 @@ import { InputCustomize } from '@components'
 import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
 import CommentItem from './CommentItem'
+import { replaceToxicWords } from '@shared'
 
 const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
   const history = useHistory()
@@ -20,15 +21,23 @@ const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
   lessComment =
     showMore < comments.length ? comments.slice(0, showMore) : comments
   useEffect(() => {
-    var elmnt = hashNoti && hashNoti.length !== 1 ? document.getElementById(`parent-cmt-${hashNoti[1]}`) : null
+    var elmnt =
+      hashNoti && hashNoti.length !== 1
+        ? document.getElementById(`parent-cmt-${hashNoti[1]}`)
+        : null
     elmnt && elmnt.scrollIntoView()
-    hashNoti && hashNoti?.length !== 1 && document.getElementById(`input-custom-${idPost}`).focus()
+    hashNoti &&
+      hashNoti?.length !== 1 &&
+      document.getElementById(`input-custom-${idPost}`).focus()
   }, [])
   const onAdd = mentions => {
     setArrTag(mentions)
   }
   const replyTo = repTo => {
     setRep(repTo)
+  }
+  const sendReportComment = cmt => {
+    
   }
   const sendNotiTagReply = async (postId, idCmt) => {
     const notificationId = +new Date()
@@ -86,6 +95,18 @@ const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
         .update({
           mention: mentions // replies: repValue
         })
+        if (replaceToxicWords(value).trim() !== value.trim()) {
+          firebase
+            .database()
+            .ref(`reports/comments/${me?._id}/${+new Date()}`)
+            .set({
+              id: rep.commentId,
+              repId: idCmt,
+              postId: idPost,
+              reason: value,
+              createdAt: +new Date()
+            })
+        }
     } catch (error) {
       console.log(error)
     }
@@ -247,6 +268,17 @@ function CommentPost(props) {
           mention: mentions,
           replies: []
         })
+      if (replaceToxicWords(value).trim() !== value.trim()) {
+        firebase
+          .database()
+          .ref(`reports/comments/${me?._id}/${+new Date()}`)
+          .set({
+            id: commentId,
+            postId,
+            reason: value,
+            createdAt: +new Date()
+          })
+      }
       postItem?.createdBy?._id !== me?._id &&
         (await firebase
           .database()

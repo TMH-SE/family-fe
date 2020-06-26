@@ -78,9 +78,10 @@ const DetailReport = ({
                 key={0}
                 item={data?.postById}
                 idx={0}
+                showText={true}
               ></PostHaveGroup>
             ) : (
-              <PostNoGroup key={0} item={data?.postById} idx={0}></PostNoGroup>
+              <PostNoGroup showText={true} key={0} item={data?.postById} idx={0}></PostNoGroup>
             ))}
         </div>
         <div style={{ width: '40%', position: 'fixed', left: '55%' }}>

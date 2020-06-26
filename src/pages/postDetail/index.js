@@ -38,7 +38,7 @@ function PostDetail(props) {
     skip: !postId
   })
   const { hash } = props.history.location
- 
+
   const arrHash = hash.split('#')
   return loading ? (
     <Skeleton active avatar />
@@ -62,10 +62,12 @@ function PostDetail(props) {
           ></PostHaveGroup>
         ) : (
           <PostNoGroup
+            hashNoti={arrHash}
             refetch={refetch}
             key={0}
             item={data?.postById}
             idx={0}
+            showText={true}
           ></PostNoGroup>
         )
       ) : (
