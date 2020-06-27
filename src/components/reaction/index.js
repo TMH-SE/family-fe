@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext, useLayoutEffect } from 'react'
-import { Popover, Tooltip, Space } from 'antd'
+import React, { useState, useContext, useLayoutEffect } from 'react'
+import { Popover, Tooltip } from 'antd'
 import { Emoji } from 'emoji-mart'
 import { LikeOutlined } from '@ant-design/icons'
 import firebase from 'firebase/app'
@@ -34,8 +34,7 @@ function Reaction(props) {
   const [chosenmoji, setChosenEnmoji] = useState('')
   const [reactions, setReactions] = useState([])
   const [sumReactions, setSSumReactions] = useState(0)
-  const [isClick, setIsClick] = useState(false)
-  const [visible, setVisible] = useState(true)
+
   const { idPost, postItem } = props
   const { me, isAuth, openLoginModal } = useContext(IContext)
 
@@ -116,7 +115,7 @@ function Reaction(props) {
             .database()
             .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
             .update({
-              count: reactions[idx].count - 1, //xóa reaction cũ
+              count: reactions[idx].count - 1,
               users: arr
             })
           updateOrSet(e, emo)
@@ -134,17 +133,6 @@ function Reaction(props) {
   }
   return (
     <Popover
-      // visible={isClick}
-      // onVisibleChange={() => {
-      //   console.log(visible)
-      //   if (visible) {
-      //     setTimeout(() => {
-      //       setIsClick(true)
-      //     }, 1000)
-      //     setIsClick(false)
-      //     setVisible(false)
-      //   }
-      // }}
       className="reaction-popover"
       content={emojiData.map(emo => (
         <Tooltip key={emo.emoji} title={emo.text}>
@@ -160,7 +148,6 @@ function Reaction(props) {
       {chosenmoji ? (
         <Emoji
           onClick={async () => {
-            setIsClick(false)
             const idx = reactions.findIndex(
               reaction => reaction.id === chosenmoji
             )

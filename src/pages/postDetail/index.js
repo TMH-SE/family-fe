@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react'
+import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { PostHaveGroup, PostNoGroup } from '@components'
 import gql from 'graphql-tag'

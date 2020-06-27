@@ -39,7 +39,48 @@ import './mainlayout.scss'
 import { IContext } from '@tools'
 import ConversationList from '@pages/myMessenger/ConversationList'
 import Messboxes from './messBoxes'
+import gql from 'graphql-tag'
+import { useMutation } from '@apollo/react-hooks'
+
 const { Header, Content, Sider } = Layout
+
+const SEARCH_POSTS = gql`
+  mutation searchAllPosts($query: String) {
+    searchAllPosts(query: $query) {
+      _id
+      title
+      thumbnail
+      isActive
+      content
+      community {
+        _id
+        name
+        avatar
+      }
+      createdBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      createdAt
+      updatedAt
+      deletedBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      updatedBy {
+        _id
+        firstname
+        lastname
+        avatar
+      }
+      deletedAt
+    }
+  }
+`
 
 export const MainContext = React.createContext(null)
 // const MY_USER_ID =
@@ -52,33 +93,10 @@ const index = ({ children }) => {
   const [showCommunities, setShowCommunities] = useState(false)
 
   const messBoxesRef = useRef()
-  const [notifications, setNotifications] = useState([])
-  useEffect(() => {
-    getNotification()
-  }, [me])
-  const getNotification = () => {
-    let temp
-    firebase
-      .database()
-      .ref('notifications/' + me?._id)
-      .orderByKey()
-      .limitToLast(10)
-      .on('value', snapshot => {
-        temp =
-          snapshot.val() &&
-          Object.keys(snapshot.val()).map(key => ({
-            ...snapshot.val()[key],
-            id: key
-          }))
-
-        setNotifications(temp)
-      })
-  }
   const history = useHistory()
   const location = useMemo(() => {
     return history.location.pathname.split('/')[1]
   }, [history.location.pathname])
-  // console.log(location)
   const menu = (
     <Menu>
       <Menu.Item key="0" onClick={() => history.push(`/${me?._id}/info`)}>
@@ -111,8 +129,23 @@ const index = ({ children }) => {
     </Menu>
   )
 
+  const [searchAllPosts] = useMutation(SEARCH_POSTS)
+  const handleSearch = e => {
+    e.preventDefault()
+    const query = e.target.value
+    searchAllPosts({
+      variables: {
+        query
+      }
+    })
+      .then(({ data }) => {
+        history.push('/search-results', { results: data?.searchAllPosts, query })
+      })
+      .catch(() => {})
+  }
+
   return (
-    <Layout >
+    <Layout>
       <Header
         style={{
           boxShadow: '0 1px 8px #f0f1f2',
@@ -147,26 +180,24 @@ const index = ({ children }) => {
                 history.push('/homepage')
               }}
             />
-            {
-              !isBroken ? (
-                <Input
-                  className="search-flex"
-                  style={{ height: 30, top: '1em', borderRadius: 40 }}
-                  prefix={<SearchOutlined />}
-                  placeholder="Tìm kiếm"
-                ></Input>
-              ) : (
-                // <Tooltip title='search'>
-                <Input
-                  className="search-broken"
-                  style={{ height: 30, top: '1em', borderRadius: 40 }}
-                  prefix={<SearchOutlined />}
-                  placeholder="Tìm kiếm"
-                ></Input>
-              )
-
-              /* </Tooltip> */
-            }
+            {!isBroken ? (
+              <Input
+                className="search-flex"
+                style={{ height: 30, top: '1em', borderRadius: 40 }}
+                prefix={<SearchOutlined />}
+                placeholder="Tìm kiếm"
+                onPressEnter={handleSearch}
+              />
+            ) : (
+              // <Tooltip title='search'>
+              <Input
+                className="search-broken"
+                style={{ height: 30, top: '1em', borderRadius: 40 }}
+                prefix={<SearchOutlined />}
+                placeholder="Tìm kiếm"
+                onPressEnter={handleSearch}
+              />
+            )}
           </div>
           <div
             id="header-right"
@@ -192,7 +223,7 @@ const index = ({ children }) => {
                 mode="horizontal"
               >
                 <Menu.Item onClick={() => history.push('/seminars')}>
-                  <Tooltip title="Hội thảo" placement='bottom'>
+                  <Tooltip title="Hội thảo" placement="bottom">
                     <Button
                       className="btn-round"
                       shape="circle"
@@ -268,9 +299,9 @@ const index = ({ children }) => {
             zIndex: 100,
             background: '#fff',
             fontSize: 20,
-             color: '#000'
+            color: '#000'
           }}
-          className='row-menu'
+          className="row-menu"
           gutter={16}
         >
           <Col
@@ -359,7 +390,7 @@ const index = ({ children }) => {
           {/* </div>} */}
         </Sider>
         <Content
-          id='content-main'
+          id="content-main"
           style={{
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,

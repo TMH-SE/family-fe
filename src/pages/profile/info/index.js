@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
-import { Row, Col, Tooltip } from 'antd'
+import { Row, Col, Tooltip, Tag } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import EditUser from './editUser'
 const DescriptionItem = ({ title, content }) => (
@@ -15,13 +15,20 @@ function Info(props) {
   return (
     <>
       <Row>
-        <Col span={3}>
-          <p
-            className="site-description-item-profile-p"
-            style={{ marginBottom: 24 }}
-          >
-            Thông tin
-          </p>
+        <Col span={4}>
+          <div style={{ display: 'flex' }}>
+            <p
+              className="site-description-item-profile-p"
+              style={{ marginBottom: 24, marginRight: 10 }}
+            >
+              Thông tin
+            </p>
+            <span>
+              {userInfo?.expert?.isVerify && (
+                <Tag color="blue">{userInfo?.expert?.jobTitle}</Tag>
+              )}
+            </span>
+          </div>
         </Col>
         {isMe && (
           <Col span={12}>

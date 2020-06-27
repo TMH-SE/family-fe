@@ -24,6 +24,12 @@ const AdminAuthRoutes = ({ context: { isAuth, me, logout, isAdmin, isSuper } }) 
     },
     {
       exact: true,
+      path: '/awaitVerifyExpert',
+      component: 'expertAwaitVerify',
+      title: 'Chuyên gia'
+    },
+    {
+      exact: true,
       path: '/communities',
       component: 'communities',
       title: 'Manage Communities'

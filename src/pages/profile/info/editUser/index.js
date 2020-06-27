@@ -6,12 +6,15 @@ import {
   DatePicker,
   Radio,
   Button,
-  notification
+  notification,
+  InputNumber,
+  Checkbox
 } from 'antd'
 import { IContext } from '@tools'
 import moment from 'moment'
 import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_USER_INFO } from '@shared'
+import firebase from 'firebase/app'
 const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 }
@@ -22,19 +25,35 @@ const EditUser = props => {
   const [form] = Form.useForm()
   const [updateUserInfo] = useMutation(UPDATE_USER_INFO)
   const onFinish = async values => {
-    // console.log(Date.parse(values.birthday.toString()))
+    const { areasOfExpertise, jobTitle, yearsExperience } = values
+    const expert = {
+      areasOfExpertise,
+      jobTitle,
+      yearsExperience
+    }
+    delete values.areasOfExpertise
+    delete values.jobTitle
+    delete values.yearsExperience
+    delete values['confirm-password']
+    delete values.isExpert
     await updateUserInfo({
       variables: {
         userId: me?._id,
         userInfo: {
           ...values,
+          expert,
           birthday: values.birthday
             ? Date.parse(values.birthday.toString())
             : null
         }
       }
     })
-    refetchMe()
+    await refetchMe()
+    if (!me?.expert?.isVerify) {
+      firebase.database().ref(`awaitVerifyExperts/${me?._id}`).set({
+        createdAt: new Date().getTime()
+      })
+    }
     notification.success({ message: 'Cập nhật thông tin thành công' })
   }
   const disabledDate = current => {
@@ -53,6 +72,10 @@ const EditUser = props => {
         form={form}
         onFinish={onFinish}
         initialValues={{
+          isExpert: me?.expert,
+          areasOfExpertise: me?.expert?.areasOfExpertise,
+          yearsExperience: me?.expert?.yearsExperience,
+          jobTitle: me?.expert?.jobTitle,
           firstname: me?.firstname,
           lastname: me?.lastname,
           phoneNumber: me?.phoneNumber,
@@ -97,9 +120,11 @@ const EditUser = props => {
           <DatePicker
             // hideDisabledOptions
             showToday={false}
-            defaultPickerValue={moment(
-              `12/31/${new Date().getFullYear() - 16}`
-            )}
+            defaultPickerValue={
+              me?.birthday
+                ? moment(new Date(me?.birthday).toLocaleDateString())
+                : moment(`12/31/${new Date().getFullYear() - 16}`)
+            }
             disabledDate={disabledDate}
             style={{ width: '100%' }}
             format="DD-MM-YYYY"
@@ -114,7 +139,7 @@ const EditUser = props => {
           <Radio.Group>
             <Radio value="MALE">Nam</Radio>
             <Radio value="FEMALE">Nữ</Radio>
-            <Radio value="ORTHER">Khác</Radio>
+            <Radio value="OTHER">Khác</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item
@@ -125,6 +150,38 @@ const EditUser = props => {
         >
           <Input />
         </Form.Item>
+        {!me?.expert?.isVerify && (
+          <Form.Item name="isExpert" valuePropName="checked">
+            <Checkbox>Tôi là một chuyên gia</Checkbox>
+          </Form.Item>
+        )}
+        {!me?.expert?.isVerify && (
+          <Form.Item
+            noStyle
+            shouldUpdate={(prevValues, currentValues) =>
+              prevValues.isExpert !== currentValues.isExpert
+            }
+          >
+            {({ getFieldValue }) => {
+              return !!getFieldValue('isExpert') ? (
+                <>
+                  <Form.Item
+                    name="areasOfExpertise"
+                    label="Lĩnh vực chuyên môn"
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item name="jobTitle" label="Chức danh">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item name="yearsExperience" label="Số năm kinh nghiệm">
+                    <InputNumber style={{ width: '100%' }} />
+                  </Form.Item>
+                </>
+              ) : null
+            }}
+          </Form.Item>
+         )}
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Lưu

@@ -68,7 +68,7 @@ const FamilyAppRoutes = ({ isAuth }) => {
       title: 'Cộng đồng'
     },
     {
-      exact: false,
+      exact: true,
       path: '/postdetail/:postId',
       component: 'postDetail',
       title: 'Chi tiết bài viết'
@@ -78,6 +78,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
       path: '/:userId/:type',
       component: 'profile',
       title: 'Trang cá nhân'
+    },
+    {
+      exact: true,
+      path: '/search-results',
+      component: 'searchResults',
+      title: 'Kết quả tìm kiếm'
     }
   ]
 

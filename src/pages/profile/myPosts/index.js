@@ -19,6 +19,7 @@ function MyPosts(props) {
   const { me } = useContext(IContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const { isBroken } = useContext(MainContext)
+  const { history } = props
   const { data: dataMyPosts, refetch: refetchMyPosts, loading } = useQuery(
     GET_POSTS_BY_USER,
     {
@@ -83,6 +84,7 @@ function MyPosts(props) {
         handleOk={handleOk}
       ></ModalReport>
       <CreatePostDrawer
+        data={null}
         refetch={refetchMyPosts}
         isBroken={isBroken}
         handleCancel={handleCancel}

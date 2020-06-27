@@ -77,6 +77,7 @@ function PostNoGroup(props) {
               postItem={item}
             />,
             <CommentPost
+            hashNoti={props.hashNoti}
               idPost={item?._id}
               postItem={item}
               key="commet"
@@ -110,30 +111,16 @@ function PostNoGroup(props) {
                 <a
                   id={`${nameEl}${item?._id}`}
                   onClick={async () => {
-                    if (
-                      document.getElementsByClassName(
-                        `collapse${item?._id}`
-                      )[0] &&
-                      document.getElementsByClassName(`collapse${item?._id}`)[0]
-                        .lastElementChild.clientHeight > 300
-                    ) {
-                      history.push(`./postdetail/${item?._id}`)
-                    } else {
-                      setShowText(!showText)
-                      const content = await document.getElementsByClassName(
-                        `expand${item?._id}`
-                      )
-                      const a = await document.getElementById(
-                        `expand${item?._id}`
-                      )
-                      // console.log(a, content)
-                      content[0].setAttribute(
-                        'style',
-                        'height: auto !important'
-                      )
-                      a.setAttribute('style', 'visibility: hidden')
-                      setShowText(false)
-                    }
+                    // if (
+                    //   document.getElementsByClassName(
+                    //     `collapse${item?._id}`
+                    //   )[0] &&
+                    //   document.getElementsByClassName(`collapse${item?._id}`)[0]
+                    //     .lastElementChild.clientHeight > 300
+                    // ) {
+                    //   history.push(`./postdetail/${item?._id}`)
+                    // } else {
+                    setShowText(!showText)
                   }}
                 >
                   Xem thêm
