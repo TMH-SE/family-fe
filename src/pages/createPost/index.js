@@ -6,7 +6,6 @@ import { Button, Typography } from 'antd'
 const CreatePost = props => {
   const formRef = useRef(null)
   const [confirmLoading, setConfirmLoading] = useState(false)
-  console.log(formRef.current)
 
   return (
     <>

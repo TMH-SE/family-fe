@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable one-var */
 /* eslint-disable eol-last */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Menu, Dropdown, Tooltip } from 'antd'
 import {
   ShareAltOutlined,
@@ -23,10 +23,9 @@ function SharePost(props) {
   }
   const menu = (
     <Menu>
-      <Menu.Item class="btn btn-success clearfix" key="0" onClick={() => SdkUtils.shareFB()} >
+      <Menu.Item class="btn btn-success clearfix" key="0" onClick={() => SdkUtils.shareFB(idPost)} >
         <FacebookFilled />
         Facebook
-        {/* <div className="fb-share-button" data-href="http://localhost:8080/postdetail/74345540-a986-11ea-a4a1-214ed62739a0" id="fbshare" data-layout="button_count"></div> */}
       </Menu.Item>
       <Menu.Item key="1" onClick={() => copyLink()}>
         <Tooltip title={title}>
@@ -34,8 +33,6 @@ function SharePost(props) {
           Copy link chia sẻ
         </Tooltip>
       </Menu.Item>
-      {/* <Menu.Divider />
-      <Menu.Item key="3">3rd menu item</Menu.Item> */}
     </Menu>
   )
   return (

@@ -11,7 +11,6 @@ const DescriptionItem = ({ title, content }) => (
 )
 function Info(props) {
   const { userInfo, isMe, dataCountFollow } = props
-  console.log(userInfo)
   const [visible, setVisible] = useState(false)
   return (
     <>

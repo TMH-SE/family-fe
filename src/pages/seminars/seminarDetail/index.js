@@ -9,10 +9,8 @@ import {
 
 function SeminarDetail({ me, seminarData, state }) {
   const extra = useMemo(() => {
-    console.log(state)
     switch (state) {
       case 'upcoming': {
-        console.log(123)
         if (me?._id === seminarData?.createdBy?._id) {
           return (
             <Space>
@@ -69,7 +67,6 @@ function SeminarDetail({ me, seminarData, state }) {
         break
     }
   }, [state])
-  console.log(extra)
   return (
     <Card
       style={{ marginBottom: 10 }}
