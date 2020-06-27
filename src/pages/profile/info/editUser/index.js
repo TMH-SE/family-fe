@@ -36,7 +36,6 @@ const EditUser = props => {
     delete values.yearsExperience
     delete values['confirm-password']
     delete values.isExpert
-    console.log(expert)
     await updateUserInfo({
       variables: {
         userId: me?._id,

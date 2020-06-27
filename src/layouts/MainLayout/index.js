@@ -93,33 +93,10 @@ const index = ({ children }) => {
   const [showCommunities, setShowCommunities] = useState(false)
 
   const messBoxesRef = useRef()
-  const [notifications, setNotifications] = useState([])
-  useEffect(() => {
-    getNotification()
-  }, [me])
-  const getNotification = () => {
-    let temp
-    firebase
-      .database()
-      .ref('notifications/' + me?._id)
-      .orderByKey()
-      .limitToLast(10)
-      .on('value', snapshot => {
-        temp =
-          snapshot.val() &&
-          Object.keys(snapshot.val()).map(key => ({
-            ...snapshot.val()[key],
-            id: key
-          }))
-
-        setNotifications(temp)
-      })
-  }
   const history = useHistory()
   const location = useMemo(() => {
     return history.location.pathname.split('/')[1]
   }, [history.location.pathname])
-  // console.log(location)
   const menu = (
     <Menu>
       <Menu.Item key="0" onClick={() => history.push(`/${me?._id}/info`)}>

@@ -40,7 +40,6 @@ function index() {
             count: Object.keys(snapshot.val()[key]).length
           }
         })
-        console.log(temp, 'top')
         setDataUserReport(temp)
       })
   }, [])

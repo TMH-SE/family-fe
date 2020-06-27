@@ -36,13 +36,6 @@ function index() {
         style={{ height: 'calc(100vh - 103px)' }}
         rowKey="id"
         bordered
-        // rowSelection={{
-        //   type: 'checkbox',
-        //   selectedRowKeys,
-        //   onChange: selectedRowKeys => {
-        //     setSelectedRowKeys(selectedRowKeys)
-        //   }
-        // }}
         columns={[
           {
             title: 'Mã người dùng',

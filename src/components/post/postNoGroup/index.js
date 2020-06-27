@@ -77,6 +77,7 @@ function PostNoGroup(props) {
               postItem={item}
             />,
             <CommentPost
+            hashNoti={props.hashNoti}
               idPost={item?._id}
               postItem={item}
               key="commet"
