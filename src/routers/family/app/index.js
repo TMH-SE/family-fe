@@ -29,6 +29,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
       title: 'Trang cá nhân'
     },
     {
+      exact: true,
+      path: '/search-results',
+      component: 'searchResults',
+      title: 'Kết quả tìm kiếm'
+    },
+    {
       // exact: true,
       path: '/notify',
       component: 'notify',
@@ -68,7 +74,7 @@ const FamilyAppRoutes = ({ isAuth }) => {
       title: 'Cộng đồng'
     },
     {
-      exact: true,
+      exact: false,
       path: '/postdetail/:postId',
       component: 'postDetail',
       title: 'Chi tiết bài viết'
@@ -78,12 +84,6 @@ const FamilyAppRoutes = ({ isAuth }) => {
       path: '/:userId/:type',
       component: 'profile',
       title: 'Trang cá nhân'
-    },
-    {
-      exact: true,
-      path: '/search-results',
-      component: 'searchResults',
-      title: 'Kết quả tìm kiếm'
     }
   ]
 
