@@ -69,7 +69,7 @@ function PostNoGroup(props) {
               />
               <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
             </div>,
-            <SharePost key="share" />,
+            <SharePost key="share" idPost={item?._id} />,
             <SaveAndReport
               refetch={refetch}
               key="saveandreport"

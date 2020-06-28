@@ -38,7 +38,7 @@ function PostDetail(props) {
     skip: !postId
   })
   const { hash } = props.history.location
-
+const { history } = props
   const arrHash = hash.split('#')
   return loading ? (
     <Skeleton active avatar />
@@ -50,18 +50,14 @@ function PostDetail(props) {
           content={`window.location.origin/post-detail/${postId}`}
         />
         <meta property="og:type" content="article" />
-        <meta
-          property="og:title"
-          content={data?.postById?.title}
-        />
+        <meta property="og:title" content={data?.postById?.title} />
         <meta
           property="og:description"
-          content={`Bài viết được đăng bởi ${data?.postById?.createdBy?.firstname} - ${new Date(data?.postById?.createdAt).toLocaleString()}`}
+          content={`Bài viết được đăng bởi ${
+            data?.postById?.createdBy?.firstname
+          } - ${new Date(data?.postById?.createdAt).toLocaleString()}`}
         />
-        <meta
-          property="og:image"
-          content={data?.postById?.thumbnail}
-        />
+        <meta property="og:image" content={data?.postById?.thumbnail} />
         <meta charSet="utf-8" />
       </Helmet>
       <Tooltip title="Quay lại">
@@ -73,6 +69,7 @@ function PostDetail(props) {
       {data?.postById ? (
         data?.postById?.community ? (
           <PostHaveGroup
+            history={history}
             hashNoti={arrHash}
             refetch={refetch}
             key={0}
@@ -82,6 +79,7 @@ function PostDetail(props) {
           ></PostHaveGroup>
         ) : (
           <PostNoGroup
+            history={history}
             hashNoti={arrHash}
             refetch={refetch}
             key={0}

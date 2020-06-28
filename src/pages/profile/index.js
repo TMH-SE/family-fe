@@ -259,6 +259,12 @@ function Profile(props) {
         <div>
           <div>
             <div
+             onClick={() => {
+              setPreviewImg({
+                isShow: true,
+                imgSrc: img.coverPhoto || data?.getUser.coverPhoto
+              })
+            }}
               style={{
                 position: 'relative',
                 width: '100%',
@@ -272,12 +278,6 @@ function Profile(props) {
                   style={{ objectFit: 'cover', height: 250, width: '100%' }}
                   // alt='example'
                   src={img.coverPhoto || data?.getUser.coverPhoto}
-                  onClick={() => {
-                    setPreviewImg({
-                      isShow: true,
-                      imgSrc: img.coverPhoto || data?.getUser.coverPhoto
-                    })
-                  }}
                 />
               )}
               {/* {loadingImg.coverPhoto && ( */}
@@ -317,6 +317,12 @@ function Profile(props) {
           >
             <div style={{ display: 'flex', width: '100%' }}>
               <div
+               onClick={() => {
+                setPreviewImg({
+                  isShow: true,
+                  imgSrc: img?.avatar || data?.getUser?.avatar
+                })
+              }}
                 style={{
                   position: 'relative',
                   width: 130,
@@ -331,12 +337,6 @@ function Profile(props) {
                     shape="circle"
                     size={130}
                     src={img?.avatar || data?.getUser?.avatar}
-                    onClick={() => {
-                      setPreviewImg({
-                        isShow: true,
-                        imgSrc: img?.avatar || data?.getUser?.avatar
-                      })
-                    }}
                   />
                 )}
                 {/* {loadingImg.avatar && ( */}
