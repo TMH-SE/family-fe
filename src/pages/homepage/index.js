@@ -107,7 +107,7 @@ const HomePage = props => {
           <Input.TextArea
             onClick={() =>
               isBroken
-                ? history.push('/createpost')
+                ? history.push('/create-post')
                 : setVisibleModalCreate(!visibleModalCreate)
             }
             style={{
@@ -133,6 +133,7 @@ const HomePage = props => {
         dataPostLoad?.posts.map((item, idx) => {
           return item?.community ? (
             <PostHaveGroup
+            history={history}
               refetch={refetchPosts}
               key={idx}
               item={item}
@@ -141,6 +142,7 @@ const HomePage = props => {
             ></PostHaveGroup>
           ) : (
             <PostNoGroup
+            history={history}
               refetch={refetchPosts}
               key={idx}
               item={item}
