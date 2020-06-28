@@ -27,6 +27,7 @@ function SavedPosts(props) {
         dataSavedPost?.getSavedPostByUser?.reverse().map((item, idx) => {
           return item?.post?.community ? (
             <PostHaveGroup
+              history={history}
               refetch={refetchSavedPost}
               key={idx}
               item={item.post}
@@ -34,6 +35,7 @@ function SavedPosts(props) {
             ></PostHaveGroup>
           ) : (
             <PostNoGroup
+              history={history}
               refetch={refetchSavedPost}
               key={idx}
               item={item.post}

@@ -48,7 +48,7 @@ const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
                 action: 'tag',
                 id: rep.commentId,
                 reciever: item?.id,
-                link: `/postdetail/${postId}#${rep.commentId}#${idCmt}`,
+                link: `/post-detail/${postId}#${rep.commentId}#${idCmt}`,
                 content: `${me?.firstname} đã nhắc đến bạn trong bình luận`,
                 seen: false,
                 createdAt: +new Date()
@@ -282,7 +282,7 @@ function CommentPost(props) {
             action: 'cmt',
             id: commentId,
             reciever: postItem?.createdBy?._id,
-            link: `/postdetail/${postId}#${commentId}`,
+            link: `/post-detail/${postId}#${commentId}`,
             content: `${me?.firstname} đã bình luận bài viết của bạn`,
             seen: false,
             createdAt: +new Date()

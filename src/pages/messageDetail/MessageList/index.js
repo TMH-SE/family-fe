@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, useLayoutEffect, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useLayoutEffect } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'
-import { Card, Avatar, Skeleton, Spin } from 'antd'
+import { Card, Avatar, Spin } from 'antd'
 
 import { InputCustomize } from '@components'
 import Message from '../Message'
@@ -15,21 +15,30 @@ moment().format()
 
 export default function MessageList(props) {
   const [messages, setMessages] = useState([])
-  const { chatBox, onCancelMessbox } = props
+  const {
+    chatBox,
+    onCancelMessbox,
+    messbox,
+    currentId,
+    setCurrentIdChat // rerender
+  } = props
   const { idChat, userId } = chatBox
   const { me } = useContext(IContext)
   const [showMore, setShowMore] = useState(10)
   const [loading, setLoading] = useState(false)
-  useLayoutEffect(() => {
-    getMessages()
-    document.getElementById(`input-custom-${idChat}`).focus()
-  }, [chatBox])
-
   useEffect(() => {
-    getMessages()
+    loading && getMessages()
   }, [showMore])
   const { data } = useQuery(GET_USER, { variables: { userId } })
+  useEffect(() => {
+    document.getElementById(`input-custom-${currentId}`) &&
+      document.getElementById(`input-custom-${currentId}`).focus()
+  }, [currentId])
+  useEffect(() => {
+    getMessages()
+  }, [currentId, messbox])
   const getMessages = () => {
+    // setTimeout(() => {
     setLoading(true)
     firebase
       .database()
@@ -44,11 +53,12 @@ export default function MessageList(props) {
               id: key
             }))
           : []
-        if (showMore > temp.length + 5) {
+        if (showMore > temp.length) {
           setLoading(false)
         }
         setMessages(temp)
       })
+    // }, 300)
   }
 
   const renderMessages = () => {
@@ -113,7 +123,6 @@ export default function MessageList(props) {
     return tempMessages
   }
   const handleSubmit = async (value, imgList) => {
-    // const chatId = `${idChat}` + '/'
     const message = +new Date()
     try {
       await firebase
@@ -139,6 +148,8 @@ export default function MessageList(props) {
           },
           lastActivity: +new Date()
         })
+      setCurrentIdChat(null)
+      setCurrentIdChat(idChat)
     } catch (error) {
       console.log(error)
     }
@@ -173,7 +184,7 @@ export default function MessageList(props) {
             // <div className='delete-messbox'>
             <CloseCircleFilled
               className="delete-messbox"
-              onClick={() => onCancelMessbox(idChat)}
+              onClick={onCancelMessbox}
               style={{ color: '#ccc' }}
             />
           )
@@ -205,7 +216,9 @@ export default function MessageList(props) {
             }
           }}
         >
-          <div className='spin-chat' ><Spin spinning={loading} /></div>
+          <div className="spin-chat">
+            <Spin spinning={loading} />
+          </div>
           {renderMessages()}
         </div>
       </Card>

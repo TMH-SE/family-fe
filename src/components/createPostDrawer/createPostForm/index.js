@@ -100,7 +100,7 @@ const CreatePostForm = forwardRef((props, ref) => {
           .set({
             action: 'post',
             reciever: item?._id,
-            link: `/postdetail/${postId}`,
+            link: `/post-detail/${postId}`,
             content: `${me?.firstname} đã đăng bài viết mới`,
             seen: false,
             createdAt: +new Date()
@@ -121,7 +121,7 @@ const CreatePostForm = forwardRef((props, ref) => {
           content: html({
             title,
             author: `${me?.firstname} ${me?.lastname}`,
-            content: editor.getData(),
+            content: `<div>${editor.getData()}</div>`,
             keywords,
             hashtags
           }),
