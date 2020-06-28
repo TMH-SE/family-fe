@@ -12,13 +12,13 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
-      path: '/createpost',
+      path: '/create-post',
       component: 'createPost',
       title: 'Tạo bài viết'
     },
     {
       exact: true,
-      path: '/pagegroup/:communityId',
+      path: '/page-group/:communityId',
       component: 'pageGroup',
       title: 'Cộng đồng'
     },
@@ -69,13 +69,13 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
-      path: '/pagegroup/:communityId',
+      path: '/page-group/:communityId',
       component: 'pageGroup',
       title: 'Cộng đồng'
     },
     {
       exact: false,
-      path: '/postdetail/:postId',
+      path: '/post-detail/:postId',
       component: 'postDetail',
       title: 'Chi tiết bài viết'
     },

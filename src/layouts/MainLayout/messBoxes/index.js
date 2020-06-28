@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState, useImperativeHandle, forwardRef } from 'react'
+import React, {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useEffect
+} from 'react'
 import {
   Layout
   // Switch
@@ -24,50 +29,48 @@ const { Header, Content, Sider } = Layout
 const Messboxes = forwardRef((props, ref) => {
   const [messbox, setMessbox] = useState([])
   const [currentId, setCurrentIdChat] = useState([])
+  useEffect(() => {}, [currentId, messbox])
   const chooseConversation = (idChat, userId) => {
     setCurrentIdChat(idChat)
     if (messbox.findIndex(mess => mess.idChat === idChat) === -1) {
       const a = [...messbox]
-      if (messbox?.length === 3) {
-        a.pop({ idChat, userId })
-      }
       a.push({ idChat, userId })
-      setMessbox(a)
+      if (messbox?.length === 3) {
+        a.shift()
+      }
+      setMessbox([...a])
     }
-    document.getElementById(`input-custom-${currentId}`) &&
-      document.getElementById(`input-custom-${currentId}`).focus()
   }
   const onCancelMessbox = idChat => {
-    const idx = messbox.findIndex(mess => mess.idChat === idChat)
     var arr = [...messbox]
-    arr.splice(idx, 1)
-    setCurrentIdChat(arr.length === 0 ? null : arr[0].idChat)
-    document.getElementById(`input-custom-${currentId}`) &&
-    document.getElementById(`input-custom-${currentId}`).focus()
-    setMessbox([...arr])
+    setCurrentIdChat(null)
+    setMessbox([...arr].filter(item => item.idChat !== idChat))
   }
   const history = useHistory()
   useImperativeHandle(ref, () => ({
     chooseConversation: (idChat, userId) => chooseConversation(idChat, userId)
   }))
-  return messbox.map((mess, idx) => {
-    return (
-      <div
-        key={idx}
-        className={`contentMess-box ${mess.idChat}`}
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
-        <MessageList
-          setCurrentIdChat={setCurrentIdChat}
-          currentId={currentId}
-          messbox={messbox}
-          history={history}
-          idx={idx}
-          onCancelMessbox={() => onCancelMessbox(mess.idChat)}
-          chatBox={mess}
-        />
-      </div>
-    )
-  })
+  return (
+    messbox &&
+    messbox.map((mess, idx) => {
+      return (
+        <div
+          key={idx}
+          className={`contentMess-box ${mess.idChat}`}
+          style={{ display: 'flex', flexDirection: 'column' }}
+        >
+          <MessageList
+            setCurrentIdChat={setCurrentIdChat}
+            currentId={currentId}
+            messbox={messbox}
+            history={history}
+            idx={idx}
+            onCancelMessbox={() => onCancelMessbox(mess.idChat)}
+            chatBox={mess}
+          />
+        </div>
+      )
+    })
+  )
 })
 export default Messboxes

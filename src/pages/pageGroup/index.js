@@ -138,7 +138,7 @@ function PageGroup(props) {
         <Input.TextArea
           onClick={() =>
             isBroken
-              ? props.history.push('/createpost')
+              ? props.history.push('/create-post')
               : setVisibleModalCreate(!visibleModalCreate)
           }
           style={{

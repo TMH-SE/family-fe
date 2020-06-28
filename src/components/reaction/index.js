@@ -94,7 +94,7 @@ function Reaction(props) {
         .set({
           action: 'reaction',
           reciever: postItem?.createdBy?._id,
-          link: `/postdetail/${idPost}`,
+          link: `/post-detail/${idPost}`,
           content: `${me?.firstname} đã ${emo.text} bài viết của bạn`,
           seen: false,
           createdAt: +new Date()
