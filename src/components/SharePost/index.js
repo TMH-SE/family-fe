@@ -14,7 +14,7 @@ function SharePost(props) {
   const [title, setTitle] = useState('Nhấp để  copy link')
   const copyLink = () => {
     var copyinput = document.createElement('input')
-    copyinput.value = `${window.location.origin}/postdetail/${idPost}`
+    copyinput.value = `${window.location.origin}/post-detail/${idPost}`
     document.body.appendChild(copyinput)
     copyinput.select()
     copyinput.setSelectionRange(0, 99999)

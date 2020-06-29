@@ -19,7 +19,7 @@ function HighlightItem(props) {
     <Skeleton active avatar />
   ) : (
     <Card
-      onClick={() => history.push(`/postdetail/${item}`)}
+      onClick={() => history.push(`/post-detail/${item}`)}
       style={{ margin: '10px 0 0 10px' }}
       cover={
         <img
@@ -34,7 +34,7 @@ function HighlightItem(props) {
       }
       actions={[
         <a
-          // onClick={() => history.push(`/postdetail/${item}`)}
+          // onClick={() => history.push(`/post-detail/${item}`)}
           key="detail"
           style={{ color: '#1890ff' }}
         >

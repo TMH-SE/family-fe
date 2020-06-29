@@ -47,8 +47,11 @@ const EditUser = props => {
             : null
         }
       }
+    }).then(async res => {
+      form.resetFields()
+      await refetchMe()
+      onCancel()
     })
-    await refetchMe()
     if (!me?.expert?.isVerify) {
       firebase.database().ref(`awaitVerifyExperts/${me?._id}`).set({
         createdAt: new Date().getTime()
@@ -66,6 +69,7 @@ const EditUser = props => {
       onCancel={() => onCancel()}
       title="Chỉnh sửa thông tin"
       footer={null}
+      afterClose={() => form.resetFields()}
     >
       <Form
         name="dynamic_rule"
@@ -150,38 +154,35 @@ const EditUser = props => {
         >
           <Input />
         </Form.Item>
-        {!me?.expert?.isVerify && (
-          <Form.Item name="isExpert" valuePropName="checked">
-            <Checkbox>Tôi là một chuyên gia</Checkbox>
-          </Form.Item>
-        )}
-        {!me?.expert?.isVerify && (
-          <Form.Item
-            noStyle
-            shouldUpdate={(prevValues, currentValues) =>
-              prevValues.isExpert !== currentValues.isExpert
-            }
-          >
-            {({ getFieldValue }) => {
-              return !!getFieldValue('isExpert') ? (
-                <>
-                  <Form.Item
-                    name="areasOfExpertise"
-                    label="Lĩnh vực chuyên môn"
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Form.Item name="jobTitle" label="Chức danh">
-                    <Input />
-                  </Form.Item>
-                  <Form.Item name="yearsExperience" label="Số năm kinh nghiệm">
-                    <InputNumber style={{ width: '100%' }} />
-                  </Form.Item>
-                </>
-              ) : null
-            }}
-          </Form.Item>
-         )}
+        {/* {!me?.expert?.isVerify && ( */}
+        <Form.Item name="isExpert" valuePropName="checked">
+          <Checkbox>Tôi là một chuyên gia</Checkbox>
+        </Form.Item>
+        {/* )} */}
+        {/* {me?.expert?.isVerify && ( */}
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.isExpert !== currentValues.isExpert
+          }
+        >
+          {({ getFieldValue }) => {
+            return !!getFieldValue('isExpert') ? (
+              <>
+                <Form.Item name="areasOfExpertise" label="Lĩnh vực chuyên môn">
+                  <Input />
+                </Form.Item>
+                <Form.Item name="jobTitle" label="Chức danh">
+                  <Input />
+                </Form.Item>
+                <Form.Item name="yearsExperience" label="Số năm kinh nghiệm">
+                  <InputNumber style={{ width: '100%' }} />
+                </Form.Item>
+              </>
+            ) : null
+          }}
+        </Form.Item>
+        {/* )} */}
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Lưu

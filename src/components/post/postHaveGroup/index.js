@@ -41,14 +41,14 @@ function PostHaveGroup(props) {
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Avatar
               shape="square"
-              onClick={() => history.push(`/pagegroup/${item?.community?._id}`)}
+              onClick={() => history.push(`/page-group/${item?.community?._id}`)}
               size={64}
               src={item?.community?.avatar}
             />
             <div style={{ marginLeft: 10, marginTop: 10 }}>
               <a
                 onClick={() =>
-                  history.push(`/pagegroup/${item?.community?._id}`)
+                  history.push(`/page-group/${item?.community?._id}`)
                 }
                 style={{ fontWeight: 'bolder', color: 'black' }}
               >
@@ -117,7 +117,7 @@ function PostHaveGroup(props) {
         <Card.Meta
           className="post-meta"
           title={
-            <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
+            <a onClick={() => history.push(`/post-detail/${item?._id}`)}>
               <Typography.Title level={4}>{item?.title}</Typography.Title>
             </a>
           }
@@ -133,19 +133,20 @@ function PostHaveGroup(props) {
                   overflow: 'hidden'
                 }}
               ></p>
-              {/* {document.getElementsByClassName(`collapse${item?._id}`)[0] &&
+              {!showText &&
+                (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
                 document.getElementsByClassName(`collapse${item?._id}`)[0]
-                  .lastElementChild.clientHeight > 30 && ( */}
-              {!showText && (
-                <a
-                  id={`${nameEl}${item?._id}`}
-                  onClick={ () => {
-                    setShowText(!showText)
-                  }}
-                >
-                  Xem thêm
-                </a>
-              )}
+                  .children[4]?.clientHeight > 900 ? (
+                  <a
+                    href={`${window.location.origin}/post-detail/${item?._id}`}
+                    target="blank"
+                    id={`${nameEl}${item?._id}`}
+                  >
+                    Xem thêm
+                  </a>
+                ) : (
+                  <a onClick={() => setShowText(!showText)}>Xem thêm</a>
+                ))}
               {/* )} */}
               <img
                 src={item?.thumbnail}

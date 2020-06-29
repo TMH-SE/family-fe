@@ -2,10 +2,9 @@
 /* eslint-disable indent */
 /* eslint-disable handle-callback-err */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Upload, Popover, notification, message, Space, Spin } from 'antd'
 import {
-  LoadingOutlined,
   CloseCircleFilled,
   FileImageOutlined,
   SmileOutlined
@@ -15,19 +14,10 @@ import { Picker } from 'emoji-mart'
 import './index.scss'
 import { MentionsInput, Mention } from 'react-mentions'
 import { uploadImg } from '@shared'
-import { MainContext } from '../../layouts/MainLayout'
+import ModalPreviewImg from '../modalPreviewImg'
 
 function InputCustomize(props) {
-  const {
-    mentions,
-    replyAuthor,
-    idElement,
-    onSubmit,
-    onAdd,
-    placeholder,
-    minRows,
-    maxRows
-  } = props
+  const { mentions, replyAuthor, idElement, onAdd, placeholder } = props
   const mentionData = []
   mentions &&
     mentions.map((item, idx) => {
@@ -48,6 +38,7 @@ function InputCustomize(props) {
 
   const [text, setText] = useState('')
   const [plainText, setPlainText] = useState('')
+  const [previewImg, setPreviewImg] = useState(false)
   useEffect(() => {
     setText(
       replyAuthor
@@ -137,6 +128,12 @@ function InputCustomize(props) {
       {image.srcImg && (
         <div style={{ display: 'flex', overflowX: 'auto' }}>
           <div
+            onClick={() =>
+              setPreviewImg({
+                isShow: true,
+                imgSrc: image.srcImg
+              })
+            }
             className="img-upload"
             style={{
               display: 'flex',
@@ -165,10 +162,6 @@ function InputCustomize(props) {
               `contentMess-box ${idElement}`
             )[0]
             a && a.classList.add('focus')
-            //           const ele = document.getElementsByClassName(
-            //   `message-list-container ${idElement}`
-            // )[0]
-            // ele.scrollTop = ele.scrollHeight
           }}
           onBlur={() => {
             const a = document.getElementsByClassName(
@@ -232,6 +225,10 @@ function InputCustomize(props) {
         </Space>
         {/* )} */}
       </div>
+      <ModalPreviewImg
+        previewImg={previewImg}
+        onCancel={() => setPreviewImg({ ...previewImg, isShow: false })}
+      />
     </div>
   )
 }

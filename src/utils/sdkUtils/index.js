@@ -58,7 +58,7 @@ const SdkUtils = {
       {
         method: 'share',
         display: 'popup',
-        href: `${window.location.origin}/postdetail/${postId}`,
+        href: `${window.location.origin}/post-detail/${postId}`,
       },
       // callback
       function (response) {}

@@ -43,7 +43,7 @@ function CommunityItem(props) {
     <List.Item
       onClick={() => {
         props?.setShowCommunities && props.setShowCommunities(false)
-        history.push(`/pagegroup/${item?._id}`)
+        history.push(`/page-group/${item?._id}`)
       }}
       style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}
     >
@@ -53,7 +53,7 @@ function CommunityItem(props) {
         title={
           <a
             style={{ color: 'black', fontWeight: 'bold' }}
-            onClick={() => history.push(`/pagegroup/${item?._id}`)}
+            onClick={() => history.push(`/page-group/${item?._id}`)}
           >
             {item?.name}
           </a>

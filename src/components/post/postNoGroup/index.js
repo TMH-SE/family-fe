@@ -69,7 +69,7 @@ function PostNoGroup(props) {
               />
               <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
             </div>,
-            <SharePost key="share" />,
+            <SharePost key="share" idPost={item?._id} />,
             <SaveAndReport
               refetch={refetch}
               key="saveandreport"
@@ -77,7 +77,7 @@ function PostNoGroup(props) {
               postItem={item}
             />,
             <CommentPost
-            hashNoti={props.hashNoti}
+              hashNoti={props.hashNoti}
               idPost={item?._id}
               postItem={item}
               key="commet"
@@ -88,7 +88,7 @@ function PostNoGroup(props) {
         <Meta
           className="post-meta"
           title={
-            <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
+            <a onClick={() => history.push(`/post-detail/${item?._id}`)}>
               <Typography.Title level={4}>{item?.title}</Typography.Title>
             </a>
           }
@@ -104,29 +104,20 @@ function PostNoGroup(props) {
                   overflow: 'hidden'
                 }}
               ></p>
-              {/* {document.getElementsByClassName(`collapse${item?._id}`)[0] &&
-                            document.getElementsByClassName(`collapse${item?._id}`)[0]
-                              .lastElementChild.clientHeight > 30 && ( */}
-              {!showText && (
-                <a
-                  id={`${nameEl}${item?._id}`}
-                  onClick={async () => {
-                    // if (
-                    //   document.getElementsByClassName(
-                    //     `collapse${item?._id}`
-                    //   )[0] &&
-                    //   document.getElementsByClassName(`collapse${item?._id}`)[0]
-                    //     .lastElementChild.clientHeight > 300
-                    // ) {
-                    //   history.push(`./postdetail/${item?._id}`)
-                    // } else {
-                    setShowText(!showText)
-                  }}
-                >
-                  Xem thêm
-                </a>
-              )}
-              {/* )} */}
+              {!showText &&
+                (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
+                document.getElementsByClassName(`collapse${item?._id}`)[0]
+                  .lastElementChild.clientHeight > 500 ? (
+                  <a
+                    href={`${window.location.origin}/post-detail/${item?._id}`}
+                    target="blank"
+                    id={`${nameEl}${item?._id}`}
+                  >
+                    Xem thêm
+                  </a>
+                ) : (
+                  <a onClick={() => setShowText(!showText)}>Xem thêm</a>
+                ))}
               <img
                 src={item?.thumbnail}
                 style={{ width: '100%', objectFit: 'cover' }}

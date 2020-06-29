@@ -42,7 +42,7 @@ function MyPosts(props) {
       <Input.TextArea
         onClick={() =>
           isBroken
-            ? history.push('/createpost')
+            ? history.push('/create-post')
             : setVisibleModalCreate(!visibleModalCreate)
         }
         style={{
@@ -62,6 +62,7 @@ function MyPosts(props) {
         dataMyPosts?.postsByUser.map((item, idx) =>
           item?.community ? (
             <PostHaveGroup
+              history={history}
               refetch={refetchMyPosts}
               key={idx}
               item={item}
@@ -69,6 +70,7 @@ function MyPosts(props) {
             ></PostHaveGroup>
           ) : (
             <PostNoGroup
+              history={history}
               refetch={refetchMyPosts}
               key={idx}
               item={item}
