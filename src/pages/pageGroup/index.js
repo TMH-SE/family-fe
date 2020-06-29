@@ -7,7 +7,8 @@ import {
   ModalReport,
   PostNoGroup,
   JoinBtn,
-  CreatePostDrawer
+  CreatePostDrawer,
+  ModalPreviewImg
 } from '@components'
 
 import gql from 'graphql-tag'
@@ -41,6 +42,10 @@ function PageGroup(props) {
   )
   const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
+  const [previewImg, setPreviewImg] = useState({
+    isShow: false,
+    imgSrc: ''
+  })
   const { data, refetch: refetchPostsByCom, loading: loađingPost } = useQuery(
     GET_POST_BY_COMMUNITY,
     {
@@ -83,6 +88,12 @@ function PageGroup(props) {
           width: '100%',
           backgroundColor: 'rgba(255,255,255,0.9)'
         }}
+        onClick={() => {
+          setPreviewImg({
+            isShow: true,
+            imgSrc: dataCommunity?.communityById?.coverPhoto
+          })
+        }}
       >
         <img
           className="cover-img"
@@ -96,6 +107,12 @@ function PageGroup(props) {
           display: 'flex',
           marginTop: -60,
           backgroundColor: 'rgba(255,255,255,0.6)'
+        }}
+        onClick={() => {
+          setPreviewImg({
+            isShow: true,
+            imgSrc: dataCommunity?.communityById?.avatar
+          })
         }}
       >
         <Avatar
@@ -161,7 +178,10 @@ function PageGroup(props) {
           return <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
         })
       )}
-
+      <ModalPreviewImg
+        previewImg={previewImg}
+        onCancel={() => setPreviewImg({ ...previewImg, isShow: false })}
+      />
       <ModalReport
         visible={visibleModalReport}
         handleCancel={handleCancel}

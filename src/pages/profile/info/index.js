@@ -15,7 +15,7 @@ function Info(props) {
   return (
     <>
       <Row>
-        <Col span={4}>
+        <Col span={12}>
           <div style={{ display: 'flex' }}>
             <p
               className="site-description-item-profile-p"
