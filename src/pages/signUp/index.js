@@ -236,15 +236,36 @@ const index = () => {
                       <Form.Item
                         name="areasOfExpertise"
                         label="Lĩnh vực chuyên môn"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập lĩnh vực chuyên môn của bạn'
+                          }
+                        ]}
                       >
                         <Input />
                       </Form.Item>
-                      <Form.Item name="jobTitle" label="Chức danh">
+                      <Form.Item
+                        name="jobTitle"
+                        label="Chức danh"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập chức danh của bạn'
+                          }
+                        ]}
+                      >
                         <Input />
                       </Form.Item>
                       <Form.Item
                         name="yearsExperience"
                         label="Số năm kinh nghiệm"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập số năm kinh nghiệm của bạn'
+                          }
+                        ]}
                       >
                         <InputNumber style={{ width: '100%' }} />
                       </Form.Item>
