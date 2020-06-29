@@ -18,7 +18,6 @@ export default function ConversationListItem(props) {
   useEffect(() => {
     data && props?.addSearch({ ...props?.chat, name: data?.getUser?.firstname })
   }, [data])
-
   const selectHandler = () => {
     isBroken
       ? props.history.push(

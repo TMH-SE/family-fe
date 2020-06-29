@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react'
+import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { PostHaveGroup, PostNoGroup } from '@components'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { LeftSquareOutlined } from '@ant-design/icons'
 import { Tooltip, Empty, Skeleton } from 'antd'
-
+import { Helmet } from 'react-helmet'
 export const GET_POST_BY_ID = gql`
   query postById($id: String) {
     postById(id: $id) {
@@ -38,12 +38,28 @@ function PostDetail(props) {
     skip: !postId
   })
   const { hash } = props.history.location
-
+const { history } = props
   const arrHash = hash.split('#')
   return loading ? (
     <Skeleton active avatar />
   ) : (
     <>
+      <Helmet>
+        <meta
+          property="og:url"
+          content={`window.location.origin/post-detail/${postId}`}
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={data?.postById?.title} />
+        <meta
+          property="og:description"
+          content={`Bài viết được đăng bởi ${
+            data?.postById?.createdBy?.firstname
+          } - ${new Date(data?.postById?.createdAt).toLocaleString()}`}
+        />
+        <meta property="og:image" content={data?.postById?.thumbnail} />
+        <meta charSet="utf-8" />
+      </Helmet>
       <Tooltip title="Quay lại">
         <LeftSquareOutlined
           style={{ fontSize: 20 }}
@@ -53,6 +69,7 @@ function PostDetail(props) {
       {data?.postById ? (
         data?.postById?.community ? (
           <PostHaveGroup
+            history={history}
             hashNoti={arrHash}
             refetch={refetch}
             key={0}
@@ -62,6 +79,7 @@ function PostDetail(props) {
           ></PostHaveGroup>
         ) : (
           <PostNoGroup
+            history={history}
             hashNoti={arrHash}
             refetch={refetch}
             key={0}

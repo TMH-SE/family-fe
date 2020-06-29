@@ -40,7 +40,6 @@ function index() {
             count: Object.keys(snapshot.val()[key]).length
           }
         })
-        console.log(temp, 'top')
         setDataUserReport(temp)
       })
   }, [])
@@ -103,9 +102,9 @@ function index() {
                 type="link"
                 onClick={
                   () =>
-                    console.log(`${window.location.origin}/postdetail/${text}`)
+                    console.log(`${window.location.origin}/post-detail/${text}`)
                   // history.push(
-                  //   `${window.location.origin}/postdetail/${text}`
+                  //   `${window.location.origin}/post-detail/${text}`
                   // )
                 }
               >

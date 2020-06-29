@@ -53,12 +53,12 @@ const SdkUtils = {
       })
     })
   },
-  shareFB() {
+  shareFB(postId) {
     FB.ui(
       {
         method: 'share',
-        display: 'popup'
-        // href: 'http://localhost/8080',
+        display: 'popup',
+        href: `${window.location.origin}/post-detail/${postId}`,
       },
       // callback
       function (response) {}

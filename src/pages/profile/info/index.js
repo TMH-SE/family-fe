@@ -11,12 +11,11 @@ const DescriptionItem = ({ title, content }) => (
 )
 function Info(props) {
   const { userInfo, isMe, dataCountFollow } = props
-  console.log(userInfo)
   const [visible, setVisible] = useState(false)
   return (
     <>
       <Row>
-        <Col span={4}>
+        <Col span={12}>
           <div style={{ display: 'flex' }}>
             <p
               className="site-description-item-profile-p"

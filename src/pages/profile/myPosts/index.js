@@ -19,6 +19,7 @@ function MyPosts(props) {
   const { me } = useContext(IContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const { isBroken } = useContext(MainContext)
+  const { history } = props
   const { data: dataMyPosts, refetch: refetchMyPosts, loading } = useQuery(
     GET_POSTS_BY_USER,
     {
@@ -41,7 +42,7 @@ function MyPosts(props) {
       <Input.TextArea
         onClick={() =>
           isBroken
-            ? history.push('/createpost')
+            ? history.push('/create-post')
             : setVisibleModalCreate(!visibleModalCreate)
         }
         style={{
@@ -61,6 +62,7 @@ function MyPosts(props) {
         dataMyPosts?.postsByUser.map((item, idx) =>
           item?.community ? (
             <PostHaveGroup
+              history={history}
               refetch={refetchMyPosts}
               key={idx}
               item={item}
@@ -68,6 +70,7 @@ function MyPosts(props) {
             ></PostHaveGroup>
           ) : (
             <PostNoGroup
+              history={history}
               refetch={refetchMyPosts}
               key={idx}
               item={item}

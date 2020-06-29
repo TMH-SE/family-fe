@@ -12,13 +12,13 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
-      path: '/createpost',
+      path: '/create-post',
       component: 'createPost',
       title: 'Tạo bài viết'
     },
     {
       exact: true,
-      path: '/pagegroup/:communityId',
+      path: '/page-group/:communityId',
       component: 'pageGroup',
       title: 'Cộng đồng'
     },
@@ -27,6 +27,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
       path: '/profile',
       component: 'profile',
       title: 'Trang cá nhân'
+    },
+    {
+      exact: true,
+      path: '/search-results',
+      component: 'searchResults',
+      title: 'Kết quả tìm kiếm'
     },
     {
       // exact: true,
@@ -63,13 +69,13 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
-      path: '/pagegroup/:communityId',
+      path: '/page-group/:communityId',
       component: 'pageGroup',
       title: 'Cộng đồng'
     },
     {
       exact: false,
-      path: '/postdetail/:postId',
+      path: '/post-detail/:postId',
       component: 'postDetail',
       title: 'Chi tiết bài viết'
     },
@@ -78,12 +84,6 @@ const FamilyAppRoutes = ({ isAuth }) => {
       path: '/:userId/:type',
       component: 'profile',
       title: 'Trang cá nhân'
-    },
-    {
-      exact: true,
-      path: '/search-results',
-      component: 'searchResults',
-      title: 'Kết quả tìm kiếm'
     }
   ]
 

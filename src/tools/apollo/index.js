@@ -37,7 +37,6 @@ const errorMiddleware = onError(({ graphQLErrors, networkError, response }) => {
   if (graphQLErrors) {
     if (response) {
       graphQLErrors.map(({ message, code }) => {
-        console.log(`${code}: ${message}`)
       })
       response.errors = graphQLErrors
     }

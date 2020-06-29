@@ -17,7 +17,6 @@ const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
   const [showMoreRep, setShowMoreRep] = useState({ idParent: null, rows: 0 })
   const [arrTag, setArrTag] = useState([])
   let lessComment = []
-  // lessComment = comments.slice(comments?.length - showMore, comments?.length)
   lessComment =
     showMore < comments.length ? comments.slice(0, showMore) : comments
   useEffect(() => {
@@ -36,9 +35,6 @@ const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
   const replyTo = repTo => {
     setRep(repTo)
   }
-  const sendReportComment = cmt => {
-    
-  }
   const sendNotiTagReply = async (postId, idCmt) => {
     const notificationId = +new Date()
     arrTag &&
@@ -52,7 +48,7 @@ const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
                 action: 'tag',
                 id: rep.commentId,
                 reciever: item?.id,
-                link: `/postdetail/${postId}#${rep.commentId}#${idCmt}`,
+                link: `/post-detail/${postId}#${rep.commentId}#${idCmt}`,
                 content: `${me?.firstname} đã nhắc đến bạn trong bình luận`,
                 seen: false,
                 createdAt: +new Date()
@@ -95,18 +91,18 @@ const CommentList = ({ comments, showMore, idPost, hashNoti, setHashNoti }) => {
         .update({
           mention: mentions // replies: repValue
         })
-        if (replaceToxicWords(value).trim() !== value.trim()) {
-          firebase
-            .database()
-            .ref(`reports/comments/${me?._id}/${+new Date()}`)
-            .set({
-              id: rep.commentId,
-              repId: idCmt,
-              postId: idPost,
-              reason: value,
-              createdAt: +new Date()
-            })
-        }
+      if (replaceToxicWords(value).trim() !== value.trim()) {
+        firebase
+          .database()
+          .ref(`reports/comments/${me?._id}/${+new Date()}`)
+          .set({
+            id: rep.commentId,
+            repId: idCmt,
+            postId: idPost,
+            reason: value,
+            createdAt: +new Date()
+          })
+      }
     } catch (error) {
       console.log(error)
     }
@@ -241,7 +237,6 @@ function CommentPost(props) {
                 : []
             }))
           : []
-        // console.log(temp)
 
         hash && hash[1] && setCmtNoti(temp.filter(item => item.id === hash[1]))
         setComments(temp.reverse())
@@ -287,7 +282,7 @@ function CommentPost(props) {
             action: 'cmt',
             id: commentId,
             reciever: postItem?.createdBy?._id,
-            link: `/postdetail/${postId}#${commentId}`,
+            link: `/post-detail/${postId}#${commentId}`,
             content: `${me?.firstname} đã bình luận bài viết của bạn`,
             seen: false,
             createdAt: +new Date()

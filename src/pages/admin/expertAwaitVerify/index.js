@@ -36,13 +36,6 @@ function index() {
         style={{ height: 'calc(100vh - 103px)' }}
         rowKey="id"
         bordered
-        // rowSelection={{
-        //   type: 'checkbox',
-        //   selectedRowKeys,
-        //   onChange: selectedRowKeys => {
-        //     setSelectedRowKeys(selectedRowKeys)
-        //   }
-        // }}
         columns={[
           {
             title: 'Mã người dùng',
@@ -54,9 +47,9 @@ function index() {
                 type="link"
                 onClick={
                   () =>
-                    console.log(`${window.location.origin}/postdetail/${text}`)
+                    console.log(`${window.location.origin}/post-detail/${text}`)
                   // history.push(
-                  //   `${window.location.origin}/postdetail/${text}`
+                  //   `${window.location.origin}/post-detail/${text}`
                   // )
                 }
               >

@@ -17,8 +17,8 @@ function PostHaveGroup(props) {
   const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, refetch } = props
-  const history = useHistory()
+  const { item, refetch, history } = props
+  // const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
   }, [item?._id])
@@ -41,14 +41,14 @@ function PostHaveGroup(props) {
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Avatar
               shape="square"
-              onClick={() => history.push(`/pagegroup/${item?.community?._id}`)}
+              onClick={() => history.push(`/page-group/${item?.community?._id}`)}
               size={64}
               src={item?.community?.avatar}
             />
             <div style={{ marginLeft: 10, marginTop: 10 }}>
               <a
                 onClick={() =>
-                  history.push(`/pagegroup/${item?.community?._id}`)
+                  history.push(`/page-group/${item?.community?._id}`)
                 }
                 style={{ fontWeight: 'bolder', color: 'black' }}
               >
@@ -117,7 +117,7 @@ function PostHaveGroup(props) {
         <Card.Meta
           className="post-meta"
           title={
-            <a onClick={() => history.push(`/postdetail/${item?._id}`)}>
+            <a onClick={() => history.push(`/post-detail/${item?._id}`)}>
               <Typography.Title level={4}>{item?.title}</Typography.Title>
             </a>
           }
@@ -133,40 +133,20 @@ function PostHaveGroup(props) {
                   overflow: 'hidden'
                 }}
               ></p>
-              {/* {document.getElementsByClassName(`collapse${item?._id}`)[0] &&
+              {!showText &&
+                (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
                 document.getElementsByClassName(`collapse${item?._id}`)[0]
-                  .lastElementChild.clientHeight > 30 && ( */}
-              {!showText && (
-                <a
-                  id={`${nameEl}${item?._id}`}
-                  onClick={async () => {
-                    if (
-                      document.getElementsByClassName(
-                        `collapse${item?._id}`
-                      )[0] &&
-                      document.getElementsByClassName(`collapse${item?._id}`)[0]
-                        .lastElementChild.clientHeight > 300
-                    ) {
-history.push(`./postdetail/${item?._id}`)
-                    } else {
-                      setShowText(!showText)
-                      const content = await document.getElementsByClassName(
-                        `expand${item?._id}`
-                      )
-                      const a = await document.getElementById(`expand${item?._id}`)
-                      // console.log(a, content)
-                      content[0].setAttribute(
-                        'style',
-                        'height: auto !important'
-                      )
-                      a.setAttribute('style', 'visibility: hidden')
-                      setShowText(false)
-                    }
-                  }}
-                >
-                  Xem thêm
-                </a>
-              )}
+                  .children[4]?.clientHeight > 900 ? (
+                  <a
+                    href={`${window.location.origin}/post-detail/${item?._id}`}
+                    target="blank"
+                    id={`${nameEl}${item?._id}`}
+                  >
+                    Xem thêm
+                  </a>
+                ) : (
+                  <a onClick={() => setShowText(!showText)}>Xem thêm</a>
+                ))}
               {/* )} */}
               <img
                 src={item?.thumbnail}

@@ -10,6 +10,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { Skeleton } from 'antd'
 
 function SavedPosts(props) {
+  const { history } = props
   const { me } = useContext(IContext)
   const { data: dataSavedPost, refetch: refetchSavedPost, loading } = useQuery(
     GET_SAVEDPOST_BY_USER,
@@ -26,6 +27,7 @@ function SavedPosts(props) {
         dataSavedPost?.getSavedPostByUser?.reverse().map((item, idx) => {
           return item?.post?.community ? (
             <PostHaveGroup
+              history={history}
               refetch={refetchSavedPost}
               key={idx}
               item={item.post}
@@ -33,6 +35,7 @@ function SavedPosts(props) {
             ></PostHaveGroup>
           ) : (
             <PostNoGroup
+              history={history}
               refetch={refetchSavedPost}
               key={idx}
               item={item.post}
