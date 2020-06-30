@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import {
   Avatar,
   Button,
@@ -32,7 +32,7 @@ import {
 } from '@shared'
 import './index.scss'
 import { IContext } from '@tools'
-
+import firebase from 'firebase/app'
 import ImgCrop from 'antd-img-crop'
 import gql from 'graphql-tag'
 import MenuInfo from './menuInfo'
@@ -54,6 +54,7 @@ export const GET_SUM_FOLLOWER_BY_USER = gql`
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
+  const [dataCount, setDataCount] = useState([])
   const { isBroken, chooseConversation } = useContext(MainContext)
   const { data, refetch, loading } = useQuery(GET_USER, {
     variables: { userId: userId }
@@ -86,6 +87,23 @@ function Profile(props) {
       fetchPolicy: 'no-cache'
     }
   )
+  useEffect(() => {
+    dataCommunity && getCount()
+  }, [dataCommunity])
+  const getCount = () => {
+    dataCommunity?.getCommunitiesByUser?.map(item => {
+      firebase
+        .database()
+        .ref(`communities/${item?.community?._id}`)
+        .on('value', snapshot => {
+          const temp = [
+            ...dataCount,
+            { ...snapshot.val(), id: item?.community?._id }
+          ]
+          setDataCount(temp)
+        })
+    })
+  }
   const uploadButtonCover =
     isMe &&
     (!img.coverPhoto ? (
@@ -259,12 +277,12 @@ function Profile(props) {
         <div>
           <div>
             <div
-             onClick={() => {
-              setPreviewImg({
-                isShow: true,
-                imgSrc: img.coverPhoto || data?.getUser.coverPhoto
-              })
-            }}
+              onClick={() => {
+                setPreviewImg({
+                  isShow: true,
+                  imgSrc: img.coverPhoto || data?.getUser.coverPhoto
+                })
+              }}
               style={{
                 position: 'relative',
                 width: '100%',
@@ -317,12 +335,12 @@ function Profile(props) {
           >
             <div style={{ display: 'flex', width: '100%' }}>
               <div
-               onClick={() => {
-                setPreviewImg({
-                  isShow: true,
-                  imgSrc: img?.avatar || data?.getUser?.avatar
-                })
-              }}
+                onClick={() => {
+                  setPreviewImg({
+                    isShow: true,
+                    imgSrc: img?.avatar || data?.getUser?.avatar
+                  })
+                }}
                 style={{
                   position: 'relative',
                   width: 130,
@@ -381,7 +399,7 @@ function Profile(props) {
                       textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
                     }}
                   >
-                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`} {' '}
+                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`}{' '}
                     {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone />}
                   </p>
                   <div>
@@ -446,13 +464,11 @@ function Profile(props) {
           ) : (
             <List
               itemLayout="horizontal"
-              dataSource={
-                dataCommunity && dataCommunity?.getCommunitiesByUser?.reverse()
-              }
+              dataSource={dataCount}
               renderItem={item => (
                 <CommunityItem
-                  item={item.community}
-                  data={dataCommunity?.getCommunitiesByUser}
+                  item={item}
+                  // data={dataCommunity?.getCommunitiesByUser}
                 />
               )}
             />

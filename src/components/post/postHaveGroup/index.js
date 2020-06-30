@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import firebase from 'firebase/app'
 import { Card, Avatar, Typography } from 'antd'
 import {
@@ -9,7 +9,6 @@ import {
   JoinBtn
 } from '@components'
 import { CommentOutlined } from '@ant-design/icons'
-import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
 
 function PostHaveGroup(props) {
@@ -75,6 +74,7 @@ function PostHaveGroup(props) {
           process.env.ADMIN_SERVER === 'false' && (
             <JoinBtn
               id={{ userId: me?._id, communityId: item?.community?._id }}
+              history={history}
             ></JoinBtn>
           )
         }
