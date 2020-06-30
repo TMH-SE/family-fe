@@ -1,64 +1,113 @@
 import React from 'react'
-import CanvasJSReact from '@assets/js/canvasjs.react'
+import { Line } from '@ant-design/charts'
 function index() {
-  const CanvasJSChart = CanvasJSReact.CanvasJSChart
-  const options = {
-    animationEnabled: true,
-    title: {
-      text: 'Number of New Customers'
+  const data = [
+    {
+      date: 1,
+      count: 10,
+      type: 'user'
     },
-    axisY: {
-      title: 'Number of Customers',
-      includeZero: false
+    {
+      date: 1,
+      count: 15,
+      type: 'post'
     },
-    toolTip: {
-      shared: true
+    {
+      date: 1,
+      count: 2,
+      type: 'seminar'
     },
-    data: [
-      {
-        type: 'spline',
-        name: '2016',
-        showInLegend: true,
-        dataPoints: [
-          { y: 155, label: 'Jan' },
-          { y: 150, label: 'Feb' },
-          { y: 152, label: 'Mar' },
-          { y: 148, label: 'Apr' },
-          { y: 142, label: 'May' },
-          { y: 150, label: 'Jun' },
-          { y: 146, label: 'Jul' },
-          { y: 149, label: 'Aug' },
-          { y: 153, label: 'Sept' },
-          { y: 158, label: 'Oct' },
-          { y: 154, label: 'Nov' },
-          { y: 150, label: 'Dec' }
-        ]
-      },
-      {
-        type: 'spline',
-        name: '2017',
-        showInLegend: true,
-        dataPoints: [
-          { y: 172, label: 'Jan' },
-          { y: 173, label: 'Feb' },
-          { y: 175, label: 'Mar' },
-          { y: 172, label: 'Apr' },
-          { y: 162, label: 'May' },
-          { y: 165, label: 'Jun' },
-          { y: 172, label: 'Jul' },
-          { y: 168, label: 'Aug' },
-          { y: 175, label: 'Sept' },
-          { y: 170, label: 'Oct' },
-          { y: 165, label: 'Nov' },
-          { y: 169, label: 'Dec' }
-        ]
-      }
-    ]
-  }
+    {
+      date: 2,
+      count: 5,
+      type: 'user'
+    },
+    {
+      date: 2,
+      count: 10,
+      type: 'post'
+    },
+    {
+      date: 2,
+      count: 3,
+      type: 'seminar'
+    },
+    {
+      date: 3,
+      count: 3,
+      type: 'user'
+    },
+    {
+      date: 3,
+      count: 12,
+      type: 'post'
+    },
+    {
+      date: 3,
+      count: 5,
+      type: 'seminar'
+    },
+    {
+      date: 4,
+      count: 6,
+      type: 'user'
+    },
+    {
+      date: 4,
+      count: 6,
+      type: 'post'
+    },
+    {
+      date: 4,
+      count: 7,
+      type: 'seminar'
+    },
+    {
+      date: 5,
+      count: 15,
+      type: 'user'
+    },
+    {
+      date: 5,
+      count: 11,
+      type: 'post'
+    },
+    {
+      date: 5,
+      count: 4,
+      type: 'seminar'
+    },
+    {
+      date: 6,
+      count: 20,
+      type: 'user'
+    },
+    {
+      date: 6,
+      count: 30,
+      type: 'post'
+    },
+    {
+      date: 6,
+      count: 2,
+      type: 'seminar'
+    }
+  ]
   return (
-    <div>
-      <CanvasJSChart options={options} />
-    </div>
+    <Line
+      title={{ text: 'Report', visible: true }}
+      description={{ text: 'Hello report family', visible: true }}
+      padding='auto'
+      forceFit
+      xField='date'
+      yField="count"
+      seriesField='type'
+      responsive
+      legend={{
+        position: 'bottom-left'
+      }}
+      data={data}
+    />
   )
 }
 
