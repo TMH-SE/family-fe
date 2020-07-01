@@ -13,10 +13,10 @@ function Chat(props) {
       .database()
       .ref(`messenger/`)
       .on('value', snapshot => {
-        const temp = Object.keys(snapshot.val()).map(key => ({
+        const temp = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({
           ...snapshot.val()[key],
           id: key
-        }))
+        })) : []
         const a =
           temp.id === `${members[0]}${members[1]}` ||
           temp.id === `${members[1]}${members[0]}`

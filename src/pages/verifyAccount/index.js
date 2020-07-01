@@ -6,7 +6,7 @@ import { Result, Button, Typography, Form, Modal, Input } from 'antd'
 import { LoadingOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import ModalResend from './modalResend'
 import { IContext } from '@tools'
-
+import firebase from 'firebase/app'
 const { Paragraph, Text } = Typography
 
 const VERIFY_ACCOUNT = gql`
@@ -20,6 +20,7 @@ const VERIFY_ACCOUNT = gql`
 const index = ({ history, match }) => {
   const { refetchMe } = useContext(IContext)
   const [visible, setVisible] = useState(false)
+  const { me } = useContext(IContext)
   const {
     params: { verifyToken }
   } = match
@@ -28,7 +29,6 @@ const index = ({ history, match }) => {
       verifyToken
     }
   })
-  
   return loading ? (
     <Result
       icon={<LoadingOutlined />}
@@ -48,6 +48,11 @@ const index = ({ history, match }) => {
             )
             history.push('/homepage')
             refetchMe()
+            if (me?.expert) {
+              firebase.database().ref(`awaitVerifyExperts/${me?._id}`).set({
+                createdAt: new Date().getTime()
+              })
+            }
           }}
           key="home"
         >

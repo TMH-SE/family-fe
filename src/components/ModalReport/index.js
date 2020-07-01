@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
-import { Modal, Button, Radio, notification } from 'antd'
+import { Modal, Button, Radio, notification, Input } from 'antd'
 // import 'antd/dist/antd.css'
 // import Editor from '../editor'
 import firebase from 'firebase/app'
@@ -37,6 +37,8 @@ const data = [
 ]
 function ModalReport(props) {
   const [value, setValue] = useState('')
+  const [isTextValue, setIsTextValue] = useState(false)
+  const [text, setText] = useState(false)
   const { me } = useContext(IContext)
   const radioStyle = {
     display: 'block',
@@ -44,7 +46,12 @@ function ModalReport(props) {
     lineHeight: '30px'
   }
   const onChange = e => {
+    setIsTextValue(false)
+    setText('')
     setValue(e.target.value)
+    if (e.target.value === 'Lý do khác') {
+      setIsTextValue(true)
+    }
   }
   return (
     <Modal
@@ -64,21 +71,28 @@ function ModalReport(props) {
           type="primary"
           onClick={() => {
             if (value.trim() !== '') {
-              firebase
-                .database()
-                .ref(`reports/posts/${props.postId}/${me?._id}`)
-                .set({
-                  reason: value,
-                  createdAt: +new Date()
+              if (value.trim() !== 'Lý do khác' || text.trim() !== '') {
+                firebase
+                  .database()
+                  .ref(`reports/posts/${props.postId}/${me?._id}`)
+                  .set({
+                    reason: value,
+                    createdAt: +new Date()
+                  })
+                notification.success({
+                  message: 'Bạn đã báo cáo bài viết.',
+                  duration: 1.5
                 })
-              notification.success({
-                message: 'Bạn đã báo cáo bài viết',
-                duration: 1.5
-              })
-              props.handleOk()
+                props.handleOk()
+              } else {
+                notification.info({
+                  message: 'Bạn chưa báo cáo bài viết. Vui lòng nhập lí do',
+                  duration: 1.5
+                })
+              }
             } else {
-              notification.success({
-                message: 'Bạn chưa báo cáo bài viết',
+              notification.info({
+                message: 'Bạn chưa chọn lí do báo cáo bài viết',
                 duration: 1.5
               })
             }
@@ -97,6 +111,12 @@ function ModalReport(props) {
           )
         })}
       </Radio.Group>
+      {isTextValue && (
+        <Input
+          placeholder="Nhập lí do ..."
+          onChange={e => setText(e.target.value)}
+        />
+      )}
     </Modal>
   )
 }

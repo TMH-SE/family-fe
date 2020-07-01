@@ -91,6 +91,9 @@ export const GET_POSTS = gql`
         name
         avatar
       }
+      community{
+        _id
+      }
       createdBy {
         _id
         firstname
@@ -215,6 +218,9 @@ export const GET_POST_BY_COMMUNITY = gql`
         avatar
       }
       createdAt
+      community{
+        _id
+      }
     }
   }
 `
