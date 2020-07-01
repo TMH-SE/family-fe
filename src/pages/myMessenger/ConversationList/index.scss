@@ -6,6 +6,7 @@
   padding-top: 10px;
   .ant-list-item-meta {
     padding-left: 10px;
+    padding-right: 10px;
   }
   .ant-list-item-meta-description {
     white-space: nowrap;
@@ -29,5 +30,18 @@
   height: 90vh;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-top: 10px;
+  padding-top: 10px;  
+  .ant-list-item{
+    padding: 0 12px !important
+  }
+  .ant-list-item-meta {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .ant-list-item-meta-description {
+    white-space: nowrap;
+    // width: 70%;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+  }
 }

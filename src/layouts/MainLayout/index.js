@@ -29,7 +29,8 @@ import {
   TeamOutlined,
   HomeFilled,
   YoutubeFilled,
-  BellFilled
+  BellFilled,
+  LoginOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -299,6 +300,13 @@ const index = ({ children }) => {
                     </Dropdown>
                   </>
                 )
+              ) : isBroken ? (
+                <Button
+                  onClick={() => history.push('/login')}
+                  className="btn-round"
+                  shape="circle"
+                  icon={<LoginOutlined style={{ color: '#1890ff' }} />}
+                />
               ) : (
                 <Button type="primary" onClick={() => history.push('/login')}>
                   Đăng nhập
