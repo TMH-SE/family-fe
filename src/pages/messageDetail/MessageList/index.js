@@ -177,7 +177,7 @@ export default function MessageList(props) {
               `message-list-container ${idChat}`
             )[0]
             props.showMess(idChat)
-            if (showMore <= messages.length && ele.scrollTop === 0) {
+            if (showMore <= messages?.length && ele.scrollTop === 0) {
               setShowMore(showMore + 3)
               ele.scrollTop = 30
             }

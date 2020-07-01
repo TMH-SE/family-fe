@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 
 import firebase from 'firebase/app'
 import {
   HeartTwoTone,
   MessageTwoTone,
   LikeTwoTone,
-  FileTextTwoTone
+  FileTextTwoTone,
+  SafetyCertificateTwoTone,
+  MehTwoTone
 } from '@ant-design/icons'
 import { List, Avatar } from 'antd'
 import '../index.scss'
@@ -15,6 +17,14 @@ const arrType = [
   {
     type: 'cmt',
     icon: <MessageTwoTone />
+  },
+  {
+    type: 'verify',
+    icon: <SafetyCertificateTwoTone />
+  },
+  {
+    type: 'reject',
+    icon: <MehTwoTone twoToneColor='red' />
   },
   {
     type: 'tag',
@@ -41,7 +51,7 @@ const NotiList = props => {
     <List.Item
       className="noti-item"
       style={{
-        backgroundColor: noti.seen ? 'initial' : 'rgba(214, 234, 248, 0.8)'
+        padding: '0 12px', backgroundColor: noti.seen ? 'initial' : 'rgba(214, 234, 248, 0.8)'
       }}
       onClick={() => {
         firebase
