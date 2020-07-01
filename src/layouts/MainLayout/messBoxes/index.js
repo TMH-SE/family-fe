@@ -42,7 +42,6 @@ const Messboxes = forwardRef((props, ref) => {
   useEffect(() => {
   }, [showMore])
   useEffect(() => {
-    console.log('nn')
     firebase
       .database()
       .ref(`messboxes/${me?._id}`)
