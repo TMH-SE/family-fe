@@ -14,25 +14,6 @@ const httpLink = new HttpLink({
   uri: `${window.location.protocol}//${urn}`
 })
 
-const wsLink = new WebSocketLink({
-  uri: `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${urn}`,
-  options: {
-    reconnect: true,
-    connectionParams: () => ({
-      'access-token': window.localStorage.getItem('access-token') || ''
-    })
-  }
-})
-
-const linkSplit = split(
-  ({ query }) => {
-    const { kind, operation } = getMainDefinition(query)
-    return kind === 'OperationDefinition' && operation === 'subscription'
-  },
-  wsLink,
-  httpLink
-)
-
 const errorMiddleware = onError(({ graphQLErrors, networkError, response }) => {
   if (graphQLErrors) {
     if (response) {
@@ -53,7 +34,7 @@ const authLink = setContext((_, { headers }) => ({
   }
 }))
 
-const link = ApolloLink.from([errorMiddleware, linkSplit])
+const link = ApolloLink.from([errorMiddleware, httpLink])
 
 const Client = new ApolloClient({
   // ssrMode: true,

@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, useEffect, useLayoutEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'
-import { Card, Avatar, Spin } from 'antd'
+import { Card, Avatar } from 'antd'
 
 import { InputCustomize } from '@components'
 import Message from '../Message'
@@ -14,53 +14,21 @@ import { GET_USER } from '@shared'
 moment().format()
 
 export default function MessageList(props) {
-  const [messages, setMessages] = useState([])
-  const {
-    chatBox,
-    onCancelMessbox,
-    messbox,
-    currentId,
-    setCurrentIdChat // rerender
-  } = props
-  const { idChat, userId } = chatBox
+  // const [messages, setMessages] = useState([])
+  const { chatBox, onCancelMessbox, showMore, setShowMore, currentId } = props
+  const { idChat, userId, messages } = chatBox
   const { me } = useContext(IContext)
-  const [showMore, setShowMore] = useState(10)
-  const [loading, setLoading] = useState(false)
   useEffect(() => {
-    loading && getMessages()
-  }, [showMore])
-  const { data } = useQuery(GET_USER, { variables: { userId } })
+    // chatBox
+  }, [chatBox])
+  const { data } = useQuery(GET_USER, {
+    variables: { userId }
+    // fetchPolicy: 'no-cache'
+  })
   useEffect(() => {
     document.getElementById(`input-custom-${currentId}`) &&
       document.getElementById(`input-custom-${currentId}`).focus()
   }, [currentId])
-  useEffect(() => {
-    getMessages()
-  }, [currentId, messbox])
-  const getMessages = () => {
-    // setTimeout(() => {
-    setLoading(true)
-    firebase
-      .database()
-      .ref(`messenger/${idChat}/listmessages`)
-      .orderByKey()
-      .limitToLast(showMore)
-      .on('value', snapshot => {
-        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp = snapshot.val()
-          ? Object.keys(snapshot.val()).map(key => ({
-              ...snapshot.val()[key],
-              id: key
-            }))
-          : []
-        if (showMore > temp.length) {
-          setLoading(false)
-        }
-        setMessages(temp)
-      })
-    // }, 300)
-  }
-
   const renderMessages = () => {
     let i = 0
     const messageCount = messages?.length
@@ -125,7 +93,7 @@ export default function MessageList(props) {
   const handleSubmit = async (value, imgList) => {
     const message = +new Date()
     try {
-      await firebase
+      firebase
         .database()
         .ref(`messenger/${idChat}/listmessages/` + message)
         .set({
@@ -134,6 +102,9 @@ export default function MessageList(props) {
           author: me?._id,
           seen: false,
           hideWith: []
+        })
+        .then(() => {
+          props.showMess(idChat)
         })
       await firebase
         .database()
@@ -148,8 +119,6 @@ export default function MessageList(props) {
           },
           lastActivity: +new Date()
         })
-      setCurrentIdChat(null)
-      setCurrentIdChat(idChat)
     } catch (error) {
       console.log(error)
     }
@@ -207,18 +176,17 @@ export default function MessageList(props) {
             const ele = document.getElementsByClassName(
               `message-list-container ${idChat}`
             )[0]
+            props.showMess(idChat)
             if (showMore <= messages.length && ele.scrollTop === 0) {
               setShowMore(showMore + 3)
               ele.scrollTop = 30
             }
             if (showMore > messages.length) {
-              setLoading(false)
+              // setLoading(false)
             }
           }}
         >
-          <div className="spin-chat">
-            <Spin spinning={loading} />
-          </div>
+          <div className="spin-chat">{/* <Spin spinning={loading} /> */}</div>
           {renderMessages()}
         </div>
       </Card>

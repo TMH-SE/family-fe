@@ -15,12 +15,11 @@ import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 import {
-  GET_MEMBERS_BY_COMMUNITY,
   GET_POST_BY_COMMUNITY,
   CHECK_IS_MEMBER
 } from '@shared'
 import { MainContext } from '../../layouts/MainLayout'
-
+import firebase from 'firebase/app'
 export const GET_COMMUNITY_BY_ID = gql`
   query communityById($id: String) {
     communityById(id: $id) {
@@ -37,7 +36,7 @@ export const GET_COMMUNITY_BY_ID = gql`
 function PageGroup(props) {
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const { communityId } = props.match.params
-  const { me, refetchCount, setRefetchCount, setRefetchSumPosts } = useContext(
+  const { me } = useContext(
     IContext
   )
   const { isBroken } = useContext(MainContext)
@@ -58,7 +57,7 @@ function PageGroup(props) {
     GET_COMMUNITY_BY_ID,
     {
       variables: { id: communityId },
-      // fetchPolicy: 'no-cache',
+      fetchPolicy: 'no-cache',
       skip: !communityId
     }
   )
@@ -73,11 +72,14 @@ function PageGroup(props) {
     setVisibleModalCreate(false)
     setVisibleModalReport(false)
   }
+  const [dataCount, setDataCount] = useState([])
   useEffect(() => {
-    refetch()
-    setRefetchCount('')
-    setRefetchSumPosts('')
-  }, [refetchCount, setRefetchSumPosts])
+    firebase.database().ref(`communities/${communityId}`).on('value', snapshot => {
+      const temp = snapshot.val()
+      setDataCount(temp)
+    })
+  }, [])
+
   return loading ? (
     <Skeleton active />
   ) : (
@@ -108,14 +110,14 @@ function PageGroup(props) {
           marginTop: -60,
           backgroundColor: 'rgba(255,255,255,0.6)'
         }}
-        onClick={() => {
+      >
+        <Avatar
+         onClick={() => {
           setPreviewImg({
             isShow: true,
             imgSrc: dataCommunity?.communityById?.avatar
           })
         }}
-      >
-        <Avatar
           style={{ border: '2px solid rgba(0,0,0,0.5)', marginLeft: 10 }}
           shape="square"
           size={120}
@@ -142,21 +144,17 @@ function PageGroup(props) {
             }}
           >
             {' '}
-            {/* {dataMemberCount?.getMembersByCommunity} thành viên -{' '}
-            {data?.postsByCommunity?.length} bài viết */}
-            {dataCommunity?.communityById?.countMember} thành viên -{' '}
-            {dataCommunity?.communityById?.countPost} bài viết
+            {dataCount?.membersCount} thành viên -{' '}
+            {dataCount?.postsCount} bài viết
           </p>
-          <JoinBtn id={{ userId: me?._id, communityId: communityId }}></JoinBtn>
+          <JoinBtn id={{ userId: me?._id, communityId: communityId }} history={props.history} refetchDataMemberCount={refetch}></JoinBtn>
         </div>
       </div>
       <br />
       {dataIsMember?.checkIsMember && (
         <Input.TextArea
           onClick={() =>
-            isBroken
-              ? props.history.push('/create-post')
-              : setVisibleModalCreate(!visibleModalCreate)
+            setVisibleModalCreate(!visibleModalCreate)
           }
           style={{
             margin: '0 auto',
@@ -175,7 +173,7 @@ function PageGroup(props) {
       ) : (
         data &&
         data?.postsByCommunity.map((item, idx) => {
-          return <PostNoGroup key={idx} item={item} idx={idx}></PostNoGroup>
+          return <PostNoGroup refetch={refetchPostsByCom} key={idx} item={item} idx={idx}></PostNoGroup>
         })
       )}
       <ModalPreviewImg
