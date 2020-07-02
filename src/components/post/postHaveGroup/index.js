@@ -40,7 +40,9 @@ function PostHaveGroup(props) {
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Avatar
               shape="square"
-              onClick={() => history.push(`/page-group/${item?.community?._id}`)}
+              onClick={() =>
+                history.push(`/page-group/${item?.community?._id}`)
+              }
               size={64}
               src={item?.community?.avatar}
             />
@@ -135,8 +137,9 @@ function PostHaveGroup(props) {
               ></p>
               {!showText &&
                 (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
-                document.getElementsByClassName(`collapse${item?._id}`)[0]
-                  .children[4]?.clientHeight > 900 ? (
+                document
+                  .getElementsByClassName(`collapse${item?._id}`)[0]
+                  .getElementsByTagName('div')[0]?.clientHeight > 900 ? (
                   <a
                     href={`${window.location.origin}/post-detail/${item?._id}`}
                     target="blank"
