@@ -128,12 +128,13 @@ ul {
     right: 17%;
     bottom: 0;
     .contentMess-box {
-      width: 15vw;
+      width: 20rem;
       margin-right: 10px;
       // border: #e6f4ff solid 5px;
       background-color: #fff;
 
       .message-list-container {
+        // flex: '1 1 auto';
         height: 35vh;
         background-color: initial;
       }

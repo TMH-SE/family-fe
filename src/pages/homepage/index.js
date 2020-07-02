@@ -38,7 +38,7 @@ const HomePage = props => {
   const [dataPostLoad, setDataPostLoad] = useState(dataPosts)
   function handleScroll() {
     if (
-      window.innerHeight + document.documentElement.scrollTop ===
+      window.innerHeight + document.documentElement.scrollTop >=
       document.scrollingElement.scrollHeight
     ) {
       setLoadMore(true)
@@ -73,6 +73,7 @@ const HomePage = props => {
           })
         }
       })
+      console.log(a?.data?.posts?.length , quantityPosts)
       if (a?.data?.posts?.length < 5) {
         setIsEnd(true)
       } else {
