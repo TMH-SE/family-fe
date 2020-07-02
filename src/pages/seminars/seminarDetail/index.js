@@ -6,8 +6,46 @@ import {
   MoreOutlined,
   UserOutlined
 } from '@ant-design/icons'
-
+import gql from 'graphql-tag'
+import firebase from 'firebase/app'
+import { useQuery } from '@apollo/react-hooks'
+const GET_FOLLOWER_BY_USER = gql`
+  query getFollowerByUser($userId: String) {
+    getFollowerByUser(userId: $userId) {
+      _id {
+        userId
+      }
+      follower {
+        _id
+        firstname
+        lastname
+      }
+    }
+  }
+`
 function SeminarDetail({ me, seminarData, state }) {
+  const { data: dataFollow } = useQuery(GET_FOLLOWER_BY_USER, {
+    variables: { userId: seminarData?.createdBy?._id },
+    fetchPolicy: 'no-cache'
+  })
+  const notifyToUser = item => {
+    try {
+      item?._id !== seminarData?.createdBy?._id &&
+        firebase
+          .database()
+          .ref(`notifications/${item?._id}/${+new Date()}`)
+          .set({
+            action: 'seminar',
+            reciever: item?._id,
+            link: `${window.origin}/seminar/${seminarData?._id}`,
+            content: `${seminarData?.createdBy?.expert?.jobTitle} ${seminarData?.createdBy?.firstname} đang phát trực tiếp hội thảo ${seminarData?.title}. Tham gia ngay nào`,
+            seen: false,
+            createdAt: +new Date()
+          })
+    } catch (err) {
+      console.log(err)
+    }
+  }
   const extra = useMemo(() => {
     switch (state) {
       case 'upcoming': {
@@ -15,9 +53,12 @@ function SeminarDetail({ me, seminarData, state }) {
           return (
             <Space>
               <Button
-                onClick={() =>
+                onClick={() => {
+                  dataFollow?.getFollowerByUser?.map(item => {
+                    notifyToUser(item.follower)
+                  })
                   window.open(`${window.origin}/seminar/${seminarData._id}`)
-                }
+                }}
                 key="start"
                 type="primary"
               >
@@ -66,7 +107,7 @@ function SeminarDetail({ me, seminarData, state }) {
       default:
         break
     }
-  }, [state])
+  }, [state, dataFollow])
   return (
     <Card
       style={{ marginBottom: 10 }}

@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import {
   Input,
   Form,
-  Modal,
   DatePicker,
   Radio,
   Button,
@@ -67,7 +66,7 @@ const EditUser = props => {
   }
   return (
     <Drawer
-      width={isBroken ? "100%" : '40%'}
+      width={isBroken ? '100%' : '40%'}
       visible={visible}
       title="Chỉnh sửa thông tin"
       closable={false}
@@ -187,21 +186,24 @@ const EditUser = props => {
                   name="areasOfExpertise"
                   label="Lĩnh vực chuyên môn"
                 >
-                  <Input />
+                  <Input disabled={me?.expert?.isVerify} />
                 </Form.Item>
                 <Form.Item
                   {...formItemLayout}
                   name="jobTitle"
                   label="Chức danh"
                 >
-                  <Input />
+                  <Input disabled={me?.expert?.isVerify} />
                 </Form.Item>
                 <Form.Item
                   {...formItemLayout}
                   name="yearsExperience"
                   label="Số năm kinh nghiệm"
                 >
-                  <InputNumber style={{ width: '100%' }} />
+                  <InputNumber
+                    disabled={me?.expert?.isVerify}
+                    style={{ width: '100%' }}
+                  />
                 </Form.Item>
               </>
             ) : null
