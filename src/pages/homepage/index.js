@@ -64,35 +64,28 @@ const HomePage = props => {
   useEffect(() => {
     fetchMoreListItems()
   }, [quantityPosts])
-  function fetchMoreListItems() {
-    setTimeout(async () => {
-      const a = await fetchMore({
-        query: GET_POSTS,
-        variables: {
-          quantity: quantityPosts
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev
-          return Object.assign({}, prev, {
-            posts: [...prev.posts, ...fetchMoreResult.posts]
-          })
-        }
-      })
-      console.log(a?.data?.posts?.length, quantityPosts)
-      if (a?.data?.posts?.length < 5) {
-        setIsEnd(true)
-        setLoadMore(false)
-      } else {
-        if (a?.data?.posts?.length + 5 < quantityPosts) {
-          setLoadMore(false)
-          setIsEnd(true)
-        } else {
-          setDataPostLoad(a?.data)
-          setLoadMore(false)
-          // setIsEnd(false)
-        }
+  const fetchMoreListItems = () => {
+    fetchMore({
+      query: GET_POSTS,
+      variables: {
+        quantity: quantityPosts
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+        return Object.assign({}, prev, {
+          posts: [...prev.posts, ...fetchMoreResult.posts]
+        })
       }
-    }, 300)
+    }).then(({ data }) => {
+      console.log(data?.posts?.length, quantityPosts)
+      if (data?.posts?.length + 5 < quantityPosts) {
+        setLoadMore(false)
+        setIsEnd(true)
+      } else {
+        setDataPostLoad(data)
+        setLoadMore(false)
+      }
+    })
   }
   useEffect(() => {
     if (!isEnd) {
