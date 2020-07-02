@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext, useLayoutEffect } from 'react'
-import { Popover, Tooltip } from 'antd'
+import { Popover, Tooltip, Space } from 'antd'
 import { Emoji } from 'emoji-mart'
 import { LikeOutlined } from '@ant-design/icons'
 import firebase from 'firebase/app'
@@ -133,16 +133,23 @@ function Reaction(props) {
   }
   return (
     <Popover
-      className="reaction-popover"
-      content={emojiData.map(emo => (
-        <Tooltip key={emo.emoji} title={emo.text}>
-          <Emoji
-            emoji={emo.emoji}
-            size={24}
-            onClick={e => (isAuth ? onClickEmoji(e, emo) : openLoginModal())}
-          />
-        </Tooltip>
-      ))}
+      // className="reaction-popover"
+      overlayClassName="reaction-popover"
+      content={
+        <Space>
+          {emojiData.map(emo => (
+            <Tooltip key={emo.emoji} title={emo.text}>
+              <Emoji
+                emoji={emo.emoji}
+                size={24}
+                onClick={e =>
+                  isAuth ? onClickEmoji(e, emo) : openLoginModal()
+                }
+              />
+            </Tooltip>
+          ))}
+        </Space>
+      }
     >
       {/* <Space> */}
       {chosenmoji ? (

@@ -1,7 +1,6 @@
 import React, { useContext, useRef, useEffect, useState, useMemo } from 'react'
 import { Card, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import './index.scss'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import firebase from 'firebase/app'
