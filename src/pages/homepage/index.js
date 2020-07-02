@@ -39,7 +39,8 @@ const HomePage = props => {
   function handleScroll() {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.scrollingElement.scrollHeight && !isEnd
+        document.scrollingElement.scrollHeight &&
+      !isEnd
     ) {
       setLoadMore(true)
 
@@ -94,9 +95,11 @@ const HomePage = props => {
     }, 300)
   }
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
+    if (!isEnd) {
+      window.addEventListener('scroll', handleScroll)
+    }
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isEnd])
 
   return (
     <div id="list-posts">
@@ -141,6 +144,7 @@ const HomePage = props => {
         dataPostLoad?.posts.map((item, idx) => {
           return item?.community ? (
             <PostHaveGroup
+              isBroken={isBroken}
               history={history}
               refetch={refetchPosts}
               key={idx}
@@ -150,6 +154,7 @@ const HomePage = props => {
             ></PostHaveGroup>
           ) : (
             <PostNoGroup
+              isBroken={isBroken}
               history={history}
               refetch={refetchPosts}
               key={idx}
