@@ -277,12 +277,6 @@ function Profile(props) {
         <div>
           <div>
             <div
-              onClick={() => {
-                setPreviewImg({
-                  isShow: true,
-                  imgSrc: img.coverPhoto || data?.getUser.coverPhoto
-                })
-              }}
               style={{
                 position: 'relative',
                 width: '100%',
@@ -292,6 +286,12 @@ function Profile(props) {
             >
               {(img.coverPhoto || data?.getUser.coverPhoto) && (
                 <img
+                  onClick={() => {
+                    setPreviewImg({
+                      isShow: true,
+                      imgSrc: img.coverPhoto || data?.getUser.coverPhoto
+                    })
+                  }}
                   className="cover-img"
                   style={{ objectFit: 'cover', height: 250, width: '100%' }}
                   // alt='example'
@@ -299,27 +299,29 @@ function Profile(props) {
                 />
               )}
               {/* {loadingImg.coverPhoto && ( */}
-              <div
-                className="btn-saveCover"
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  top: 0,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
-                }}
-              >
-                {/* <LoadingOutlined
+              {img.coverPhoto && (
+                <div
+                  className="btn-saveCover"
+                  style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    top: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
+                  }}
+                >
+                  {/* <LoadingOutlined
                     style={{
                       fontSize: 30,
                       color: '#fff'
                     }}
                   /> */}
-                <Spin spinning={loadingImg.coverPhoto} size="large" />
-              </div>
+                  <Spin spinning={loadingImg.coverPhoto} size="large" />
+                </div>
+              )}
               {/* )} */}
               {uploadButtonCover}
             </div>
@@ -335,12 +337,6 @@ function Profile(props) {
           >
             <div style={{ display: 'flex', width: '100%' }}>
               <div
-                onClick={() => {
-                  setPreviewImg({
-                    isShow: true,
-                    imgSrc: img?.avatar || data?.getUser?.avatar
-                  })
-                }}
                 style={{
                   position: 'relative',
                   width: 130,
@@ -350,6 +346,12 @@ function Profile(props) {
               >
                 {(data?.getUser?.avatar || img?.avatar) && (
                   <Avatar
+                    onClick={() => {
+                      setPreviewImg({
+                        isShow: true,
+                        imgSrc: img?.avatar || data?.getUser?.avatar
+                      })
+                    }}
                     className="img-avt"
                     style={{ border: '2px solid black', objectFit: 'cover' }}
                     shape="circle"
@@ -358,29 +360,31 @@ function Profile(props) {
                   />
                 )}
                 {/* {loadingImg.avatar && ( */}
-                <div
-                  className="btn-saveAvt"
-                  style={{
-                    fontSize: 25,
-                    borderRadius: '50%',
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    top: 0,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
-                  }}
-                >
-                  {/* <LoadingOutlined
+                {img.avatar && (
+                  <div
+                    className="btn-saveAvt"
+                    style={{
+                      fontSize: 25,
+                      borderRadius: '50%',
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      top: 0,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
+                    }}
+                  >
+                    {/* <LoadingOutlined
                       style={{
                         fontSize: 30,
                         color: '#fff'
                       }}
                     /> */}
-                  <Spin spinning={loadingImg.avatar} />
-                </div>
+                    <Spin spinning={loadingImg.avatar} />
+                  </div>
+                )}
                 {uploadButtonAvt}
                 {/* )} */}
               </div>
@@ -446,6 +450,7 @@ function Profile(props) {
       >
         {type === 'info' && (
           <Info
+            isBroken={isBroken}
             userInfo={data?.getUser}
             isMe={isMe}
             dataCountFollow={dataCountFollow}
