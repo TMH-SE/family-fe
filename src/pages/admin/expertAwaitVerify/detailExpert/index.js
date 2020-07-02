@@ -22,12 +22,37 @@ const DetailExpert = ({ rowData, visible, onClose }) => {
       }
     })
       .then(({ data }) => {
-          notification.success({
-            message: 'Hoàn tất',
-            placement: 'bottomRight'
-          })
-          firebase.database().ref(`awaitVerifyExperts/${rowData?.id}`).remove()
-          onClose()
+        notification.success({
+          message: 'Hoàn tất',
+          placement: 'bottomRight'
+        })
+        firebase.database().ref(`awaitVerifyExperts/${rowData?.id}`).remove()
+        if (isVerify) {
+          firebase
+            .database()
+            .ref('notifications/' + rowData?.id + '/' + new Date().getTime())
+            .set({
+              action: 'verify',
+              reciever: rowData?.id,
+              link: `/${rowData?.id}/info`,
+              content: `Chúc mừng bạn đã được xác nhận trở thành chuyên gia.`,
+              seen: false,
+              createdAt: +new Date()
+            })
+        } else {
+          firebase
+            .database()
+            .ref('notifications/' + rowData?.id + '/' + new Date().getTime())
+            .set({
+              action: 'reject',
+              reciever: rowData?.id,
+              link: `/${rowData?.id}/info`,
+              content: `Yêu cầu xác nhận chuyên gia của bạn đã bị từ chối.`,
+              seen: false,
+              createdAt: +new Date()
+            })
+        }
+        onClose()
       })
       .catch(notificationError)
   }

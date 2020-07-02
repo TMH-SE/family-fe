@@ -16,8 +16,8 @@ import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_USER_INFO } from '@shared'
 import firebase from 'firebase/app'
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 18 }
+  labelCol: { span: 6 },
+  wrapperCol: { span: 17 }
 }
 const EditUser = props => {
   const { visible, onCancel } = props
@@ -65,6 +65,7 @@ const EditUser = props => {
   }
   return (
     <Modal
+      width="40%"
       visible={visible}
       onCancel={() => onCancel()}
       title="Chỉnh sửa thông tin"
@@ -159,33 +160,41 @@ const EditUser = props => {
             <Checkbox>Tôi là một chuyên gia</Checkbox>
           </Form.Item>
         )}
-        {me?.expert?.isVerify && (
-          <Form.Item
-            noStyle
-            shouldUpdate={(prevValues, currentValues) =>
-              prevValues.isExpert !== currentValues.isExpert
-            }
-          >
-            {({ getFieldValue }) => {
-              return !!getFieldValue('isExpert') ? (
-                <>
-                  <Form.Item
-                    name="areasOfExpertise"
-                    label="Lĩnh vực chuyên môn"
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Form.Item name="jobTitle" label="Chức danh">
-                    <Input />
-                  </Form.Item>
-                  <Form.Item name="yearsExperience" label="Số năm kinh nghiệm">
-                    <InputNumber style={{ width: '100%' }} />
-                  </Form.Item>
-                </>
-              ) : null
-            }}
-          </Form.Item>
-        )}
+        <Form.Item
+          {...formItemLayout}
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.isExpert !== currentValues.isExpert
+          }
+        >
+          {({ getFieldValue }) => {
+            return !!getFieldValue('isExpert') ? (
+              <>
+                <Form.Item
+                  {...formItemLayout}
+                  name="areasOfExpertise"
+                  label="Lĩnh vực chuyên môn"
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  {...formItemLayout}
+                  name="jobTitle"
+                  label="Chức danh"
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  {...formItemLayout}
+                  name="yearsExperience"
+                  label="Số năm kinh nghiệm"
+                >
+                  <InputNumber style={{ width: '100%' }} />
+                </Form.Item>
+              </>
+            ) : null
+          }}
+        </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Lưu

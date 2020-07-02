@@ -17,10 +17,6 @@ import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
 import ConversationList from '@pages/myMessenger/ConversationList'
 import MessageList from '@pages/messageDetail/MessageList'
-// import { ThemeContext } from '../../router'
-// import HomePage from '../MainLayout/HomePage'
-// import HighLightPost from '../MainLayout/HighlightPost'
-// import ModalCreatePost from '../MainLayout/ModalCreatePost'
 import reactStringReplace from 'react-string-replace'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_CHAT_BY_USER } from '@shared'
@@ -39,8 +35,7 @@ const Messboxes = forwardRef((props, ref) => {
   useEffect(() => {
     firebase.database().ref(`messboxes/${me?._id}`).remove()
   }, [])
-  useEffect(() => {
-  }, [showMore])
+  useEffect(() => {}, [showMore])
   useEffect(() => {
     firebase
       .database()
@@ -58,7 +53,7 @@ const Messboxes = forwardRef((props, ref) => {
         setMessbox(temp)
       })
   }, [])
-  const showMess = (idChat) => {
+  const showMess = idChat => {
     firebase
       .database()
       .ref(`messenger/${idChat}/listmessages`)
@@ -92,7 +87,6 @@ const Messboxes = forwardRef((props, ref) => {
         const a = [...messbox].sort((a, b) => a.createdAt - b.createdAt)
         firebase.database().ref(`messboxes/${me?._id}/${a[0]?.idChat}`).remove()
       }
-      console.log('lai')
       firebase
         .database()
         .ref(`messenger/${idChat}/listmessages`)
@@ -106,18 +100,15 @@ const Messboxes = forwardRef((props, ref) => {
                 id: key
               }))
             : []
-          firebase
-            .database()
-            .ref(`messboxes/${me?._id}/${idChat}`)
-            .set({
-              messages: temp,
-              userId: userId,
-              createdAt: +new Date()
-            })
-          // if (showMore > temp.length) {
-          //   setLoading(false)
-          // }
-          // setMessages(temp)
+          // if (temp !== []) {
+            firebase
+              .database()
+              .ref(`messboxes/${me?._id}/${idChat}`)
+              .set({
+                messages: temp,
+                userId: userId,
+                createdAt: +new Date()
+              })
         })
     }
 
@@ -125,9 +116,6 @@ const Messboxes = forwardRef((props, ref) => {
   }
   const onCancelMessbox = idChat => {
     firebase.database().ref(`messboxes/${me?._id}/${idChat}`).remove()
-    // setMessbox(null)
-    // setCurrentIdChat(null)
-    // setMessbox([...arr].filter(item => item.idChat !== idChat))
   }
   const history = useHistory()
   useImperativeHandle(ref, () => ({

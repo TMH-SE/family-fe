@@ -57,8 +57,8 @@
   border-radius: 50%;
   background-color: initial;
   border: none;
-  width: 126px;
-  height: 126px;
+  // width: 126px;
+  // height: 126px;
   padding: 0;
   margin-right: 0;
 }
@@ -128,13 +128,13 @@ ul {
     right: 17%;
     bottom: 0;
     .contentMess-box {
-      width: 20em;
+      width: 15vw;
       margin-right: 10px;
       // border: #e6f4ff solid 5px;
       background-color: #fff;
 
       .message-list-container {
-        height: 30vh;
+        height: 35vh;
         background-color: initial;
       }
       border-radius: 10px;
