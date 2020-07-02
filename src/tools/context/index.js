@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { notification } from 'antd'
+import firebase from 'firebase/app'
 export const IContext = React.createContext()
 
 const GET_ME = gql`
@@ -49,6 +50,7 @@ const ContextWrapper = ({ children, history }) => {
     })
   }
   const logout = () => {
+    firebase.database().ref(`messboxes/${data?.me?._id}`)
     window.localStorage.clear()
     SdkUtils.logoutFB()
     SdkUtils.loginGoogle()
