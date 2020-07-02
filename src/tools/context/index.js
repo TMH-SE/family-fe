@@ -49,6 +49,7 @@ const ContextWrapper = ({ children, history }) => {
     })
   }
   const logout = () => {
+    firebase.database().ref(`messboxes/${me?._id}`)
     window.localStorage.clear()
     SdkUtils.logoutFB()
     SdkUtils.loginGoogle()
