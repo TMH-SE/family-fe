@@ -178,7 +178,7 @@ function SaveAndReport(props) {
           width="100%"
           closable={false}
           visible={showEditPost}
-          title="Chỉnh sửa baì viết"
+          title="Chỉnh sửa bài viết"
           footer={
             <Space style={{ float: 'right' }}>
               <Button onClick={() => setShowEditPost(false)}>Hủy</Button>
@@ -199,7 +199,7 @@ function SaveAndReport(props) {
               ref={formRef}
               handleCancel={handleCancel}
               postItem={postItem}
-            ></EditPostForm>
+            />
           </div>
         </Drawer>
       )}
