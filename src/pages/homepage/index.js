@@ -39,8 +39,7 @@ const HomePage = props => {
   function handleScroll() {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-        document.scrollingElement.scrollHeight &&
-      !isEnd
+      document.scrollingElement.scrollHeight
     ) {
       setLoadMore(true)
 
@@ -78,24 +77,22 @@ const HomePage = props => {
       }
     }).then(({ data }) => {
       console.log(data?.posts?.length, quantityPosts)
-      if (data?.posts?.length < 5) {
-        setIsEnd(true)
+      if (data?.posts?.length + 5 < quantityPosts) {
         setLoadMore(false)
+        setIsEnd(true)
       } else {
-        if (data?.posts?.length + 5 < quantityPosts) {
-          setLoadMore(false)
-          setIsEnd(true)
-        } else {
-          setDataPostLoad(data)
-          setLoadMore(false)
-        }
+        setDataPostLoad(data)
+        setLoadMore(false)
       }
     })
   }
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    if (!isEnd) {
+      window.addEventListener('scroll', handleScroll)
+    } else {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isEnd])
 
   return (
     <div id="list-posts">
