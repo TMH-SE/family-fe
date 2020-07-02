@@ -13,8 +13,8 @@ function index() {
 
   return (
     <Line
-      title={{ text: 'Report', visible: true }}
-      description={{ text: 'Hello report family', visible: true }}
+      title={{ text: 'Thống kê diễn đàn Family trong 7 ngày gần nhất', visible: true }}
+      description={{ text: 'Cập nhật lần cuối lúc:', visible: true }}
       padding='auto'
       forceFit
       xField='date'
