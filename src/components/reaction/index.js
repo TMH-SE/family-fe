@@ -25,7 +25,7 @@ const emojiData = [
   },
   {
     emoji: 'joy',
-    text: 'He He',
+    text: 'Hehe',
     count: 43
   }
 ]
