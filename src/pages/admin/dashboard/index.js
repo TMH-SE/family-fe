@@ -1,98 +1,16 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Line } from '@ant-design/charts'
+import firebase from 'firebase/app'
+
 function index() {
-  const data = [
-    {
-      date: 1,
-      count: 10,
-      type: 'user'
-    },
-    {
-      date: 1,
-      count: 15,
-      type: 'post'
-    },
-    {
-      date: 1,
-      count: 2,
-      type: 'seminar'
-    },
-    {
-      date: 2,
-      count: 5,
-      type: 'user'
-    },
-    {
-      date: 2,
-      count: 10,
-      type: 'post'
-    },
-    {
-      date: 2,
-      count: 3,
-      type: 'seminar'
-    },
-    {
-      date: 3,
-      count: 3,
-      type: 'user'
-    },
-    {
-      date: 3,
-      count: 12,
-      type: 'post'
-    },
-    {
-      date: 3,
-      count: 5,
-      type: 'seminar'
-    },
-    {
-      date: 4,
-      count: 6,
-      type: 'user'
-    },
-    {
-      date: 4,
-      count: 6,
-      type: 'post'
-    },
-    {
-      date: 4,
-      count: 7,
-      type: 'seminar'
-    },
-    {
-      date: 5,
-      count: 15,
-      type: 'user'
-    },
-    {
-      date: 5,
-      count: 11,
-      type: 'post'
-    },
-    {
-      date: 5,
-      count: 4,
-      type: 'seminar'
-    },
-    {
-      date: 6,
-      count: 20,
-      type: 'user'
-    },
-    {
-      date: 6,
-      count: 30,
-      type: 'post'
-    },
-    {
-      date: 6,
-      count: 2,
-      type: 'seminar'
-    }
-  ]
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    firebase.database().ref('report/lastDays').on('value', snapshot => {
+      setData(snapshot.val())
+    })
+  }, [])
+
   return (
     <Line
       title={{ text: 'Report', visible: true }}
