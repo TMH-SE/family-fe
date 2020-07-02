@@ -8,7 +8,7 @@ import {
   SaveAndReport,
   JoinBtn
 } from '@components'
-import { CommentOutlined } from '@ant-design/icons'
+import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'
 import { IContext } from '@tools'
 
 function PostHaveGroup(props) {
@@ -64,7 +64,7 @@ function PostHaveGroup(props) {
                     }
                   >
                     {' '}
-                    {item?.createdBy?.firstname + ' '}
+                    {item?.createdBy?.firstname + ' '} {item?.createdBy?.expert?.isVerify && <CheckCircleTwoTone />}
                   </a>
                 </span>
                 - {new Date(item?.createdAt).toLocaleString()}

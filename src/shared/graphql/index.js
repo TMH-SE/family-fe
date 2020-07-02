@@ -99,6 +99,9 @@ export const GET_POSTS = gql`
         firstname
         lastname
         avatar
+        expert{
+          isVerify
+        }
       }
       createdAt
       updatedAt
