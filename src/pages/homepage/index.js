@@ -20,7 +20,7 @@ const HomePage = props => {
   const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const { me, isAuth } = useContext(IContext)
-  const [quantityPosts, setQuantityPosts] = useState(0)
+  const [quantityPosts, setQuantityPosts] = useState(5)
   const handleCancel = () => {
     setVisibleModalCreate(false)
   }
@@ -39,7 +39,7 @@ const HomePage = props => {
   function handleScroll() {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.scrollingElement.scrollHeight
+      document.scrollingElement.scrollHeight && !isEnd
     ) {
       setLoadMore(true)
 
@@ -56,9 +56,13 @@ const HomePage = props => {
     }
   }, [dataPosts])
   useEffect(() => {
-    setQuantityPosts(quantityPosts + 5)
-    quantityPosts !== 0 && fetchMoreListItems()
+    if (loadMore) {
+      setQuantityPosts(quantityPosts + 5)
+    }
   }, [loadMore])
+  useEffect(() => {
+    fetchMoreListItems()
+  }, [quantityPosts])
   function fetchMoreListItems() {
     setTimeout(async () => {
       const a = await fetchMore({
@@ -73,16 +77,18 @@ const HomePage = props => {
           })
         }
       })
-      console.log(a?.data?.posts?.length , quantityPosts)
+      console.log(a?.data?.posts?.length, quantityPosts)
       if (a?.data?.posts?.length < 5) {
         setIsEnd(true)
+        setLoadMore(false)
       } else {
         if (a?.data?.posts?.length + 5 < quantityPosts) {
+          setLoadMore(false)
           setIsEnd(true)
         } else {
           setDataPostLoad(a?.data)
           setLoadMore(false)
-          setIsEnd(false)
+          // setIsEnd(false)
         }
       }
     }, 300)
@@ -154,7 +160,7 @@ const HomePage = props => {
           )
         })
       )}
-      {!isEnd && (
+      {loadMore && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Spin spinning />
         </div>
