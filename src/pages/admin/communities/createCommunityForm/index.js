@@ -5,7 +5,7 @@ import { uploadImg, beforeUpload, notificationError } from '@shared'
 import { PlusOutlined } from '@ant-design/icons'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
-
+import firebase from 'firebase/app'
 const CREATE_COMMUNITY = gql`
   mutation createCommunity($newCommunity: NewCommunity) {
     createCommunity(newCommunity: $newCommunity)
@@ -86,6 +86,10 @@ const CreateCommunityForm = ({
       })
         .then(({ data }) => {
           if (data?.createCommunity) {
+            firebase.database().ref(`communities/${data?.createCommunity}`).set({
+              membersCount: 0,
+              postsCount: 0
+            })
             notification.success({ message: 'Thêm cộng đồng mới thành công', placement: 'bottomRight' })
             refetchCommunities()
             onClose()

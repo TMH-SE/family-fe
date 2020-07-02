@@ -1,67 +1,53 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Avatar, List, Skeleton, Button } from 'antd'
 import { useHistory } from 'react-router-dom'
-import { GET_POST_BY_COMMUNITY, GET_MEMBERS_BY_COMMUNITY } from '@shared'
 import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 import JoinBtn from '../joinBtn'
-
+import firebase from 'firebase/app'
+import { GET_COMMUNITY_BY_ID } from '@pages/pageGroup'
 function CommunityItem(props) {
   const { item } = props
-  const {
-    refetchCount,
-    setRefetchCount,
-    refetchSumPosts,
-    setRefetchSumPosts,
-    me
-  } = useContext(IContext)
+  // const [ dataCount, setDataCount ] = useState([])
+  const { me } = useContext(IContext)
   const history = useHistory()
-  // const [ dataMems, setDataMems ] = useState(null)
-  const { data, refetch, loading } = useQuery(GET_POST_BY_COMMUNITY, {
-    variables: { communityId: item?._id },
+  // const [dataMems, setDataMems] = useState(null)
+  const { data, loading } = useQuery(GET_COMMUNITY_BY_ID, {
+    variables: { id: item?.id },
     fetchPolicy: 'no-cache',
-    skip: !item?._id
+    skip: !item?.id
   })
-  const {
-    data: dataMemberCount,
-    refetch: refetchDataMemberCount,
-    loading: loadingSumMem
-  } = useQuery(GET_MEMBERS_BY_COMMUNITY, {
-    variables: { communityId: item?._id },
-    fetchPolicy: 'no-cache',
-    skip: !item?._id
-  })
-  useEffect(() => {
-    refetchCount !== '' && refetchDataMemberCount({ variables: refetchCount })
-    refetchSumPosts !== '' && refetch({ variables: refetchSumPosts })
-    setRefetchCount('')
-    setRefetchSumPosts('')
-  }, [refetchCount, refetchSumPosts])
-  return loading || loadingSumMem ? (
+  return loading ? (
     <Skeleton active></Skeleton>
   ) : (
     <List.Item
       onClick={() => {
         props?.setShowCommunities && props.setShowCommunities(false)
-        history.push(`/page-group/${item?._id}`)
+        // history.push(`/page-group/${item?._id}`)
       }}
       style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}
     >
       <List.Item.Meta
         style={{ display: 'flex' }}
-        avatar={<Avatar size={64} shape="square" src={item?.avatar} />}
+        avatar={
+          <Avatar size={64} shape="square" src={data?.communityById?.avatar} />
+        }
         title={
           <a
             style={{ color: 'black', fontWeight: 'bold' }}
-            onClick={() => history.push(`/page-group/${item?._id}`)}
+            onClick={() => history.push(`/page-group/${item?.id}`)}
           >
-            {item?.name}
+            {data?.communityById?.name}
           </a>
         }
-        description={`${dataMemberCount?.getMembersByCommunity} thành viên - ${data?.postsByCommunity?.length} bài viết`}
+        description={`${item?.membersCount} thành viên - ${item?.postsCount} bài viết`}
       />
       {props.isActionJoin && (
-        <JoinBtn id={{ userId: me?._id, communityId: item?._id }} />
+        <JoinBtn
+          id={{ userId: me?._id, communityId: item?.id }}
+          history={history}
+          // refetchDataMemberCount={refetchDataMemberCount}
+        />
       )}
     </List.Item>
   )

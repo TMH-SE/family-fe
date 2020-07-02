@@ -15,7 +15,6 @@ import {
   Col
 } from 'antd'
 import {
-  UnorderedListOutlined,
   BellOutlined,
   CaretDownOutlined,
   SearchOutlined,
@@ -30,7 +29,8 @@ import {
   TeamOutlined,
   HomeFilled,
   YoutubeFilled,
-  BellFilled
+  BellFilled,
+  LoginOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -83,15 +83,33 @@ const SEARCH_POSTS = gql`
 `
 
 export const MainContext = React.createContext(null)
-// const MY_USER_ID =
 const index = ({ children }) => {
   const { logout, me, isAuth, showLogin, closeLoginModal } = useContext(
     IContext
   )
+  const [dataCount, setDataCount] = useState([])
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    setLoading(true)
+    firebase
+      .database()
+      .ref('communities')
+      .on('value', snapshot => {
+        const temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key
+            }))
+          : []
+        setDataCount(temp)
+        setLoading(false)
+      })
+  }, [])
+  // const getCount = () => {
 
+  // }
   const [isBroken, setIsBroken] = useState(false)
   const [showCommunities, setShowCommunities] = useState(false)
-
   const messBoxesRef = useRef()
   const history = useHistory()
   const location = useMemo(() => {
@@ -139,7 +157,10 @@ const index = ({ children }) => {
       }
     })
       .then(({ data }) => {
-        history.push('/search-results', { results: data?.searchAllPosts, query })
+        history.push('/search-results', {
+          results: data?.searchAllPosts,
+          query
+        })
       })
       .catch(() => {})
   }
@@ -217,9 +238,9 @@ const index = ({ children }) => {
                   backgroundColor: 'initial'
                   // width: 50
                 }}
-                overflowedIndicator={
-                  <UnorderedListOutlined style={{ fontSize: 23 }} />
-                }
+                // overflowedIndicator={
+                //   <UnorderedListOutlined style={{ fontSize: 23 }} />
+                // }
                 mode="horizontal"
               >
                 <Menu.Item onClick={() => history.push('/seminars')}>
@@ -279,6 +300,13 @@ const index = ({ children }) => {
                     </Dropdown>
                   </>
                 )
+              ) : isBroken ? (
+                <Button
+                  onClick={() => history.push('/login')}
+                  className="btn-round"
+                  shape="circle"
+                  icon={<LoginOutlined style={{ color: '#1890ff' }} />}
+                />
               ) : (
                 <Button type="primary" onClick={() => history.push('/login')}>
                   Đăng nhập
@@ -294,7 +322,6 @@ const index = ({ children }) => {
       {isBroken && (
         <Row
           style={{
-            position: 'sticky',
             top: 64,
             zIndex: 100,
             background: '#fff',
@@ -366,7 +393,7 @@ const index = ({ children }) => {
       <Layout
         className="home"
         style={{
-          paddingTop: isBroken ? 65 : 100,
+          paddingTop: 100,
           width: '100%',
           paddingLeft: isBroken ? 0 : 100,
           margin: '0 auto',
@@ -384,7 +411,11 @@ const index = ({ children }) => {
           {isBroken ? null : (
             <div className="highlight-group">
               <Typography.Title level={4}>CỘNG ĐỒNG NỔI BẬT</Typography.Title>
-              <HighLightGroup history={history}></HighLightGroup>
+              <HighLightGroup
+                history={history}
+                loading={loading}
+                dataCount={dataCount}
+              ></HighLightGroup>
             </div>
           )}
           {/* </div>} */}

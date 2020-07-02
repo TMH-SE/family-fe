@@ -20,7 +20,7 @@ function MessageDetail(props) {
   useEffect(() => {
     getMessages()
     document.getElementById(`input-custom-${idChat}`).focus()
-  }, [idChat])
+  }, [])
   const { data } = useQuery(GET_USER, { variables: { userId } })
   const getMessages = () => {
     firebase
@@ -108,7 +108,7 @@ function MessageDetail(props) {
       await firebase
         .database()
         .ref(`messenger/${idChat}/listmessages/` + message)
-        .set({
+        .update({
           content: { message: value, img: imgList },
           timestamp: +new Date(),
           author: me?._id,
@@ -142,8 +142,8 @@ function MessageDetail(props) {
       <Card
         title={
           <>
-            <Avatar src={data?.getUser?.avatar}></Avatar>
-            <span style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</span>
+            <Avatar onClick={() => props.history.push(`/${userId}/info`)} src={data?.getUser?.avatar}></Avatar>
+            <a onClick={() => props.history.push(`/${userId}/info`)} style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</a>
           </>
         }
         className="ant-mess-phone"

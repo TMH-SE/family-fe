@@ -1,32 +1,28 @@
-import React, { useContext } from 'react'
-import { Avatar, List, Skeleton } from 'antd'
-import gql from 'graphql-tag'
-import { useQuery } from '@apollo/react-hooks'
-
-import { ArrowRightOutlined } from '@ant-design/icons'
+import React, { useContext, useState, useEffect } from 'react'
+import { List, Skeleton } from 'antd'
 import { CommunityItem, HighLightPost } from '@components'
 import { MainContext } from '../../layouts/MainLayout'
+import firebase from 'firebase'
 
-const GET_COMMUNITIES = gql`
-  query communities {
-    communities {
-      _id
-      name
-      avatar
-      coverPhoto
-      createdAt
-      createdBy {
-        firstname
-        lastname
-      }
-      countMember
-      countPost
-    }
-  }
-`
 function AllCommunities(props) {
-  const { data, loading } = useQuery(GET_COMMUNITIES)
+  // const { data, loading } = useQuery(GET_COMMUNITIES)
+  const [loading, setLoading] = useState(false)
   const { isBroken } = useContext(MainContext)
+  const [dataCount, setDataCount] = useState([])
+  useEffect(() => {
+    getCount()
+  }, [])
+  const getCount = () => {
+    setLoading(true)
+    firebase.database().ref('communities').on('value', snapshot => {
+      const temp = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({
+        ...snapshot.val()[key],
+        id: key
+      })) : []
+      setDataCount(temp)
+      setLoading(false)
+    })
+  }
   return loading ? (
     <Skeleton active avatar />
   ) : (
@@ -38,7 +34,7 @@ function AllCommunities(props) {
           pageSize: 4
         }}
         itemLayout="horizontal"
-        dataSource={data?.communities}
+        dataSource={dataCount}
         renderItem={item => <CommunityItem isActionJoin={true} item={item} />}
       />
     </>
