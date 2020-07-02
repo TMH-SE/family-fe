@@ -7,13 +7,18 @@ import {
   LikeTwoTone,
   FileTextTwoTone,
   SafetyCertificateTwoTone,
-  MehTwoTone
+  MehTwoTone,
+  VideoCameraTwoTone
 } from '@ant-design/icons'
 import { List, Avatar } from 'antd'
 import '../index.scss'
 import { IContext } from '@tools'
 
 const arrType = [
+  {
+    type: 'seminar',
+    icon: <VideoCameraTwoTone />
+  },
   {
     type: 'cmt',
     icon: <MessageTwoTone />
@@ -24,7 +29,7 @@ const arrType = [
   },
   {
     type: 'reject',
-    icon: <MehTwoTone twoToneColor='red' />
+    icon: <MehTwoTone twoToneColor="red" />
   },
   {
     type: 'tag',
@@ -51,7 +56,8 @@ const NotiList = props => {
     <List.Item
       className="noti-item"
       style={{
-        padding: '0 12px', backgroundColor: noti.seen ? 'initial' : 'rgba(214, 234, 248, 0.8)'
+        padding: '0 12px',
+        backgroundColor: noti.seen ? 'initial' : 'rgba(214, 234, 248, 0.8)'
       }}
       onClick={() => {
         firebase
@@ -60,7 +66,9 @@ const NotiList = props => {
           .update({
             seen: true
           })
-        history.push(`${noti.link}`)
+        noti?.action === 'seminar'
+          ? window.open(`${noti.link}`)
+          : history.push(`${noti.link}`)
         // setVisible(false)
       }}
     >

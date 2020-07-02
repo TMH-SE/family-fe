@@ -17,6 +17,9 @@ export const GET_POST_BY_ID = gql`
         firstname
         lastname
         avatar
+        expert{
+          isVerify
+        }
       }
       createdAt
       community {

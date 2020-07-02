@@ -485,7 +485,7 @@ function Profile(props) {
       />
     </>
   ) : (
-    <Empty description="Người dùng hiện không còn tồn tại" />
+    <Empty description="Không còn khả dụng" />
   )
 }
 

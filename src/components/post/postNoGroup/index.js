@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
 import { Card, Avatar, Typography } from 'antd'
 import { Reaction, SharePost, CommentPost, SaveAndReport } from '@components'
-import { CommentOutlined } from '@ant-design/icons'
+import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'
 import { Meta } from 'antd/lib/list/Item'
 import { useHistory } from 'react-router-dom'
 function PostNoGroup(props) {
@@ -43,7 +43,7 @@ function PostNoGroup(props) {
                 onClick={() => history.push(`/${item?.createdBy?._id}/info`)}
                 style={{ fontWeight: 'bolder', color: 'black' }}
               >
-                {item?.createdBy?.firstname}
+                {item?.createdBy?.firstname}{' '} {item?.createdBy?.expert?.isVerify && <CheckCircleTwoTone /> }
               </a>
               <p style={{ color: '#9b9b9b', fontSize: 12 }}>
                 {new Date(item?.createdAt).toLocaleString()}

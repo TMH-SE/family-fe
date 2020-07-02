@@ -6,6 +6,7 @@ import { GET_USER, replaceToxicWords } from '@shared'
 import moment from 'moment'
 import { IContext } from '@tools'
 import firebase from 'firebase/app'
+import { CheckCircleTwoTone } from '@ant-design/icons'
 
 // import noAvatar from '@assets/images/noavata.jpg'
 const CommentItem = props => {
@@ -69,7 +70,7 @@ const CommentItem = props => {
             onClick={() => history.push(`/${comment?.author}/info`)}
             style={{ color: 'black', fontSize: 14 }}
           >
-            {data?.getUser?.firstname}
+            {data?.getUser?.firstname } {' '} {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone /> }
           </a>
         }
         avatar={data?.getUser?.avatar}
