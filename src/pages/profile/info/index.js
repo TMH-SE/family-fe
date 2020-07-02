@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Row, Col, Tooltip, Tag } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import EditUser from './editUser'
@@ -103,6 +103,7 @@ function Info(props) {
         </Col>
       </Row>
       <EditUser
+        isBroken={props?.isBroken}
         visible={visible}
         onCancel={() => setVisible(!visible)}
       ></EditUser>

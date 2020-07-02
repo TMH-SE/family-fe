@@ -1,12 +1,11 @@
 /* eslint-disable react/display-name */
-import React, { useContext, useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button, Table, Space, Row, Tooltip, Modal, notification } from 'antd'
 import {
   DeleteOutlined,
   ExclamationCircleOutlined,
   EyeFilled
 } from '@ant-design/icons'
-import { IContext } from '@tools'
 import { useMutation } from '@apollo/react-hooks'
 // import CreateCommunityForm from './createCommunityForm'
 import { notificationError, getColumnSearchProps } from '@shared'

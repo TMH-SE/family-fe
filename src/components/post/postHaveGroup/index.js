@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import firebase from 'firebase/app'
 import { Card, Avatar, Typography } from 'antd'
 import {
@@ -9,7 +9,6 @@ import {
   JoinBtn
 } from '@components'
 import { CommentOutlined } from '@ant-design/icons'
-import { useHistory } from 'react-router-dom'
 import { IContext } from '@tools'
 
 function PostHaveGroup(props) {
@@ -41,7 +40,9 @@ function PostHaveGroup(props) {
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Avatar
               shape="square"
-              onClick={() => history.push(`/page-group/${item?.community?._id}`)}
+              onClick={() =>
+                history.push(`/page-group/${item?.community?._id}`)
+              }
               size={64}
               src={item?.community?.avatar}
             />
@@ -75,6 +76,7 @@ function PostHaveGroup(props) {
           process.env.ADMIN_SERVER === 'false' && (
             <JoinBtn
               id={{ userId: me?._id, communityId: item?.community?._id }}
+              history={history}
             ></JoinBtn>
           )
         }
@@ -135,8 +137,9 @@ function PostHaveGroup(props) {
               ></p>
               {!showText &&
                 (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
-                document.getElementsByClassName(`collapse${item?._id}`)[0]
-                  .children[4]?.clientHeight > 900 ? (
+                document
+                  .getElementsByClassName(`collapse${item?._id}`)[0]
+                  .getElementsByTagName('div')[0]?.clientHeight > 900 ? (
                   <a
                     href={`${window.location.origin}/post-detail/${item?._id}`}
                     target="blank"

@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { notification } from 'antd'
+import firebase from 'firebase/app'
 export const IContext = React.createContext()
 
 const GET_ME = gql`
@@ -30,7 +31,6 @@ const GET_ME = gql`
   }
 `
 const ContextWrapper = ({ children, history }) => {
-  const [messbox, setMessbox] = useState([])
   const [isAuth, setIsAuth] = useState(
     !!window.localStorage.getItem('access-token')
   )
@@ -50,6 +50,7 @@ const ContextWrapper = ({ children, history }) => {
     })
   }
   const logout = () => {
+    firebase.database().ref(`messboxes/${data?.me?._id}`)
     window.localStorage.clear()
     SdkUtils.logoutFB()
     SdkUtils.loginGoogle()
@@ -62,8 +63,6 @@ const ContextWrapper = ({ children, history }) => {
     setShowLogin(false)
   }
 
-  const [refetchCount, setRefetchCount] = useState('')
-  const [refetchSumPosts, setRefetchSumPosts] = useState('')
   const isSuper = useMemo(() => {
     if (data?.me) {
       return data?.me?.role === 'SUPERADMIN'
@@ -88,14 +87,9 @@ const ContextWrapper = ({ children, history }) => {
         me: data?.me,
         history,
         refetchMe: refetch,
-        messbox: messbox,
         showLogin: showLogin,
         openLoginModal: openLoginModal,
-        closeLoginModal: closeLoginModal,
-        refetchCount: refetchCount,
-        setRefetchCount: setRefetchCount,
-        refetchSumPosts: refetchSumPosts,
-        setRefetchSumPosts: setRefetchSumPosts
+        closeLoginModal: closeLoginModal
       }}
     >
       {children}

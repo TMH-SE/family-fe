@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import {
   Avatar,
   Button,
@@ -32,7 +32,7 @@ import {
 } from '@shared'
 import './index.scss'
 import { IContext } from '@tools'
-
+import firebase from 'firebase/app'
 import ImgCrop from 'antd-img-crop'
 import gql from 'graphql-tag'
 import MenuInfo from './menuInfo'
@@ -54,6 +54,7 @@ export const GET_SUM_FOLLOWER_BY_USER = gql`
 function Profile(props) {
   const { history } = props
   const { type, userId } = props.match.params
+  const [dataCount, setDataCount] = useState([])
   const { isBroken, chooseConversation } = useContext(MainContext)
   const { data, refetch, loading } = useQuery(GET_USER, {
     variables: { userId: userId }
@@ -86,6 +87,23 @@ function Profile(props) {
       fetchPolicy: 'no-cache'
     }
   )
+  useEffect(() => {
+    dataCommunity && getCount()
+  }, [dataCommunity])
+  const getCount = () => {
+    dataCommunity?.getCommunitiesByUser?.map(item => {
+      firebase
+        .database()
+        .ref(`communities/${item?.community?._id}`)
+        .on('value', snapshot => {
+          const temp = [
+            ...dataCount,
+            { ...snapshot.val(), id: item?.community?._id }
+          ]
+          setDataCount(temp)
+        })
+    })
+  }
   const uploadButtonCover =
     isMe &&
     (!img.coverPhoto ? (
@@ -259,12 +277,6 @@ function Profile(props) {
         <div>
           <div>
             <div
-             onClick={() => {
-              setPreviewImg({
-                isShow: true,
-                imgSrc: img.coverPhoto || data?.getUser.coverPhoto
-              })
-            }}
               style={{
                 position: 'relative',
                 width: '100%',
@@ -274,6 +286,12 @@ function Profile(props) {
             >
               {(img.coverPhoto || data?.getUser.coverPhoto) && (
                 <img
+                  onClick={() => {
+                    setPreviewImg({
+                      isShow: true,
+                      imgSrc: img.coverPhoto || data?.getUser.coverPhoto
+                    })
+                  }}
                   className="cover-img"
                   style={{ objectFit: 'cover', height: 250, width: '100%' }}
                   // alt='example'
@@ -281,27 +299,29 @@ function Profile(props) {
                 />
               )}
               {/* {loadingImg.coverPhoto && ( */}
-              <div
-                className="btn-saveCover"
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  top: 0,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
-                }}
-              >
-                {/* <LoadingOutlined
+              {img.coverPhoto && (
+                <div
+                  className="btn-saveCover"
+                  style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    top: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
+                  }}
+                >
+                  {/* <LoadingOutlined
                     style={{
                       fontSize: 30,
                       color: '#fff'
                     }}
                   /> */}
-                <Spin spinning={loadingImg.coverPhoto} size="large" />
-              </div>
+                  <Spin spinning={loadingImg.coverPhoto} size="large" />
+                </div>
+              )}
               {/* )} */}
               {uploadButtonCover}
             </div>
@@ -317,12 +337,6 @@ function Profile(props) {
           >
             <div style={{ display: 'flex', width: '100%' }}>
               <div
-               onClick={() => {
-                setPreviewImg({
-                  isShow: true,
-                  imgSrc: img?.avatar || data?.getUser?.avatar
-                })
-              }}
                 style={{
                   position: 'relative',
                   width: 130,
@@ -332,6 +346,12 @@ function Profile(props) {
               >
                 {(data?.getUser?.avatar || img?.avatar) && (
                   <Avatar
+                    onClick={() => {
+                      setPreviewImg({
+                        isShow: true,
+                        imgSrc: img?.avatar || data?.getUser?.avatar
+                      })
+                    }}
                     className="img-avt"
                     style={{ border: '2px solid black', objectFit: 'cover' }}
                     shape="circle"
@@ -340,29 +360,31 @@ function Profile(props) {
                   />
                 )}
                 {/* {loadingImg.avatar && ( */}
-                <div
-                  className="btn-saveAvt"
-                  style={{
-                    fontSize: 25,
-                    borderRadius: '50%',
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    top: 0,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
-                  }}
-                >
-                  {/* <LoadingOutlined
+                {img.avatar && (
+                  <div
+                    className="btn-saveAvt"
+                    style={{
+                      fontSize: 25,
+                      borderRadius: '50%',
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      top: 0,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
+                    }}
+                  >
+                    {/* <LoadingOutlined
                       style={{
                         fontSize: 30,
                         color: '#fff'
                       }}
                     /> */}
-                  <Spin spinning={loadingImg.avatar} />
-                </div>
+                    <Spin spinning={loadingImg.avatar} />
+                  </div>
+                )}
                 {uploadButtonAvt}
                 {/* )} */}
               </div>
@@ -381,7 +403,7 @@ function Profile(props) {
                       textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
                     }}
                   >
-                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`} {' '}
+                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`}{' '}
                     {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone />}
                   </p>
                   <div>
@@ -428,6 +450,7 @@ function Profile(props) {
       >
         {type === 'info' && (
           <Info
+            isBroken={isBroken}
             userInfo={data?.getUser}
             isMe={isMe}
             dataCountFollow={dataCountFollow}
@@ -446,13 +469,11 @@ function Profile(props) {
           ) : (
             <List
               itemLayout="horizontal"
-              dataSource={
-                dataCommunity && dataCommunity?.getCommunitiesByUser?.reverse()
-              }
+              dataSource={dataCount}
               renderItem={item => (
                 <CommunityItem
-                  item={item.community}
-                  data={dataCommunity?.getCommunitiesByUser}
+                  item={item}
+                  // data={dataCommunity?.getCommunitiesByUser}
                 />
               )}
             />

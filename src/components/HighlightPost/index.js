@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Carousel } from 'antd'
 import firebase from 'firebase/app'
-import 'antd/dist/antd.css'
+// import 'antd/dist/antd.css'
 import './index.scss'
 import HighlightItem from './highlightItem'
 
@@ -11,6 +11,7 @@ import HighlightItem from './highlightItem'
 function HighlightPost(props) {
   const { isBroken, history } = props
   const [data, setData] = useState([])
+ 
   useEffect(() => {
     firebase
       .database()

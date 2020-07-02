@@ -41,9 +41,10 @@ function MyPosts(props) {
     <>
       <Input.TextArea
         onClick={() =>
-          isBroken
-            ? history.push('/create-post')
-            : setVisibleModalCreate(!visibleModalCreate)
+          // isBroken
+          //   ? history.push('/create-post')
+          // :
+          setVisibleModalCreate(!visibleModalCreate)
         }
         style={{
           margin: '0 auto',

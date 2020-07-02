@@ -84,6 +84,18 @@ function SaveAndReport(props) {
             if (data?.deletePost) {
               deleteSavedPostsByPost({ variables: { postId: postId } })
               firebase.database().ref(`posts/${postId}`).remove()
+              console.log(postItem)
+              postItem?.community?._id &&
+            firebase
+              .database()
+              .ref(`communities/${postItem?.community?._id }/postsCount`)
+              .once('value', snapshot => {
+                firebase
+                  .database()
+                  .ref(`communities/${postItem?.community?._id }`)
+                  .update({ postsCount: snapshot.val() - 1 })
+              })
+
               await refetch()
               notification.success({ message: 'xóa bài viết thành công' })
             }
@@ -187,7 +199,7 @@ function SaveAndReport(props) {
               ref={formRef}
               handleCancel={handleCancel}
               postItem={postItem}
-            ></EditPostForm>
+            />
           </div>
         </Drawer>
       )}

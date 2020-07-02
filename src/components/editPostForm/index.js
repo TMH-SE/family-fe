@@ -46,6 +46,7 @@ const EditPostForm = forwardRef((props, ref) => {
           notification.success({ message: 'Chỉnh sửa bài viết thành công' })
           setConfirmLoading(false)
           await refetch()
+          form.resetFields()
           handleCancel && handleCancel()
         }
       })

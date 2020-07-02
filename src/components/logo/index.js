@@ -25,7 +25,7 @@ const Logo = ({ size, onClick, isBroken }) => {
   return (
     <h1
       style={{
-        width: isBroken ? '25%' : '60%',
+        width: isBroken ? '25%' : '90%',
         color: '#0098da',
         ...style[size]
       }}

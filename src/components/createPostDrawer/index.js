@@ -6,7 +6,6 @@ function CreatePostDrawer(props) {
   const formRef = useRef()
   const { visible, handleCancel, data, refetch } = props
   const [confirmLoading, setConfirmLoading] = useState(false)
-
   return (
     <Drawer
       confirmLoading={confirmLoading}

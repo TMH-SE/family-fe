@@ -51,7 +51,7 @@ const GET_SUM_FOLLOWER_BY_USER = gql`
 const CreatePostForm = forwardRef((props, ref) => {
   const { setConfirmLoading, handleCancel, data, refetch } = props
   const keywordRef = useRef()
-  const { me, setRefetchSumPosts } = useContext(IContext)
+  const { me } = useContext(IContext)
   const { data: dataCountFollow } = useQuery(GET_SUM_FOLLOWER_BY_USER, {
     variables: { userId: me?._id },
     fetchPolicy: 'no-cache'
@@ -138,8 +138,19 @@ const CreatePostForm = forwardRef((props, ref) => {
             .set({
               createdAt: +new Date()
             })
+          communityId &&
+            firebase
+              .database()
+              .ref(`communities/${communityId}/postsCount`)
+              .once('value', snapshot => {
+                firebase
+                  .database()
+                  .ref(`communities/${communityId}`)
+                  .update({ postsCount: snapshot.val() + 1 })
+              })
+
           notification.success({ message: 'Tạo bài viết thành công' })
-          setRefetchSumPosts(communityId)
+          // setRefetchSumPosts(communityId)
           dataCountFollow?.getFollowerByUser?.map(item => {
             notifyToUser(item.follower, data?.createPost?._id)
           })
@@ -167,8 +178,6 @@ const CreatePostForm = forwardRef((props, ref) => {
       form.resetFields(['keyword'])
     }
   }
-
-  console.log(dataCommunities)
 
   return (
     <Form

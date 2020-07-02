@@ -101,7 +101,7 @@ function InputCustomize(props) {
 
   const handleSubmit = event => {
     if (event.shiftKey && event.keyCode === 13) {
-      event.stopPropagation()
+      event.stopImmediatePropagation()
     } else if (event.keyCode === 13) {
       if (text.trim() || image.srcImg) {
         let newPlain = plainText
