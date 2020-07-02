@@ -9,14 +9,14 @@ import { IContext } from '@tools'
 
 const emojiData = [
   {
-    emoji: 'heart_eyes',
-    text: 'Yêu thích',
-    count: 3
-  },
-  {
     emoji: '+1',
     text: 'Thích',
     count: 7
+  },
+  {
+    emoji: 'heart_eyes',
+    text: 'Yêu thích',
+    count: 3
   },
   {
     emoji: 'open_mouth',
