@@ -9,7 +9,7 @@ function PostNoGroup(props) {
   const [showText, setShowText] = useState(props.showText || false)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, refetch } = props
+  const { item, refetch, isBroken } = props
   const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -53,6 +53,7 @@ function PostNoGroup(props) {
         }
         style={{ maxWidth: '100%', marginBottom: 10 }}
         actions={
+          !isBroken &&
           process.env.ADMIN_SERVER === 'false' && [
             <div
               id="like-post"

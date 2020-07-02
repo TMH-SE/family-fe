@@ -16,7 +16,7 @@ function PostHaveGroup(props) {
   const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, refetch, history } = props
+  const { item, refetch, history, isBroken } = props
   // const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -73,6 +73,7 @@ function PostHaveGroup(props) {
           </div>
         }
         extra={
+          !isBroken &&
           process.env.ADMIN_SERVER === 'false' && (
             <JoinBtn
               id={{ userId: me?._id, communityId: item?.community?._id }}
