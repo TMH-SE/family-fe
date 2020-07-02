@@ -260,7 +260,11 @@ const index = ({ children }) => {
             <div>
               {isAuth ? (
                 isBroken ? (
-                  <Dropdown overlay={menu} trigger={['click']}>
+                  <Dropdown
+                    overlay={menu}
+                    overlayStyle={{ position: 'fixed', top: 50 }}
+                    trigger={['click']}
+                  >
                     <Avatar
                       style={{
                         top: '0.75em',
@@ -289,7 +293,11 @@ const index = ({ children }) => {
                     >
                       {/* N */}
                     </Avatar>
-                    <Dropdown overlay={menu} trigger={['click']}>
+                    <Dropdown
+                      overlayStyle={{ position: 'fixed', top: '50px !important' }}
+                      overlay={menu}
+                      trigger={['click']}
+                    >
                       <a
                         className="ant-dropdown-link"
                         style={{ paddingLeft: 5, fontWeight: 'bold' }}

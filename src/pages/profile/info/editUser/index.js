@@ -8,7 +8,9 @@ import {
   Button,
   notification,
   InputNumber,
-  Checkbox
+  Checkbox,
+  Drawer,
+  Space
 } from 'antd'
 import { IContext } from '@tools'
 import moment from 'moment'
@@ -20,7 +22,7 @@ const formItemLayout = {
   wrapperCol: { span: 17 }
 }
 const EditUser = props => {
-  const { visible, onCancel } = props
+  const { visible, onCancel, isBroken } = props
   const { me, refetchMe } = useContext(IContext)
   const [form] = Form.useForm()
   const [updateUserInfo] = useMutation(UPDATE_USER_INFO)
@@ -64,15 +66,25 @@ const EditUser = props => {
     return current && moment().year() - current.year() < 16
   }
   return (
-    <Modal
-      width="40%"
+    <Drawer
+      width={isBroken ? "100%" : '40%'}
       visible={visible}
-      onCancel={() => onCancel()}
       title="Chỉnh sửa thông tin"
-      footer={null}
+      closable={false}
+      afterVisibleChange={() => form.resetFields()}
+      onClose={() => onCancel()}
+      footer={
+        <Space style={{ float: 'right' }}>
+          <Button onClick={() => onCancel()}>Hủy</Button>
+          <Button onClick={() => form.submit()} type="primary">
+            Lưu
+          </Button>
+        </Space>
+      }
       afterClose={() => form.resetFields()}
     >
       <Form
+        layout="vertical"
         name="dynamic_rule"
         form={form}
         onFinish={onFinish}
@@ -195,13 +207,8 @@ const EditUser = props => {
             ) : null
           }}
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Lưu
-          </Button>
-        </Form.Item>
       </Form>
-    </Modal>
+    </Drawer>
   )
 }
 export default EditUser

@@ -112,12 +112,12 @@ const Login = () => {
               block
               type="primary"
             >
-              Login
+              Đăng nhập
             </Button>
           </Col>
           <Col span={12}>
             <Button danger block onClick={() => history.push('/register')}>
-              Sign up
+              Đăng ký thành viên
             </Button>
           </Col>
         </Row>
@@ -132,7 +132,7 @@ const Login = () => {
             type="primary"
             onClick={loginFB}
           >
-            Login with Facebook
+            Đăng nhập bằng Facebook
           </Button>
         </Col>
         <Col xs={24} lg={12}>
@@ -142,7 +142,7 @@ const Login = () => {
             type="danger"
             onClick={loginGG}
           >
-            Login with Google
+            Đăng nhập bằng Google
           </Button>
         </Col>
       </Row>

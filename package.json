@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ant-design/charts": "^0.9.6",
     "@ant-design/icons": "^4.1.0",
     "@apollo/react-hooks": "^3.1.5",
     "@ckeditor/ckeditor5-react": "^2.1.0",

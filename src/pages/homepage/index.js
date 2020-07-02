@@ -20,7 +20,7 @@ const HomePage = props => {
   const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
   const { me, isAuth } = useContext(IContext)
-  const [quantityPosts, setQuantityPosts] = useState(0)
+  const [quantityPosts, setQuantityPosts] = useState(5)
   const handleCancel = () => {
     setVisibleModalCreate(false)
   }
@@ -38,8 +38,9 @@ const HomePage = props => {
   const [dataPostLoad, setDataPostLoad] = useState(dataPosts)
   function handleScroll() {
     if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.scrollingElement.scrollHeight
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.scrollingElement.scrollHeight &&
+      !isEnd
     ) {
       setLoadMore(true)
 
@@ -56,35 +57,40 @@ const HomePage = props => {
     }
   }, [dataPosts])
   useEffect(() => {
-    setQuantityPosts(quantityPosts + 5)
-    quantityPosts !== 0 && fetchMoreListItems()
+    if (loadMore) {
+      setQuantityPosts(quantityPosts + 5)
+    }
   }, [loadMore])
-  function fetchMoreListItems() {
-    setTimeout(async () => {
-      const a = await fetchMore({
-        query: GET_POSTS,
-        variables: {
-          quantity: quantityPosts
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev
-          return Object.assign({}, prev, {
-            posts: [...prev.posts, ...fetchMoreResult.posts]
-          })
-        }
-      })
-      if (a?.data?.posts?.length < 5) {
+  useEffect(() => {
+    fetchMoreListItems()
+  }, [quantityPosts])
+  const fetchMoreListItems = () => {
+    fetchMore({
+      query: GET_POSTS,
+      variables: {
+        quantity: quantityPosts
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+        return Object.assign({}, prev, {
+          posts: [...prev.posts, ...fetchMoreResult.posts]
+        })
+      }
+    }).then(({ data }) => {
+      console.log(data?.posts?.length, quantityPosts)
+      if (data?.posts?.length < 5) {
         setIsEnd(true)
+        setLoadMore(false)
       } else {
-        if (a?.data?.posts?.length + 5 < quantityPosts) {
+        if (data?.posts?.length + 5 < quantityPosts) {
+          setLoadMore(false)
           setIsEnd(true)
         } else {
-          setDataPostLoad(a?.data)
+          setDataPostLoad(data)
           setLoadMore(false)
-          setIsEnd(false)
         }
       }
-    }, 300)
+    })
   }
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
@@ -153,7 +159,7 @@ const HomePage = props => {
           )
         })
       )}
-      {!isEnd && (
+      {loadMore && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Spin spinning />
         </div>
