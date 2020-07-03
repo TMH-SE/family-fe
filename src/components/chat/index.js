@@ -21,10 +21,6 @@ function Chat(props) {
           : []
 
         temp.map(chat => {
-          console.log(
-            chat?.id === `${members[0]}${members[1]}` ||
-              chat?.id === `${members[1]}${members[0]}`
-          )
           if (
             chat?.id === `${members[0]}${members[1]}` ||
             chat?.id === `${members[1]}${members[0]}`
@@ -60,7 +56,6 @@ function Chat(props) {
     <MessageTwoTone
       style={{ fontSize: 20, marginLeft: 10 }}
       onClick={() => {
-        console.log(isExist, 'ol')
         if (!isExist) {
           firebase
             .database()
