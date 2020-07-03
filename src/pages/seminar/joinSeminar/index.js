@@ -92,6 +92,7 @@ const JoinSenimar = ({ idSeminar }) => {
       <Video videoStream={remoteStream} />
       <Tooltip title="Thoát">
         <Button
+          onClick={() => window.close()}
           style={{ position: 'absolute', top: '5%', right: '5%' }}
           icon={<LogoutOutlined />}
           shape="circle-outline"
