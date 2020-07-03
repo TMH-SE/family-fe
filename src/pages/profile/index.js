@@ -273,36 +273,98 @@ function Profile(props) {
     <Skeleton active avatar />
   ) : data?.getUser ? (
     <>
-      {type !== 'messenger' && (
+      <div>
         <div>
-          <div>
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              height: '250px',
+              backgroundColor: '#ccc'
+            }}
+          >
+            {(img.coverPhoto || data?.getUser.coverPhoto) && (
+              <img
+                onClick={() => {
+                  setPreviewImg({
+                    isShow: true,
+                    imgSrc: img.coverPhoto || data?.getUser.coverPhoto
+                  })
+                }}
+                className="cover-img"
+                style={{ objectFit: 'cover', height: 250, width: '100%' }}
+                // alt='example'
+                src={img.coverPhoto || data?.getUser.coverPhoto}
+              />
+            )}
+            {/* {loadingImg.coverPhoto && ( */}
+            {img.coverPhoto && (
+              <div
+                className="btn-saveCover"
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
+                }}
+              >
+                {/* <LoadingOutlined
+                    style={{
+                      fontSize: 30,
+                      color: '#fff'
+                    }}
+                  /> */}
+                <Spin spinning={loadingImg.coverPhoto} size="large" />
+              </div>
+            )}
+            {/* )} */}
+            {uploadButtonCover}
+          </div>
+        </div>
+        <div
+          style={{
+            backgroundColor: 'rgba(255,255,255,0.7)',
+            width: '100%',
+            display: 'flex',
+            marginTop: -95,
+            justifyContent: 'space-between'
+          }}
+        >
+          <div style={{ display: 'flex', width: '100%' }}>
             <div
               style={{
                 position: 'relative',
-                width: '100%',
-                height: '250px',
-                backgroundColor: '#ccc'
+                width: 130,
+                height: 130,
+                marginRight: 30
               }}
             >
-              {(img.coverPhoto || data?.getUser.coverPhoto) && (
-                <img
+              {(data?.getUser?.avatar || img?.avatar) && (
+                <Avatar
                   onClick={() => {
                     setPreviewImg({
                       isShow: true,
-                      imgSrc: img.coverPhoto || data?.getUser.coverPhoto
+                      imgSrc: img?.avatar || data?.getUser?.avatar
                     })
                   }}
-                  className="cover-img"
-                  style={{ objectFit: 'cover', height: 250, width: '100%' }}
-                  // alt='example'
-                  src={img.coverPhoto || data?.getUser.coverPhoto}
+                  className="img-avt"
+                  style={{ border: '2px solid black', objectFit: 'cover' }}
+                  shape="circle"
+                  size={130}
+                  src={img?.avatar || data?.getUser?.avatar}
                 />
               )}
-              {/* {loadingImg.coverPhoto && ( */}
-              {img.coverPhoto && (
+              {/* {loadingImg.avatar && ( */}
+              {img.avatar && (
                 <div
-                  className="btn-saveCover"
+                  className="btn-saveAvt"
                   style={{
+                    fontSize: 25,
+                    borderRadius: '50%',
                     position: 'absolute',
                     width: '100%',
                     height: '100%',
@@ -310,137 +372,73 @@ function Profile(props) {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: loadingImg.coverPhoto && 'rgba(0,0,0,0.7)'
+                    backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
                   }}
                 >
                   {/* <LoadingOutlined
-                    style={{
-                      fontSize: 30,
-                      color: '#fff'
-                    }}
-                  /> */}
-                  <Spin spinning={loadingImg.coverPhoto} size="large" />
-                </div>
-              )}
-              {/* )} */}
-              {uploadButtonCover}
-            </div>
-          </div>
-          <div
-            style={{
-              backgroundColor: 'rgba(255,255,255,0.7)',
-              width: '100%',
-              display: 'flex',
-              marginTop: -95,
-              justifyContent: 'space-between'
-            }}
-          >
-            <div style={{ display: 'flex', width: '100%' }}>
-              <div
-                style={{
-                  position: 'relative',
-                  width: 130,
-                  height: 130,
-                  marginRight: 30
-                }}
-              >
-                {(data?.getUser?.avatar || img?.avatar) && (
-                  <Avatar
-                    onClick={() => {
-                      setPreviewImg({
-                        isShow: true,
-                        imgSrc: img?.avatar || data?.getUser?.avatar
-                      })
-                    }}
-                    className="img-avt"
-                    style={{ border: '2px solid black', objectFit: 'cover' }}
-                    shape="circle"
-                    size={130}
-                    src={img?.avatar || data?.getUser?.avatar}
-                  />
-                )}
-                {/* {loadingImg.avatar && ( */}
-                {img.avatar && (
-                  <div
-                    className="btn-saveAvt"
-                    style={{
-                      fontSize: 25,
-                      borderRadius: '50%',
-                      position: 'absolute',
-                      width: '100%',
-                      height: '100%',
-                      top: 0,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: loadingImg.avatar && 'rgba(0,0,0,0.6)'
-                    }}
-                  >
-                    {/* <LoadingOutlined
                       style={{
                         fontSize: 30,
                         color: '#fff'
                       }}
                     /> */}
-                    <Spin spinning={loadingImg.avatar} />
-                  </div>
-                )}
-                {uploadButtonAvt}
-                {/* )} */}
-              </div>
-              <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
-                <div
+                  <Spin spinning={loadingImg.avatar} />
+                </div>
+              )}
+              {uploadButtonAvt}
+              {/* )} */}
+            </div>
+            <div style={{ marginTop: 100, marginBottom: 0, width: '90%' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: isBroken ? 'flex-start' : 'space-between'
+                }}
+              >
+                <p
                   style={{
-                    display: 'flex',
-                    justifyContent: isBroken ? 'flex-start' : 'space-between'
+                    fontWeight: 'bolder',
+                    fontSize: 20,
+                    color: 'black',
+                    textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
                   }}
                 >
-                  <p
-                    style={{
-                      fontWeight: 'bolder',
-                      fontSize: 20,
-                      color: 'black',
-                      textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)'
-                    }}
-                  >
-                    {`${data?.getUser.firstname} ${data?.getUser.lastname}`}{' '}
-                    {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone />}
-                  </p>
-                  <div>
-                    {!isMe && (
-                      <div>
-                        <Follow
-                          refetchDataCountFollow={refetchDataCountFollow}
-                          isBroken={isBroken}
-                          follower={{ userId: userId, followerId: me?._id }}
-                        />
-                        <Chat
-                          chooseConversation={(idChat, userId) =>
-                            chooseConversation(idChat, userId)
-                          }
-                          members={[me?._id, userId]}
-                          history={history}
-                          isBroken={isBroken}
-                        ></Chat>
-                      </div>
-                    )}
-                  </div>
+                  {`${data?.getUser.firstname} ${data?.getUser.lastname}`}{' '}
+                  {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone />}
+                </p>
+                <div>
+                  {!isMe && (
+                    <div>
+                      <Follow
+                        refetchDataCountFollow={refetchDataCountFollow}
+                        isBroken={isBroken}
+                        follower={{ userId: userId, followerId: me?._id }}
+                      />
+                      <Chat
+                        chooseConversation={(idChat, userId) =>
+                          chooseConversation(idChat, userId)
+                        }
+                        members={[me?._id, userId]}
+                        history={history}
+                        isBroken={isBroken}
+                      ></Chat>
+                    </div>
+                  )}
                 </div>
-                {isMe && (
-                  <MenuInfo
-                    isBroken={isBroken}
-                    userId={userId}
-                    type={type}
-                    isMe={isMe}
-                    history={history}
-                  />
-                )}
               </div>
+              {isMe && (
+                <MenuInfo
+                  isBroken={isBroken}
+                  userId={userId}
+                  type={type}
+                  isMe={isMe}
+                  history={history}
+                />
+              )}
             </div>
           </div>
-          <br />{' '}
         </div>
-      )}
+        <br />{' '}
+      </div>
       <div
         style={{
           backgroundColor:
@@ -456,7 +454,7 @@ function Profile(props) {
             dataCountFollow={dataCountFollow}
           />
         )}
-        {type === 'messenger' && <MyMessenger userInfo={data?.getUser} />}
+        {/* {type === 'messenger' && <MyMessenger userInfo={data?.getUser} />} */}
         {type === 'myposts' && (
           <MyPosts history={history} userInfo={data?.getUser} />
         )}

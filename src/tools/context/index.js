@@ -50,8 +50,9 @@ const ContextWrapper = ({ children, history }) => {
     })
   }
   const logout = () => {
-    firebase.database().ref(`messboxes/${data?.me?._id}`)
+    firebase.database().ref(`messboxes/${data?.me?._id}`).remove()
     window.localStorage.clear()
+    history.push('/homepage')
     SdkUtils.logoutFB()
     SdkUtils.loginGoogle()
     setIsAuth(false)

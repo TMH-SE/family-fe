@@ -33,7 +33,7 @@ export default function ConversationList(props) {
         setDataChat(arr)
         setdataChatConver(arr)
       })
-  }, [me])
+  }, [])
 
   const onSearch = data => {
     const arrResult = [...dataChatConver]
