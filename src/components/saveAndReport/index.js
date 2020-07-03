@@ -43,7 +43,7 @@ function SaveAndReport(props) {
   const { me, isAuth, openLoginModal } = useContext(IContext)
   const [isSaved, setIsSaved] = useState(false)
   const [visibleModalReport, setVisibleModalReport] = useState(false)
-  const { postId, postItem, refetch } = props
+  const { postId, postItem, refetch, isBroken } = props
   const [createAndDelete] = useMutation(CREATE_AND_DELETE_SAVEDPOST)
   const [deletePost] = useMutation(DELETE_POST)
   const [deleteSavedPostsByPost] = useMutation(DELETE_SAVEPOSTS_BY_POST)
@@ -168,6 +168,7 @@ function SaveAndReport(props) {
         <EllipsisOutlined />
       </Dropdown>
       <ModalReport
+        isBroken={isBroken}
         visible={visibleModalReport}
         handleCancel={handleCancel}
         handleOk={handleOk}

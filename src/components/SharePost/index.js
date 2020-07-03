@@ -19,6 +19,7 @@ function SharePost(props) {
     copyinput.select()
     copyinput.setSelectionRange(0, 99999)
     document.execCommand('Copy')
+    copyinput.remove()
     setTitle('Đã copy link')
   }
   const menu = (
