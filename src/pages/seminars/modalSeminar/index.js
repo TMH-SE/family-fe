@@ -96,6 +96,11 @@ const ModalSeminar = forwardRef((props, ref) => {
                 ]}
               >
                 <DatePicker
+                
+                  disabledDate={current => {
+                    // Can not select days before today and today
+                    return current && current < moment().startOf('day')
+                  }}
                   placeholder="Ngày bắt đầu"
                   style={{ width: '100%' }}
                 />

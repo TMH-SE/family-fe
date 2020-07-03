@@ -184,6 +184,7 @@ function PageGroup(props) {
         visible={visibleModalReport}
         handleCancel={handleCancel}
         handleOk={handleOk}
+        isBroken={isBroken}
       ></ModalReport>
       <CreatePostDrawer
         refetch={refetchPostsByCom}

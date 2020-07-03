@@ -42,8 +42,9 @@ function ModalReport(props) {
   const { me } = useContext(IContext)
   const radioStyle = {
     display: 'block',
-    height: '30px',
-    lineHeight: '30px'
+    height: 'auto',
+    lineHeight: '30px',
+    whiteSpace: 'none'
   }
   const onChange = e => {
     setIsTextValue(false)
@@ -56,15 +57,21 @@ function ModalReport(props) {
   return (
     <Modal
       centered
-      width="50%"
+      width={props.isBroken ? '80%' : '50%'}
+      wrapClassName="radio-wrap"
       className="modal"
+      destroyOnClose
+      afterClose={() => {
+        setText('')
+        setValue('')
+      }}
       visible={props.visible}
       title="Lý do báo cáo bài viết này là: "
       onOk={props.handleOk}
       onCancel={props.handleCancel}
       footer={[
         <Button key="back" onClick={props.handleCancel}>
-          Return
+          Hủy
         </Button>,
         <Button
           key="submit"
@@ -98,7 +105,7 @@ function ModalReport(props) {
             }
           }}
         >
-          Submit
+          Báo cáo
         </Button>
       ]}
     >
