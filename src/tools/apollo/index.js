@@ -18,6 +18,10 @@ const errorMiddleware = onError(({ graphQLErrors, networkError, response }) => {
   if (graphQLErrors) {
     if (response) {
       graphQLErrors.map(({ message, code }) => {
+        if (code === 'UNAUTHENTICATED') {
+          window.localStorage.clear()
+          window.location.reload()
+        }
       })
       response.errors = graphQLErrors
     }
@@ -39,7 +43,7 @@ const link = ApolloLink.from([errorMiddleware, httpLink])
 const Client = new ApolloClient({
   // ssrMode: true,
   link: authLink.concat(link),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache()
 })
 // s
 export { Client }
