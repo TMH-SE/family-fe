@@ -349,19 +349,21 @@ const index = ({ children }) => {
             fontSize: 20,
             color: '#000'
           }}
+          justify="space-between"
           className="row-menu"
           gutter={16}
         >
           <Col
             style={{
               textAlign: 'center',
-              borderBottom: location === 'homepage' ? '1px solid blue' : 'none'
+              borderBottom:
+                location === 'homepage' ? '1px solid #1890ff' : 'none'
             }}
             span={4}
             onClick={() => history.push('/homepage')}
           >
             {location === 'homepage' ? (
-              <HomeFilled style={{ color: 'blue' }} />
+              <HomeOutlined style={{ color: '#1890ff' }} />
             ) : (
               <HomeOutlined />
             )}
@@ -369,13 +371,13 @@ const index = ({ children }) => {
           <Col
             style={{
               textAlign: 'center',
-              borderBottom: location === 'notify' ? '1px solid blue' : 'none'
+              borderBottom: location === 'notify' ? '1px solid #1890ff' : 'none'
             }}
-            span={5}
+            span={4}
             onClick={() => history.push('/notify')}
           >
             {location === 'notify' ? (
-              <BellFilled style={{ color: 'blue' }} />
+              <BellOutlined style={{ color: '#1890ff' }} />
             ) : (
               <BellOutlined />
             )}
@@ -383,44 +385,46 @@ const index = ({ children }) => {
           <Col
             style={{
               textAlign: 'center',
-              borderBottom: location === 'messenger' ? '1px solid blue' : 'none'
-            }}
-            span={5}
-            onClick={() => history.push(`/${me?._id}/messenger`)}
-          >
-            {location === 'messenger' ? (
-              <MessageFilled style={{ color: 'blue' }} />
-            ) : (
-              <MessageOutlined />
-            )}
-          </Col>
-          <Col
-            style={{
-              textAlign: 'center',
               borderBottom:
-                location === 'communities' ? '1px solid blue' : 'none'
+                location === 'communities' ? '1px solid #1890ff' : 'none'
             }}
-            span={5}
+            span={4}
             onClick={() => history.push('/communities')}
           >
             <TeamOutlined
               style={{
-                color: location === 'communities' ? 'blue' : 'black'
+                color: location === 'communities' ? '#1890ff' : 'black'
               }}
             />
           </Col>
           <Col
             style={{
               textAlign: 'center',
-              borderBottom: location === 'seminars' ? '1px solid blue' : 'none'
+              borderBottom:
+                location === 'seminars' ? '1px solid #1890ff' : 'none'
             }}
-            span={5}
+            span={4}
             onClick={() => history.push('/seminars')}
           >
             {location === 'seminars' ? (
-              <YoutubeFilled style={{ color: 'blue' }} />
+              <YoutubeOutlined style={{ color: '#1890ff' }} />
             ) : (
               <YoutubeOutlined />
+            )}
+          </Col>
+          <Col
+            style={{
+              textAlign: 'center',
+              borderBottom:
+                location === 'messenger' ? '1px solid #1890ff' : 'none'
+            }}
+            span={4}
+            onClick={() => history.push(`/messenger`)}
+          >
+            {location === 'messenger' ? (
+              <MessageOutlined style={{ color: '#1890ff' }} />
+            ) : (
+              <MessageOutlined />
             )}
           </Col>
         </Row>
