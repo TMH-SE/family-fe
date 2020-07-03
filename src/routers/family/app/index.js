@@ -12,6 +12,12 @@ const FamilyAppRoutes = ({ isAuth }) => {
     },
     {
       exact: true,
+      path: '/messenger',
+      component: 'myMessenger',
+      title: 'Danh sách chat'
+    },
+    {
+      exact: true,
       path: '/create-post',
       component: 'createPost',
       title: 'Tạo bài viết'
