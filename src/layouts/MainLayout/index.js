@@ -30,7 +30,9 @@ import {
   HomeFilled,
   YoutubeFilled,
   BellFilled,
-  LoginOutlined
+  LoginOutlined,
+  MessageFilled,
+  MessageOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -190,7 +192,8 @@ const index = ({ children }) => {
             style={{
               width: isBroken ? '80%' : '62%',
               display: 'flex',
-              justifyContent: 'flex-start'
+              justifyContent: 'flex-start',
+              alignItems: 'center'
             }}
           >
             <Logo
@@ -204,7 +207,7 @@ const index = ({ children }) => {
             {!isBroken ? (
               <Input
                 className="search-flex"
-                style={{ height: 30, top: '1em', borderRadius: 40 }}
+                style={{ height: 30, borderRadius: 40 }}
                 prefix={<SearchOutlined />}
                 placeholder="Tìm kiếm"
                 onPressEnter={handleSearch}
@@ -213,7 +216,7 @@ const index = ({ children }) => {
               // <Tooltip title='search'>
               <Input
                 className="search-broken"
-                style={{ height: 30, top: '1em', borderRadius: 40 }}
+                style={{ height: 30, borderRadius: 40 }}
                 prefix={<SearchOutlined />}
                 placeholder="Tìm kiếm"
                 onPressEnter={handleSearch}
@@ -229,6 +232,7 @@ const index = ({ children }) => {
               lineHeight: '60px',
               display: 'flex',
               justifyContent: !isBroken && 'flex-end',
+              alignItems: 'center',
               marginRight: 10
             }}
           >
@@ -257,7 +261,13 @@ const index = ({ children }) => {
                 </Menu.Item>
               </Menu>
             )}
-            <div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
               {isAuth ? (
                 isBroken ? (
                   <Dropdown
@@ -267,7 +277,7 @@ const index = ({ children }) => {
                   >
                     <Avatar
                       style={{
-                        top: '0.75em',
+                        // top: '0.75em',
                         color: 'white',
                         backgroundColor: 'rgb(0, 152, 218)',
                         fontSize: '15px',
@@ -281,7 +291,7 @@ const index = ({ children }) => {
                   <>
                     <Avatar
                       style={{
-                        top: '0.5em',
+                        // top: '0.5em',
                         color: 'white',
                         backgroundColor: 'rgb(0, 152, 218)',
                         fontSize: '14px',
@@ -294,7 +304,10 @@ const index = ({ children }) => {
                       {/* N */}
                     </Avatar>
                     <Dropdown
-                      overlayStyle={{ position: 'fixed', top: '50px !important' }}
+                      overlayStyle={{
+                        position: 'fixed',
+                        top: '50px !important'
+                      }}
                       overlay={menu}
                       trigger={['click']}
                     >
@@ -344,7 +357,7 @@ const index = ({ children }) => {
               textAlign: 'center',
               borderBottom: location === 'homepage' ? '1px solid blue' : 'none'
             }}
-            span={6}
+            span={4}
             onClick={() => history.push('/homepage')}
           >
             {location === 'homepage' ? (
@@ -358,7 +371,7 @@ const index = ({ children }) => {
               textAlign: 'center',
               borderBottom: location === 'notify' ? '1px solid blue' : 'none'
             }}
-            span={6}
+            span={5}
             onClick={() => history.push('/notify')}
           >
             {location === 'notify' ? (
@@ -370,10 +383,24 @@ const index = ({ children }) => {
           <Col
             style={{
               textAlign: 'center',
+              borderBottom: location === 'messenger' ? '1px solid blue' : 'none'
+            }}
+            span={5}
+            onClick={() => history.push(`/${me?._id}/messenger`)}
+          >
+            {location === 'messenger' ? (
+              <MessageFilled style={{ color: 'blue' }} />
+            ) : (
+              <MessageOutlined />
+            )}
+          </Col>
+          <Col
+            style={{
+              textAlign: 'center',
               borderBottom:
                 location === 'communities' ? '1px solid blue' : 'none'
             }}
-            span={6}
+            span={5}
             onClick={() => history.push('/communities')}
           >
             <TeamOutlined
@@ -387,7 +414,7 @@ const index = ({ children }) => {
               textAlign: 'center',
               borderBottom: location === 'seminars' ? '1px solid blue' : 'none'
             }}
-            span={6}
+            span={5}
             onClick={() => history.push('/seminars')}
           >
             {location === 'seminars' ? (

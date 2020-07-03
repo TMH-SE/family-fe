@@ -77,7 +77,6 @@ const HomePage = props => {
         })
       }
     }).then(({ data }) => {
-      console.log(data?.posts?.length, quantityPosts)
       if (data?.posts?.length + 5 < quantityPosts) {
         setLoadMore(false)
         setIsEnd(true)

@@ -23,7 +23,9 @@
   // width: 100% !important;
   border-radius: 20px !important;
 }
-
+.ant-btn-icon-only{
+  font-size: 0 !important;
+}
 .ant-input-affix-wrapper:focus .ant-menu {
   width: 20% !important;
 }
@@ -33,6 +35,7 @@
 .ant-btn-circle {
   background-color: #f0f8ffc7 !important;
   border: 'none';
+  font-size: 0;
 }
 .ant-input-affix-wrapper {
   background-color: #f0f8ffc7 !important;
