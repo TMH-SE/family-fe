@@ -82,6 +82,7 @@ function MyPosts(props) {
       )}
 
       <ModalReport
+      isBroken={isBroken}
         visible={visibleModalReport}
         handleCancel={handleCancel}
         handleOk={handleOk}

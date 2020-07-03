@@ -53,7 +53,6 @@ function PostNoGroup(props) {
         }
         style={{ maxWidth: '100%', marginBottom: 10 }}
         actions={
-          !isBroken &&
           process.env.ADMIN_SERVER === 'false' && [
             <div
               id="like-post"
@@ -72,6 +71,7 @@ function PostNoGroup(props) {
             </div>,
             <SharePost key="share" idPost={item?._id} />,
             <SaveAndReport
+              isBroken={isBroken}
               refetch={refetch}
               key="saveandreport"
               postId={item?._id}

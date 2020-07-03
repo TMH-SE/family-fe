@@ -36,7 +36,7 @@ function Chat(props) {
           }
         })
       })
-  }, [members])
+  }, [])
   const openChat = e => {
     if (!isExist) {
       firebase
@@ -60,6 +60,7 @@ function Chat(props) {
     <MessageTwoTone
       style={{ fontSize: 20, marginLeft: 10 }}
       onClick={() => {
+        console.log(isExist, 'ol')
         if (!isExist) {
           firebase
             .database()
@@ -71,9 +72,9 @@ function Chat(props) {
             })
             .then(() => {
               history.push(
-                `/${members.filter(mem => mem !== me?._id)[0]}/messenger/${
-                  isExist?.idChat
-                }`
+                `/${
+                  members.filter(mem => mem !== me?._id)[0]
+                }/messenger/${idChat}`
               )
             })
         } else {

@@ -103,6 +103,7 @@ function PostHaveGroup(props) {
             </div>,
             <SharePost key="share" idPost={item?._id} />,
             <SaveAndReport
+              isBroken={isBroken}
               refetch={refetch}
               key="saveandreport"
               postId={item?._id}
