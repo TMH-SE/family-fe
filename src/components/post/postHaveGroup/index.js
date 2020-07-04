@@ -46,7 +46,7 @@ function PostHaveGroup(props) {
               size={64}
               src={item?.community?.avatar}
             />
-            <div style={{ marginLeft: 10, marginTop: 10 }}>
+            <div style={{ marginLeft: 10 }}>
               <a
                 onClick={() =>
                   history.push(`/page-group/${item?.community?._id}`)
@@ -101,7 +101,7 @@ function PostHaveGroup(props) {
               />
               <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
             </div>,
-            <SharePost key="share" idPost={item?._id} />,
+            <SharePost key="share" post={item} />,
             <SaveAndReport
               isBroken={isBroken}
               refetch={refetch}
