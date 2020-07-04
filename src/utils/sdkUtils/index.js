@@ -53,16 +53,21 @@ const SdkUtils = {
       })
     })
   },
-  shareFB(postId) {
-    FB.ui(
-      {
-        method: 'share',
-        display: 'popup',
-        href: `${window.location.origin}/post-detail/${postId}`,
-      },
-      // callback
-      function (response) {}
-    )
+  shareFB(post) {
+    post &&
+      FB.ui(
+        {
+          method: 'share',
+          display: 'popup',
+          href: `${window.location.origin}/post-detail/${post?._id}`,
+          hashtag: '#giadinhtk',
+          quote: `Bài viết ${post?._title} được chia sẻ bởi ${
+            posts?.createdBy?.firstname
+          } tại website ${window.location.origin}. Tham gia cùng mình để chia sẻ kinh nghiệm chắm sóc con cái nhé!`
+        },
+        // callback
+        function (response) {}
+      )
   },
   async logoutFB() {
     FB.logout()

@@ -80,7 +80,15 @@ const EditPostForm = forwardRef((props, ref) => {
       <Form.Item name="community" label="Cộng đồng">
         <Input disabled />
       </Form.Item>
-      <Form.Item label="Tiêu đề" name="title">
+      <Form.Item
+        label="Tiêu đề"
+        name="title"
+        rules={[
+          { required: true, message: 'Vui lòng nhập tiêu đề bài viết' },
+          { min: 5, message: 'Tiêu đề quá ngắn' },
+          { max: 500, message: 'Tiêu đề quá dài' }
+        ]}
+      >
         <Input />
       </Form.Item>
       <Form.Item label="Thumbnail">

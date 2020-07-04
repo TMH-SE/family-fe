@@ -111,7 +111,11 @@ const EditUser = props => {
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập tên'
+              message: 'Vui lòng nhập tên của bạn'
+            },
+            {
+              max: 25,
+              message: 'Tên quá dài'
             }
           ]}
           //   initialValue={me?.firstname}
@@ -125,7 +129,15 @@ const EditUser = props => {
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập họ'
+              message: 'Vui lòng nhập họ của bạn'
+            },
+            {
+              pattern: /^(?=.{1,40}$)[a-zA-Z]+(?:[-'\s][a-zA-Z]+)*$/,
+              message: 'Họ tên chỉ được nhập chữ'
+            },
+            {
+              max: 25,
+              message: 'Họ quá dài'
             }
           ]}
           //   initialValue={me?.lastname}
@@ -159,6 +171,12 @@ const EditUser = props => {
           </Radio.Group>
         </Form.Item>
         <Form.Item
+          rules={[
+            {
+              pattern: /(09|03|02|01[2|6|8|9])+([0-9]{8})/g,
+              message: 'Số điện thoại không đúng định dạng'
+            }
+          ]}
           {...formItemLayout}
           name="phoneNumber"
           label="Số điện thoại"

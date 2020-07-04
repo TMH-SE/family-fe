@@ -313,7 +313,11 @@ const index = ({ children }) => {
                     >
                       <a
                         className="ant-dropdown-link"
-                        style={{ paddingLeft: 5, fontWeight: 'bold' }}
+                        style={{
+                          paddingLeft: 5,
+                          fontWeight: 'bold',
+                          width: 'max-content'
+                        }}
                         onClick={e => e.preventDefault()}
                       >
                         {me?.firstname} <CaretDownOutlined />
@@ -434,7 +438,7 @@ const index = ({ children }) => {
         style={{
           paddingTop: 100,
           width: '100%',
-          paddingLeft: isBroken ? 0 : 100,
+          paddingLeft: isBroken ? 0 : '1.5em',
           margin: '0 auto',
           backgroundColor: 'aliceblue'
         }}
@@ -442,7 +446,7 @@ const index = ({ children }) => {
         <Sider
           breakpoint="lg"
           collapsedWidth={0}
-          width={isBroken ? 0 : '18%'}
+          width={isBroken ? 0 : '25%'}
           onBreakpoint={broken => setIsBroken(broken)}
           trigger={null}
         >
@@ -464,7 +468,8 @@ const index = ({ children }) => {
           style={{
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
-            marginTop: 0
+            marginTop: 0,
+            marginRight: '17%'
           }}
         >
           <MainContext.Provider
@@ -477,8 +482,16 @@ const index = ({ children }) => {
             {children}
           </MainContext.Provider>
         </Content>
-        {!isBroken && isAuth ? (
-          <Sider width="18%">
+        {!isBroken && isAuth && (
+          <Sider
+            width="17%"
+            style={{
+              position: 'fixed',
+              right: 0,
+              border: '#d5edf9 solid 2px !important',
+              backgroundColor: '#e6f4ff'
+            }}
+          >
             <div className="sidebarMess-mainLayout">
               <ConversationList
                 chooseConversation={(idChat, userId) =>
@@ -487,8 +500,6 @@ const index = ({ children }) => {
               />
             </div>
           </Sider>
-        ) : (
-          !isBroken && <Sider width="17%"></Sider>
         )}
         {!isBroken && (
           <div className="messenger-main">
