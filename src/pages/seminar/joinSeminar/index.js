@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Button, Tooltip } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
 import firebase from 'firebase/app'
@@ -11,6 +11,7 @@ const JoinSenimar = ({ idSeminar }) => {
   const { me, history } = useContext(IContext)
   const [remoteStream, setRemoteStream] = useState(null)
   const idUser = me?._id
+  const videoRef = useRef()
 
   useEffect(() => {
     const pc = new RTCPeerConnection(configRTCPeerConnection)
@@ -89,7 +90,7 @@ const JoinSenimar = ({ idSeminar }) => {
 
   return (
     <div style={{ height: '100%', position: 'relative' }}>
-      <Video videoStream={remoteStream} />
+      <Video ref={videoRef} videoStream={remoteStream} />
       <Tooltip title="Thoát">
         <Button
           onClick={() => window.close()}
