@@ -33,7 +33,7 @@ function index() {
   const modalRef = useRef()
   const { data, refetch } = useQuery(GET_SEMINARS)
   const [firebaseSeminars, setFirebaseSeminars] = useState([])
-  const [senimarData, setSenimarData] = useState([])
+  const [senimarData, setSenimarData] = useState(null)
   useEffect(() => {
     firebase
       .database()
@@ -74,7 +74,7 @@ function index() {
       }
     }
   }, [firebaseSeminars, data?.seminars])
-  const openEditModal = dat => {
+  const openModal = dat => {
     modalRef.current?.openModal()
     setSenimarData(dat)
   }
@@ -85,7 +85,7 @@ function index() {
         me?.expert?.isVerify ? (
           <Button
             icon={<PlusOutlined />}
-            onClick={() => modalRef.current?.openModal()}
+            onClick={() => openModal(null)}
           >
             Tạo hội thảo
           </Button>
@@ -94,17 +94,17 @@ function index() {
     >
       <Card type="inner" title="Đang diễn ra">
         {seminars?.startSeminars?.map(v => (
-          <SeminarDetail state='start' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openEditModal(v)} />
+          <SeminarDetail state='start' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openModal(v)} />
         ))}
       </Card>
       <Card style={{ marginTop: 16 }} type="inner" title="Sắp tới">
         {seminars?.upcomingSeminars?.map(v => (
-          <SeminarDetail state='upcoming' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openEditModal(v)} />
+          <SeminarDetail state='upcoming' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openModal(v)} />
         ))}
       </Card>
       <Card style={{ marginTop: 16 }} type="inner" title="Đã kết thúc">
         {seminars?.endSeminars?.map(v => (
-          <SeminarDetail state='end' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openEditModal(v)} />
+          <SeminarDetail state='end' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openModal(v)} />
         ))}
       </Card>
       <ModalSeminar ref={modalRef} refetchSeminars={refetch} seminarData={senimarData} />

@@ -3,7 +3,7 @@ import { Comment, List } from 'antd'
 import firebase from 'firebase/app'
 import moment from 'moment'
 
-const ListComments = ({ idSeminar }) => {
+const ListComments = ({ idSeminar, onScrollEnd }) => {
   const [comment, setComment] = useState(null)
   const [comments, setComments] = useState([])
   useEffect(() => {
@@ -19,6 +19,7 @@ const ListComments = ({ idSeminar }) => {
   useLayoutEffect(() => {
     if (comment) {
       setComments([...comments, comment])
+      onScrollEnd()
     }
   }, [comment])
   return (

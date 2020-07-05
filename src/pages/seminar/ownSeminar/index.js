@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Button, Space, Tooltip, message } from 'antd'
 import {
   AudioOutlined,
@@ -8,13 +8,14 @@ import {
   AudioMutedOutlined,
   StopOutlined,
   LogoutOutlined,
-  YoutubeOutlined
+  PlayCircleOutlined,
+  PauseCircleOutlined
 } from '@ant-design/icons'
 import firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
 import Video from '../video'
 
-const OwnSeminar = ({ idSeminar }) => {
+const OwnSeminar = ({ idSeminar, seminarTitle }) => {
   const [participant, setParticipant] = useState({})
   const [participants, setParticipants] = useState({})
   const [localStream, setLocalStream] = useState(null)
@@ -23,6 +24,10 @@ const OwnSeminar = ({ idSeminar }) => {
   const [videoTracks, setVideoTracks] = useState([])
   const [audioEnable, setAudioEnable] = useState(true)
   const [videoEnable, setVideoEnable] = useState(true)
+  const [mediaRecorder, setMediaRecorder] = useState(null)
+
+  const videoRef = useRef()
+
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -145,14 +150,72 @@ const OwnSeminar = ({ idSeminar }) => {
         video: { mediaSource: 'screen' }
       })
     }
-    setCurrentStream(streamDisplay)
+    if (streamDisplay) {
+      setCurrentStream(streamDisplay)
+    }
     streamDisplay.addEventListener('inactive', e => {
       setCurrentStream(localStream)
     })
   }
+
+  const handleRecordStream = async () => {
+    let newMediaRecorder
+    const recordedBlobs = []
+    let options = { mimeType: 'video/webm;codecs=vp9,opus' }
+    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+      console.error(`${options.mimeType} is not supported`)
+      options = { mimeType: 'video/webm;codecs=vp8,opus' }
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        console.error(`${options.mimeType} is not supported`)
+        options = { mimeType: 'video/webm' }
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+          console.error(`${options.mimeType} is not supported`)
+          options = { mimeType: '' }
+        }
+      }
+    }
+    try {
+      const stream = videoRef?.current?.captureStream()
+      stream.addTrack(localStream.getAudioTracks()[0])
+      newMediaRecorder = new MediaRecorder(stream, options)
+    } catch (e) {
+      console.error('Exception while creating MediaRecorder:', e)
+    }
+    newMediaRecorder.onstop = () => {
+      dowloadStream(recordedBlobs)
+    }
+    newMediaRecorder.ondataavailable = e => {
+      if (e.data && e.data.size > 0) {
+        recordedBlobs.push(e.data)
+      }
+    }
+    newMediaRecorder.start()
+    setMediaRecorder(newMediaRecorder)
+  }
+
+  const handleStopRecordStream = () => {
+    mediaRecorder.stop()
+    setMediaRecorder(null)
+  }
+
+  const dowloadStream = recordedBlobs => {
+    const blob = new Blob(recordedBlobs, { type: 'video/webm' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.style.display = 'none'
+    a.href = url
+    a.download = `${seminarTitle}.webm`
+    document.body.appendChild(a)
+    a.click()
+    setTimeout(() => {
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+    }, 100)
+  }
+
   return (
     <div style={{ height: '100%', position: 'relative' }}>
-      <Video videoStream={currentStream} />
+      <Video ref={videoRef} videoStream={currentStream} />
       <Space
         size="large"
         style={{
@@ -197,14 +260,23 @@ const OwnSeminar = ({ idSeminar }) => {
         </Tooltip>
         <Tooltip title="Ghi màn hình">
           <Button
-            icon={<YoutubeOutlined />}
+            icon={
+              mediaRecorder ? <PauseCircleOutlined /> : <PlayCircleOutlined />
+            }
             shape="circle-outline"
             ghost
-            onClick={handleShareScreen}
+            onClick={
+              mediaRecorder ? handleStopRecordStream : handleRecordStream
+            }
           />
         </Tooltip>
         <Tooltip title="Thoát">
-          <Button onClick={() => window.close()} icon={<LogoutOutlined />} shape="circle-outline" ghost />
+          <Button
+            onClick={() => window.close()}
+            icon={<LogoutOutlined />}
+            shape="circle-outline"
+            ghost
+          />
         </Tooltip>
       </Space>
     </div>
