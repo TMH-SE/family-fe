@@ -12,6 +12,7 @@ export const GET_POST_BY_ID = gql`
       title
       content
       thumbnail
+      keywords
       createdBy {
         _id
         firstname

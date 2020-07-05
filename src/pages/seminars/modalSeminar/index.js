@@ -12,6 +12,7 @@ import {
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 import moment from 'moment'
+import { notificationError } from '@shared'
 
 const CREATE_SEMINAR = gql`
   mutation createSeminar($newSeminar: NewSeminar) {
@@ -19,38 +20,74 @@ const CREATE_SEMINAR = gql`
   }
 `
 
+const UPDATE_SEMINAR = gql`
+  mutation updateSeminar($_id: ID, $newSeminar: NewSeminar) {
+    updateSeminar(_id: $_id, newSeminar: $newSeminar)
+  }
+`
+
 const ModalSeminar = forwardRef((props, ref) => {
-  const { refetchSeminars } = props
+  const { refetchSeminars, seminarData } = props
   const [visible, setVisible] = useState(false)
   useImperativeHandle(ref, () => ({
     openModal: () => setVisible(true)
   }))
   const [createSeminar] = useMutation(CREATE_SEMINAR)
+  const [updateSeminar] = useMutation(UPDATE_SEMINAR)
   const [form] = Form.useForm()
   const submitCreateSeminar = ({ title, description, time, date }) => {
     const startTime = new Date(+moment(time))
     const startDate = new Date(+moment(date))
-    createSeminar({
-      variables: {
-        newSeminar: {
-          title,
-          description,
-          startAt: startDate.setHours(
-            startTime.getHours(),
-            startTime.getMinutes(),
-            0
-          )
+    if (!!seminarData) {
+      updateSeminar({
+        variables: {
+          _id: seminarData?._id,
+          newSeminar: {
+            title,
+            description,
+            startAt: startDate.setHours(
+              startTime.getHours(),
+              startTime.getMinutes(),
+              0
+            )
+          }
         }
-      }
-    }).then(({ errors }) => {
-      if (!errors) {
-        notification.success({
-          message: 'Tạo hội thảo thành công',
-          placement: 'bottomRight'
+      })
+        .then(({ errors }) => {
+          if (!errors) {
+            notification.success({
+              message: 'Cập nhật hội thảo thành công',
+              placement: 'bottomRight'
+            })
+            setVisible(false)
+          }
         })
-        setVisible(false)
-      }
-    })
+        .catch(notificationError)
+    } else {
+      createSeminar({
+        variables: {
+          newSeminar: {
+            title,
+            description,
+            startAt: startDate.setHours(
+              startTime.getHours(),
+              startTime.getMinutes(),
+              0
+            )
+          }
+        }
+      })
+        .then(({ errors }) => {
+          if (!errors) {
+            notification.success({
+              message: 'Tạo hội thảo thành công',
+              placement: 'bottomRight'
+            })
+            setVisible(false)
+          }
+        })
+        .catch(notificationError)
+    }
   }
 
   return (
@@ -65,7 +102,17 @@ const ModalSeminar = forwardRef((props, ref) => {
       }}
       onOk={() => form.submit()}
     >
-      <Form form={form} onFinish={submitCreateSeminar} layout="vertical">
+      <Form
+        form={form}
+        onFinish={submitCreateSeminar}
+        initialValues={{
+          title: seminarData?.title,
+          description: seminarData?.description,
+          date: moment(seminarData?.startAt),
+          time: moment(seminarData?.startAt)
+        }}
+        layout="vertical"
+      >
         <Form.Item
           label="Chủ đề"
           name="title"
@@ -129,7 +176,9 @@ const ModalSeminar = forwardRef((props, ref) => {
                   }}
                   disabledMinutes={hour => {
                     if (moment().get('hour') === hour) {
-                      return Array.from(Array(moment().get('minute') + 1).keys())
+                      return Array.from(
+                        Array(moment().get('minute') + 1).keys()
+                      )
                     }
                   }}
                   style={{ width: '100%' }}

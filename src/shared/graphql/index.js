@@ -86,13 +86,11 @@ export const GET_POSTS = gql`
       thumbnail
       isActive
       content
+      keywords
       community {
         _id
         name
         avatar
-      }
-      community{
-        _id
       }
       createdBy {
         _id
@@ -128,6 +126,7 @@ export const GET_POSTS_BY_USER = gql`
       title
       content
       thumbnail
+      keywords
       createdBy {
         _id
         firstname
@@ -165,6 +164,7 @@ export const GET_SAVEDPOST_BY_USER = gql`
         title
         content
         thumbnail
+        keywords
         community {
           _id
           name
@@ -214,6 +214,7 @@ export const GET_POST_BY_COMMUNITY = gql`
       title
       content
       thumbnail
+      keywords
       createdBy {
         _id
         firstname
@@ -223,6 +224,7 @@ export const GET_POST_BY_COMMUNITY = gql`
       createdAt
       community{
         _id
+        name
       }
     }
   }

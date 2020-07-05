@@ -116,7 +116,7 @@ const Login = () => {
             </Button>
           </Col>
           <Col span={12}>
-            <Button danger block onClick={() => history.push('/register')}>
+            <Button type='primary' ghost block onClick={() => history.push('/register')}>
               Đăng ký thành viên
             </Button>
           </Col>
