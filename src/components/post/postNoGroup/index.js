@@ -43,7 +43,8 @@ function PostNoGroup(props) {
                 onClick={() => history.push(`/${item?.createdBy?._id}/info`)}
                 style={{ fontWeight: 'bolder', color: 'black' }}
               >
-                {item?.createdBy?.firstname}{' '} {item?.createdBy?.expert?.isVerify && <CheckCircleTwoTone /> }
+                {item?.createdBy?.firstname}{' '}
+                {item?.createdBy?.expert?.isVerify && <CheckCircleTwoTone />}
               </a>
               <p style={{ color: '#9b9b9b', fontSize: 12 }}>
                 {new Date(item?.createdAt).toLocaleString()}
@@ -97,14 +98,20 @@ function PostNoGroup(props) {
             <div>
               <p
                 dangerouslySetInnerHTML={{
-                  __html: item?.content
+                  __html: `<div>${item?.content}<p>${
+                    item?.keywords
+                      ? item?.keywords
+                          .map(key => `#${key.replace(/\s/g, '_')}`)
+                          .join(' ')
+                      : ''
+                  }</p></div>`
                 }}
                 className={`content ${nameEl}${item?._id}`}
                 style={{
                   height: showText ? 'auto' : '3em',
                   overflow: 'hidden'
                 }}
-              ></p>
+              />
               {!showText &&
                 (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
                 document.getElementsByClassName(`collapse${item?._id}`)[0]

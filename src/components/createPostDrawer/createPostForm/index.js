@@ -112,18 +112,17 @@ const CreatePostForm = forwardRef((props, ref) => {
   const submitCreatePost = ({ title, communityId }) => {
     setConfirmLoading(true)
     const html = handlebars.compile(postTemplate)
-    const hashtags = keywords.map(key => key.replace(/\s/g, '_'))
     createPost({
       variables: {
         newPost: {
           title,
-          communityId,
+          communityId: communityId?.value,
           content: html({
             title,
             author: `${me?.firstname} ${me?.lastname}`,
+            community: communityId?.label,
             content: `<div>${editor.getData()}</div>`,
-            keywords,
-            hashtags
+            keywords
           }),
           thumbnail: imageUrl,
           keywords
@@ -176,7 +175,7 @@ const CreatePostForm = forwardRef((props, ref) => {
       layout="horizontal"
       onFinish={submitCreatePost}
       initialValues={{
-        communityId: data?._id
+        communityId: data?._id ? { key: data?._id } : undefined
       }}
     >
       {data !== null && (
@@ -188,18 +187,19 @@ const CreatePostForm = forwardRef((props, ref) => {
             placeholder="Chọn cộng đồng"
             showArrow={false}
             showSearch
+            labelInValue
             filterOption={(inputValue, option) =>
               option.label
                 .toLocaleLowerCase()
                 .indexOf(inputValue.toLowerCase()) !== -1
             }
-            options={dataCommunities?.getCommunitiesByUser?.map(
-              ({ community }) => ({
-                label: community.name,
-                value: community._id
-              })
-            )}
-          />
+          >
+            {dataCommunities?.getCommunitiesByUser?.map(({ community }) => (
+              <Select.Option key={community._id} value={community._id}>
+                {community.name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
       )}
       <Form.Item

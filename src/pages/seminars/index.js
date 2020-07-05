@@ -33,6 +33,7 @@ function index() {
   const modalRef = useRef()
   const { data, refetch } = useQuery(GET_SEMINARS)
   const [firebaseSeminars, setFirebaseSeminars] = useState([])
+  const [senimarData, setSenimarData] = useState([])
   useEffect(() => {
     firebase
       .database()
@@ -73,6 +74,10 @@ function index() {
       }
     }
   }, [firebaseSeminars, data?.seminars])
+  const openEditModal = dat => {
+    modalRef.current?.openModal()
+    setSenimarData(dat)
+  }
   return (
     <Card
       title="Hội thảo"
@@ -89,20 +94,20 @@ function index() {
     >
       <Card type="inner" title="Đang diễn ra">
         {seminars?.startSeminars?.map(v => (
-          <SeminarDetail state='start' key={v._id} me={me} seminarData={v} />
+          <SeminarDetail state='start' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openEditModal(v)} />
         ))}
       </Card>
       <Card style={{ marginTop: 16 }} type="inner" title="Sắp tới">
         {seminars?.upcomingSeminars?.map(v => (
-          <SeminarDetail state='upcoming' key={v._id} me={me} seminarData={v} />
+          <SeminarDetail state='upcoming' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openEditModal(v)} />
         ))}
       </Card>
       <Card style={{ marginTop: 16 }} type="inner" title="Đã kết thúc">
         {seminars?.endSeminars?.map(v => (
-          <SeminarDetail state='end' key={v._id} me={me} seminarData={v} />
+          <SeminarDetail state='end' key={v._id} me={me} refetch={refetch} seminarData={v} openEditModal={() => openEditModal(v)} />
         ))}
       </Card>
-      <ModalSeminar ref={modalRef} refetchSeminars={refetch} />
+      <ModalSeminar ref={modalRef} refetchSeminars={refetch} seminarData={senimarData} />
     </Card>
   )
 }
