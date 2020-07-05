@@ -469,7 +469,7 @@ const index = ({ children }) => {
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
             marginTop: 0,
-            marginRight: '17%'
+            marginRight: !isBroken && '17%'
           }}
         >
           <MainContext.Provider

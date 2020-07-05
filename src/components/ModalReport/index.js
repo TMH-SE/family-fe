@@ -5,7 +5,7 @@ import { Modal, Button, Radio, notification, Input } from 'antd'
 // import Editor from '../editor'
 import firebase from 'firebase/app'
 import { IContext } from '@tools'
-
+import './index.scss'
 const data = [
   {
     reason: 'Vi phạm Quy định chung'
@@ -44,7 +44,6 @@ function ModalReport(props) {
     display: 'block',
     height: 'auto',
     lineHeight: '30px',
-    whiteSpace: 'none'
   }
   const onChange = e => {
     setIsTextValue(false)
