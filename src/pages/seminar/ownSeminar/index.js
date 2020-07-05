@@ -204,7 +204,7 @@ const OwnSeminar = ({ idSeminar }) => {
           />
         </Tooltip>
         <Tooltip title="Thoát">
-          <Button icon={<LogoutOutlined />} shape="circle-outline" ghost />
+          <Button onClick={() => window.close()} icon={<LogoutOutlined />} shape="circle-outline" ghost />
         </Tooltip>
       </Space>
     </div>

@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import {
   Input,
   Form,
-  Modal,
   DatePicker,
   Radio,
   Button,
@@ -67,7 +66,7 @@ const EditUser = props => {
   }
   return (
     <Drawer
-      width={isBroken ? "100%" : '40%'}
+      width={isBroken ? '100%' : '40%'}
       visible={visible}
       title="Chỉnh sửa thông tin"
       closable={false}
@@ -112,7 +111,11 @@ const EditUser = props => {
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập tên'
+              message: 'Vui lòng nhập tên của bạn'
+            },
+            {
+              max: 25,
+              message: 'Tên quá dài'
             }
           ]}
           //   initialValue={me?.firstname}
@@ -126,7 +129,15 @@ const EditUser = props => {
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập họ'
+              message: 'Vui lòng nhập họ của bạn'
+            },
+            {
+              pattern: /^(?=.{1,40}$)[a-zA-Z]+(?:[-'\s][a-zA-Z]+)*$/,
+              message: 'Họ tên chỉ được nhập chữ'
+            },
+            {
+              max: 25,
+              message: 'Họ quá dài'
             }
           ]}
           //   initialValue={me?.lastname}
@@ -160,6 +171,12 @@ const EditUser = props => {
           </Radio.Group>
         </Form.Item>
         <Form.Item
+          rules={[
+            {
+              pattern: /(09|03|02|01[2|6|8|9])+([0-9]{8})/g,
+              message: 'Số điện thoại không đúng định dạng'
+            }
+          ]}
           {...formItemLayout}
           name="phoneNumber"
           label="Số điện thoại"
@@ -187,21 +204,24 @@ const EditUser = props => {
                   name="areasOfExpertise"
                   label="Lĩnh vực chuyên môn"
                 >
-                  <Input />
+                  <Input disabled={me?.expert?.isVerify} />
                 </Form.Item>
                 <Form.Item
                   {...formItemLayout}
                   name="jobTitle"
                   label="Chức danh"
                 >
-                  <Input />
+                  <Input disabled={me?.expert?.isVerify} />
                 </Form.Item>
                 <Form.Item
                   {...formItemLayout}
                   name="yearsExperience"
                   label="Số năm kinh nghiệm"
                 >
-                  <InputNumber style={{ width: '100%' }} />
+                  <InputNumber
+                    disabled={me?.expert?.isVerify}
+                    style={{ width: '100%' }}
+                  />
                 </Form.Item>
               </>
             ) : null

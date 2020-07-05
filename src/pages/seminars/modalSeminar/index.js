@@ -52,6 +52,7 @@ const ModalSeminar = forwardRef((props, ref) => {
       }
     })
   }
+
   return (
     <Modal
       centered
@@ -96,6 +97,10 @@ const ModalSeminar = forwardRef((props, ref) => {
                 ]}
               >
                 <DatePicker
+                  disabledDate={current => {
+                    // Can not select days before today and today
+                    return current && current < moment().startOf('day')
+                  }}
                   placeholder="Ngày bắt đầu"
                   style={{ width: '100%' }}
                 />
@@ -114,6 +119,19 @@ const ModalSeminar = forwardRef((props, ref) => {
                 <TimePicker
                   placeholder="Giờ bắt đầu"
                   format="HH:mm"
+                  disabledHours={() => {
+                    if (
+                      form.getFieldValue('date').startOf('day').valueOf() ===
+                      moment().startOf('day').valueOf()
+                    ) {
+                      return Array.from(Array(moment().get('hour')).keys())
+                    }
+                  }}
+                  disabledMinutes={hour => {
+                    if (moment().get('hour') === hour) {
+                      return Array.from(Array(moment().get('minute') + 1).keys())
+                    }
+                  }}
                   style={{ width: '100%' }}
                 />
               </Form.Item>

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
 import { Card, Avatar, Typography } from 'antd'
 import { Reaction, SharePost, CommentPost, SaveAndReport } from '@components'
-import { CommentOutlined } from '@ant-design/icons'
+import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'
 import { Meta } from 'antd/lib/list/Item'
 import { useHistory } from 'react-router-dom'
 function PostNoGroup(props) {
   const [showText, setShowText] = useState(props.showText || false)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, refetch } = props
+  const { item, refetch, isBroken } = props
   const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -43,7 +43,7 @@ function PostNoGroup(props) {
                 onClick={() => history.push(`/${item?.createdBy?._id}/info`)}
                 style={{ fontWeight: 'bolder', color: 'black' }}
               >
-                {item?.createdBy?.firstname}
+                {item?.createdBy?.firstname}{' '} {item?.createdBy?.expert?.isVerify && <CheckCircleTwoTone /> }
               </a>
               <p style={{ color: '#9b9b9b', fontSize: 12 }}>
                 {new Date(item?.createdAt).toLocaleString()}
@@ -69,8 +69,9 @@ function PostNoGroup(props) {
               />
               <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
             </div>,
-            <SharePost key="share" idPost={item?._id} />,
+            <SharePost key="share" post={item} />,
             <SaveAndReport
+              isBroken={isBroken}
               refetch={refetch}
               key="saveandreport"
               postId={item?._id}
