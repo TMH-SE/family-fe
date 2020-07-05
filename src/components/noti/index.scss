@@ -9,6 +9,7 @@
 #noti-popover {
   position: fixed;
   .ant-popover-inner-content {
+    max-width: 25rem;
     max-height: 50vh;
     overflow-y: auto;
   }

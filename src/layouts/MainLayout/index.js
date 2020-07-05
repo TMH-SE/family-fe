@@ -30,7 +30,9 @@ import {
   HomeFilled,
   YoutubeFilled,
   BellFilled,
-  LoginOutlined
+  LoginOutlined,
+  MessageFilled,
+  MessageOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
@@ -190,7 +192,8 @@ const index = ({ children }) => {
             style={{
               width: isBroken ? '80%' : '62%',
               display: 'flex',
-              justifyContent: 'flex-start'
+              justifyContent: 'flex-start',
+              alignItems: 'center'
             }}
           >
             <Logo
@@ -204,7 +207,7 @@ const index = ({ children }) => {
             {!isBroken ? (
               <Input
                 className="search-flex"
-                style={{ height: 30, top: '1em', borderRadius: 40 }}
+                style={{ height: 30, borderRadius: 40 }}
                 prefix={<SearchOutlined />}
                 placeholder="Tìm kiếm"
                 onPressEnter={handleSearch}
@@ -213,7 +216,7 @@ const index = ({ children }) => {
               // <Tooltip title='search'>
               <Input
                 className="search-broken"
-                style={{ height: 30, top: '1em', borderRadius: 40 }}
+                style={{ height: 30, borderRadius: 40 }}
                 prefix={<SearchOutlined />}
                 placeholder="Tìm kiếm"
                 onPressEnter={handleSearch}
@@ -229,6 +232,7 @@ const index = ({ children }) => {
               lineHeight: '60px',
               display: 'flex',
               justifyContent: !isBroken && 'flex-end',
+              alignItems: 'center',
               marginRight: 10
             }}
           >
@@ -257,7 +261,13 @@ const index = ({ children }) => {
                 </Menu.Item>
               </Menu>
             )}
-            <div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
               {isAuth ? (
                 isBroken ? (
                   <Dropdown
@@ -267,7 +277,7 @@ const index = ({ children }) => {
                   >
                     <Avatar
                       style={{
-                        top: '0.75em',
+                        // top: '0.75em',
                         color: 'white',
                         backgroundColor: 'rgb(0, 152, 218)',
                         fontSize: '15px',
@@ -281,7 +291,7 @@ const index = ({ children }) => {
                   <>
                     <Avatar
                       style={{
-                        top: '0.5em',
+                        // top: '0.5em',
                         color: 'white',
                         backgroundColor: 'rgb(0, 152, 218)',
                         fontSize: '14px',
@@ -294,13 +304,20 @@ const index = ({ children }) => {
                       {/* N */}
                     </Avatar>
                     <Dropdown
-                      overlayStyle={{ position: 'fixed', top: '50px !important' }}
+                      overlayStyle={{
+                        position: 'fixed',
+                        top: '50px !important'
+                      }}
                       overlay={menu}
                       trigger={['click']}
                     >
                       <a
                         className="ant-dropdown-link"
-                        style={{ paddingLeft: 5, fontWeight: 'bold' }}
+                        style={{
+                          paddingLeft: 5,
+                          fontWeight: 'bold',
+                          width: 'max-content'
+                        }}
                         onClick={e => e.preventDefault()}
                       >
                         {me?.firstname} <CaretDownOutlined />
@@ -336,19 +353,21 @@ const index = ({ children }) => {
             fontSize: 20,
             color: '#000'
           }}
+          justify="space-between"
           className="row-menu"
           gutter={16}
         >
           <Col
             style={{
               textAlign: 'center',
-              borderBottom: location === 'homepage' ? '1px solid blue' : 'none'
+              borderBottom:
+                location === 'homepage' ? '1px solid #1890ff' : 'none'
             }}
-            span={6}
+            span={4}
             onClick={() => history.push('/homepage')}
           >
             {location === 'homepage' ? (
-              <HomeFilled style={{ color: 'blue' }} />
+              <HomeOutlined style={{ color: '#1890ff' }} />
             ) : (
               <HomeOutlined />
             )}
@@ -356,13 +375,13 @@ const index = ({ children }) => {
           <Col
             style={{
               textAlign: 'center',
-              borderBottom: location === 'notify' ? '1px solid blue' : 'none'
+              borderBottom: location === 'notify' ? '1px solid #1890ff' : 'none'
             }}
-            span={6}
+            span={4}
             onClick={() => history.push('/notify')}
           >
             {location === 'notify' ? (
-              <BellFilled style={{ color: 'blue' }} />
+              <BellOutlined style={{ color: '#1890ff' }} />
             ) : (
               <BellOutlined />
             )}
@@ -371,29 +390,45 @@ const index = ({ children }) => {
             style={{
               textAlign: 'center',
               borderBottom:
-                location === 'communities' ? '1px solid blue' : 'none'
+                location === 'communities' ? '1px solid #1890ff' : 'none'
             }}
-            span={6}
+            span={4}
             onClick={() => history.push('/communities')}
           >
             <TeamOutlined
               style={{
-                color: location === 'communities' ? 'blue' : 'black'
+                color: location === 'communities' ? '#1890ff' : 'black'
               }}
             />
           </Col>
           <Col
             style={{
               textAlign: 'center',
-              borderBottom: location === 'seminars' ? '1px solid blue' : 'none'
+              borderBottom:
+                location === 'seminars' ? '1px solid #1890ff' : 'none'
             }}
-            span={6}
+            span={4}
             onClick={() => history.push('/seminars')}
           >
             {location === 'seminars' ? (
-              <YoutubeFilled style={{ color: 'blue' }} />
+              <YoutubeOutlined style={{ color: '#1890ff' }} />
             ) : (
               <YoutubeOutlined />
+            )}
+          </Col>
+          <Col
+            style={{
+              textAlign: 'center',
+              borderBottom:
+                location === 'messenger' ? '1px solid #1890ff' : 'none'
+            }}
+            span={4}
+            onClick={() => history.push(`/messenger`)}
+          >
+            {location === 'messenger' ? (
+              <MessageOutlined style={{ color: '#1890ff' }} />
+            ) : (
+              <MessageOutlined />
             )}
           </Col>
         </Row>
@@ -403,7 +438,7 @@ const index = ({ children }) => {
         style={{
           paddingTop: 100,
           width: '100%',
-          paddingLeft: isBroken ? 0 : 100,
+          paddingLeft: isBroken ? 0 : '1.5em',
           margin: '0 auto',
           backgroundColor: 'aliceblue'
         }}
@@ -411,7 +446,7 @@ const index = ({ children }) => {
         <Sider
           breakpoint="lg"
           collapsedWidth={0}
-          width={isBroken ? 0 : '18%'}
+          width={isBroken ? 0 : '25%'}
           onBreakpoint={broken => setIsBroken(broken)}
           trigger={null}
         >
@@ -433,7 +468,8 @@ const index = ({ children }) => {
           style={{
             padding: isBroken ? 0 : '0 24px',
             paddingRight: !isBroken && 76,
-            marginTop: 0
+            marginTop: 0,
+            marginRight: !isBroken && '17%'
           }}
         >
           <MainContext.Provider
@@ -446,8 +482,16 @@ const index = ({ children }) => {
             {children}
           </MainContext.Provider>
         </Content>
-        {!isBroken && isAuth ? (
-          <Sider width="18%">
+        {!isBroken && isAuth && (
+          <Sider
+            width="17%"
+            style={{
+              position: 'fixed',
+              right: 0,
+              border: '#d5edf9 solid 2px !important',
+              backgroundColor: '#e6f4ff'
+            }}
+          >
             <div className="sidebarMess-mainLayout">
               <ConversationList
                 chooseConversation={(idChat, userId) =>
@@ -456,8 +500,6 @@ const index = ({ children }) => {
               />
             </div>
           </Sider>
-        ) : (
-          !isBroken && <Sider width="17%"></Sider>
         )}
         {!isBroken && (
           <div className="messenger-main">

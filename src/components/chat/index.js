@@ -21,10 +21,6 @@ function Chat(props) {
           : []
 
         temp.map(chat => {
-          console.log(
-            chat?.id === `${members[0]}${members[1]}` ||
-              chat?.id === `${members[1]}${members[0]}`
-          )
           if (
             chat?.id === `${members[0]}${members[1]}` ||
             chat?.id === `${members[1]}${members[0]}`
@@ -36,7 +32,7 @@ function Chat(props) {
           }
         })
       })
-  }, [members])
+  }, [])
   const openChat = e => {
     if (!isExist) {
       firebase
@@ -71,9 +67,9 @@ function Chat(props) {
             })
             .then(() => {
               history.push(
-                `/${members.filter(mem => mem !== me?._id)[0]}/messenger/${
-                  isExist?.idChat
-                }`
+                `/${
+                  members.filter(mem => mem !== me?._id)[0]
+                }/messenger/${idChat}`
               )
             })
         } else {

@@ -20,14 +20,14 @@ export default function MenuInfo({ type, userId, isBroken, isMe, history }) {
       <Menu.Item onClick={() => history.push(`/${userId}/info`)} key="info">
         Thông tin
       </Menu.Item>
-      {isBroken && (
+      {/* {isBroken && (
         <Menu.Item
           onClick={() => history.push(`/${userId}/messenger`)}
           key="mail"
         >
           Tin nhắn
         </Menu.Item>
-      )}
+      )} */}
       {isMe && (
         <Menu.Item
           onClick={() => history.push(`/${userId}/savedposts`)}

@@ -23,7 +23,9 @@
   // width: 100% !important;
   border-radius: 20px !important;
 }
-
+.ant-btn-icon-only{
+  font-size: 0 !important;
+}
 .ant-input-affix-wrapper:focus .ant-menu {
   width: 20% !important;
 }
@@ -33,6 +35,7 @@
 .ant-btn-circle {
   background-color: #f0f8ffc7 !important;
   border: 'none';
+  font-size: 0;
 }
 .ant-input-affix-wrapper {
   background-color: #f0f8ffc7 !important;
@@ -114,7 +117,7 @@ ul {
 }
 .highlight-group {
   position: fixed;
-  width: 15%;
+  width: 22%;
 }
 .delete-messbox {
   color: #4b5052bc !important;
@@ -128,7 +131,7 @@ ul {
     right: 17%;
     bottom: 0;
     .contentMess-box {
-      width: 20rem;
+      width: 17rem;
       margin-right: 10px;
       // border: #e6f4ff solid 5px;
       background-color: #fff;
@@ -160,13 +163,13 @@ ul {
 }
 
 .sidebarMess-mainLayout {
-  border: #d5edf9 solid 2px !important;
-  background-color: #e6f4ff;
-  position: fixed;
-  // right: 0;
-  bottom: 0;
-  width: 22%;
-  overflow-x: hidden;
+  // border: #d5edf9 solid 2px !important;
+  // background-color: #e6f4ff;
+  // position: fixed;
+  // // right: 0;
+  // bottom: 0;
+  // // width: 18%;
+  // overflow-x: hidden;
 }
 // .noti-item{
 //   padding: 18px;

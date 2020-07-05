@@ -70,8 +70,7 @@ const index = () => {
         xs={0}
         md={12}
         style={{
-          backgroundImage:
-            `url(${bg})`,
+          backgroundImage: `url(${bg})`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
@@ -100,6 +99,10 @@ const index = () => {
                     {
                       required: true,
                       message: 'Vui lòng nhập họ của bạn'
+                    },
+                    {
+                      max: 25,
+                      message: 'Họ quá dài'
                     }
                   ]}
                 >
@@ -116,6 +119,10 @@ const index = () => {
                     {
                       required: true,
                       message: 'Vui lòng nhập tên của bạn'
+                    },
+                    {
+                      max: 25,
+                      message: 'Tên quá dài'
                     }
                   ]}
                 >
@@ -176,20 +183,8 @@ const index = () => {
                 label="Điện thoại"
                 rules={[
                   {
-                    validator: (_, value) => {
-                      if (value && /\D+/g.test(value)) {
-                        setFieldsValue({
-                          phoneNumber: value.substring(0, value.length - 1)
-                        })
-                        return Promise.reject('Số điện thoại chỉ chứa ký tự số')
-                      }
-                      if (value.length > 10) {
-                        return Promise.reject(
-                          'Số điện thoại không đúng định dạng'
-                        )
-                      }
-                      return Promise.resolve()
-                    }
+                    pattern: /(09|03|02|01[2|6|8|9])+([0-9]{8})/g,
+                    message: 'Số điện thoại không đúng định dạng'
                   }
                 ]}
               >

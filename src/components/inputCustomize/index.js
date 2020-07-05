@@ -104,9 +104,9 @@ function InputCustomize(props) {
       event.stopImmediatePropagation()
     } else if (event.keyCode === 13) {
       if (text.trim() || image.srcImg) {
-        let newPlain = plainText
+        let newPlain = escapeHtml(plainText)
         arrMentions.map(mention => {
-          newPlain = escapeHtml(plainText).replace(
+          newPlain = newPlain.replace(
             mention.display,
             `<a href='${window.location.origin}/${mention.id}/info'>${mention.display}</a>`
           )

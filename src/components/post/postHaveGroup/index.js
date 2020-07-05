@@ -8,7 +8,7 @@ import {
   SaveAndReport,
   JoinBtn
 } from '@components'
-import { CommentOutlined } from '@ant-design/icons'
+import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'
 import { IContext } from '@tools'
 
 function PostHaveGroup(props) {
@@ -16,7 +16,7 @@ function PostHaveGroup(props) {
   const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, refetch, history } = props
+  const { item, refetch, history, isBroken } = props
   // const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -46,7 +46,7 @@ function PostHaveGroup(props) {
               size={64}
               src={item?.community?.avatar}
             />
-            <div style={{ marginLeft: 10, marginTop: 10 }}>
+            <div style={{ marginLeft: 10 }}>
               <a
                 onClick={() =>
                   history.push(`/page-group/${item?.community?._id}`)
@@ -64,7 +64,7 @@ function PostHaveGroup(props) {
                     }
                   >
                     {' '}
-                    {item?.createdBy?.firstname + ' '}
+                    {item?.createdBy?.firstname + ' '} {item?.createdBy?.expert?.isVerify && <CheckCircleTwoTone />}
                   </a>
                 </span>
                 - {new Date(item?.createdAt).toLocaleString()}
@@ -73,6 +73,7 @@ function PostHaveGroup(props) {
           </div>
         }
         extra={
+          !isBroken &&
           process.env.ADMIN_SERVER === 'false' && (
             <JoinBtn
               id={{ userId: me?._id, communityId: item?.community?._id }}
@@ -100,8 +101,9 @@ function PostHaveGroup(props) {
               />
               <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
             </div>,
-            <SharePost key="share" idPost={item?._id} />,
+            <SharePost key="share" post={item} />,
             <SaveAndReport
+              isBroken={isBroken}
               refetch={refetch}
               key="saveandreport"
               postId={item?._id}

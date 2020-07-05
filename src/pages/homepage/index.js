@@ -77,25 +77,21 @@ const HomePage = props => {
         })
       }
     }).then(({ data }) => {
-      console.log(data?.posts?.length, quantityPosts)
-      if (data?.posts?.length < 5) {
-        setIsEnd(true)
+      if (data?.posts?.length + 5 < quantityPosts) {
         setLoadMore(false)
+        setIsEnd(true)
       } else {
-        if (data?.posts?.length + 5 < quantityPosts) {
-          setLoadMore(false)
-          setIsEnd(true)
-        } else {
-          setDataPostLoad(data)
-          setLoadMore(false)
-        }
+        setDataPostLoad(data)
+        setLoadMore(false)
       }
     })
   }
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
+    if (!isEnd) {
+      window.addEventListener('scroll', handleScroll)
+    }
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isEnd])
 
   return (
     <div id="list-posts">
@@ -140,6 +136,7 @@ const HomePage = props => {
         dataPostLoad?.posts.map((item, idx) => {
           return item?.community ? (
             <PostHaveGroup
+              isBroken={isBroken}
               history={history}
               refetch={refetchPosts}
               key={idx}
@@ -149,6 +146,7 @@ const HomePage = props => {
             ></PostHaveGroup>
           ) : (
             <PostNoGroup
+              isBroken={isBroken}
               history={history}
               refetch={refetchPosts}
               key={idx}
