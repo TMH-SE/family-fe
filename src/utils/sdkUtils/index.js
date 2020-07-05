@@ -62,7 +62,7 @@ const SdkUtils = {
           href: `${window.location.origin}/post-detail/${post?._id}`,
           hashtag: '#giadinhtk',
           quote: `Bài viết ${post?._title} được chia sẻ bởi ${
-            posts?.createdBy?.firstname
+            post?.createdBy?.firstname
           } tại website ${window.location.origin}. Tham gia cùng mình để chia sẻ kinh nghiệm chắm sóc con cái nhé!`
         },
         // callback
