@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { Comment, List } from 'antd'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import moment from 'moment'
 
 const ListComments = ({ idSeminar, onScrollEnd }) => {

@@ -1,24 +1,20 @@
-/* eslint-disable react/prop-types */
-import React, { useState, useContext } from 'react'
-import Modal from 'antd/lib/modal/Modal'
-import firebase from 'firebase/app'
+import React, { useContext } from 'react'
+import * as firebase from 'firebase/app'
 import { Button, Popconfirm } from 'antd'
-import { MessageTwoTone, HeartTwoTone, HeartFilled } from '@ant-design/icons'
+import { HeartTwoTone, HeartFilled } from '@ant-design/icons'
 import {
-  CREATE_CHAT,
-  GET_CHAT_BY_MEMBERS,
   CREATE_FOLLOWER,
   DELETE_FOLLOWER,
   CHECK_FOLLOW
 } from '@shared'
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
-import * as uuid from 'uuid'
+
 function Follow(props) {
   const { me, isAuth, openLoginModal } = useContext(IContext)
   const [createFollower] = useMutation(CREATE_FOLLOWER)
   const [deleteFollower] = useMutation(DELETE_FOLLOWER)
-  const { userId, followerId } = props.follower
+  const { userId } = props.follower
   const { data, refetch } = useQuery(CHECK_FOLLOW, {
     variables: { id: props.follower }
     // fetchPolicy: 'no-cache'

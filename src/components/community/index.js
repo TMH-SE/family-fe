@@ -1,17 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Avatar, List, Skeleton, Button } from 'antd'
+import React, { useContext } from 'react'
+import { Avatar, List, Skeleton } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 import JoinBtn from '../joinBtn'
-import firebase from 'firebase/app'
 import { GET_COMMUNITY_BY_ID } from '@pages/pageGroup'
 function CommunityItem(props) {
   const { item } = props
-  // const [ dataCount, setDataCount ] = useState([])
   const { me } = useContext(IContext)
   const history = useHistory()
-  // const [dataMems, setDataMems] = useState(null)
   const { data, loading } = useQuery(GET_COMMUNITY_BY_ID, {
     variables: { id: item?.id },
     fetchPolicy: 'no-cache',

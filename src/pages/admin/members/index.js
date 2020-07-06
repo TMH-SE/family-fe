@@ -9,7 +9,7 @@ import {
 import { useMutation } from '@apollo/react-hooks'
 // import CreateCommunityForm from './createCommunityForm'
 import { notificationError, getColumnSearchProps } from '@shared'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 
 import DetailMemberReport from './detailMemberReport'
 import gql from 'graphql-tag'
@@ -61,11 +61,23 @@ function index() {
             .then(({ data }) => {
               if (data?.deleteUser) {
                 firebase.database().ref(`reports/comments/${id}`).remove()
-                dataUserReport.filter(item => item.id === id).map(report => {
-                  report.detail.repId ?
-                  firebase.database().ref(`posts/${report.detail.postId}/comments/${report.detail.id}`).remove()
-                  : firebase.database().ref(`posts/${report.detail.postId}/comments/${report.detail.id}/replies/${report.detail.repId}`).remove()
-                })
+                dataUserReport
+                  .filter(item => item.id === id)
+                  .map(report => {
+                    report.detail.repId
+                      ? firebase
+                          .database()
+                          .ref(
+                            `posts/${report.detail.postId}/comments/${report.detail.id}`
+                          )
+                          .remove()
+                      : firebase
+                          .database()
+                          .ref(
+                            `posts/${report.detail.postId}/comments/${report.detail.id}/replies/${report.detail.repId}`
+                          )
+                          .remove()
+                  })
                 notification.success({
                   message: 'Xóa người dùng thành công',
                   placement: 'bottomRight'
@@ -97,20 +109,7 @@ function index() {
             dataIndex: 'id',
             key: 'id',
             width: 300,
-            render: (text, record) => (
-              <Button
-                type="link"
-                onClick={
-                  () =>
-                    console.log(`${window.location.origin}/post-detail/${text}`)
-                  // history.push(
-                  //   `${window.location.origin}/post-detail/${text}`
-                  // )
-                }
-              >
-                {text}
-              </Button>
-            ),
+            render: (text, record) => <Button type="link">{text}</Button>,
             ...getColumnSearchProps('name', searchRef)
           },
           {

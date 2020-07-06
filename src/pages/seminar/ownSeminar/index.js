@@ -11,7 +11,7 @@ import {
   PlayCircleOutlined,
   PauseCircleOutlined
 } from '@ant-design/icons'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
 import Video from '../video'
 

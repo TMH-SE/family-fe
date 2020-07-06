@@ -1,12 +1,10 @@
 /* eslint-disable react/display-name */
 import React, { useState, useRef, useEffect } from 'react'
 import { Button, Table, Space } from 'antd'
-import {
-  EyeFilled,
-} from '@ant-design/icons'
+import { EyeFilled } from '@ant-design/icons'
 // import CreateCommunityForm from './createCommunityForm'
 import { getColumnSearchProps } from '@shared'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import DetailExpert from './detailExpert'
 
 function index() {
@@ -20,12 +18,14 @@ function index() {
       .database()
       .ref(`awaitVerifyExperts`)
       .on('value', snapshot => {
-        const temp = snapshot.val() ? Object.keys(snapshot.val()).map(key => {
-          return {
-            ...snapshot.val()[key],
-            id: key
-          }
-        }) : []
+        const temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => {
+              return {
+                ...snapshot.val()[key],
+                id: key
+              }
+            })
+          : []
         setDataUserReport(temp.sort((a, b) => b.createdAt - a.createdAt))
       })
   }, [])
@@ -42,20 +42,7 @@ function index() {
             dataIndex: 'id',
             key: 'id',
             width: 300,
-            render: (text, record) => (
-              <Button
-                type="link"
-                onClick={
-                  () =>
-                    console.log(`${window.location.origin}/post-detail/${text}`)
-                  // history.push(
-                  //   `${window.location.origin}/post-detail/${text}`
-                  // )
-                }
-              >
-                {text}
-              </Button>
-            ),
+            render: (text, record) => <Button type="link">{text}</Button>,
             ...getColumnSearchProps('name', searchRef)
           },
           {

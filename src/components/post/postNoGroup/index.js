@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { Card, Avatar, Typography, Tooltip, Space } from 'antd'
 import { Reaction, SharePost, CommentPost, SaveAndReport } from '@components'
 import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'

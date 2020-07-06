@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Button } from 'antd'
 import { MessageTwoTone } from '@ant-design/icons'
 import { IContext } from '@tools'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 function Chat(props) {
   const { members, history, isBroken, chooseConversation } = props
   const { me, isAuth, openLoginModal } = useContext(IContext)

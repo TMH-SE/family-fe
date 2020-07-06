@@ -19,7 +19,7 @@ import {
   CHECK_IS_MEMBER
 } from '@shared'
 import { MainContext } from '../../layouts/MainLayout'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 export const GET_COMMUNITY_BY_ID = gql`
   query communityById($id: String) {
     communityById(id: $id) {

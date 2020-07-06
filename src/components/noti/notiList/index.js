@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
+
+import * as firebase from 'firebase/app'
 import moment from 'moment'
-import firebase from 'firebase/app'
 import {
   HeartTwoTone,
   MessageTwoTone,

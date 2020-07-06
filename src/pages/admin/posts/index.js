@@ -10,7 +10,7 @@ import { useMutation } from '@apollo/react-hooks'
 // import CreateCommunityForm from './createCommunityForm'
 import { notificationError, getColumnSearchProps } from '@shared'
 import gql from 'graphql-tag'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import DetailReport from './detailReport'
 export const DELETE_POST = gql`
   mutation deletePost($postId: String) {
@@ -103,20 +103,7 @@ function index() {
             dataIndex: 'id',
             key: 'id',
             width: 300,
-            render: (text, record) => (
-              <Button
-                type="link"
-                onClick={
-                  () =>
-                    console.log(`${window.location.origin}/post-detail/${text}`)
-                  // history.push(
-                  //   `${window.location.origin}/post-detail/${text}`
-                  // )
-                }
-              >
-                {text}
-              </Button>
-            ),
+            render: (text, record) => <Button type="link">{text}</Button>,
             ...getColumnSearchProps('name', searchRef)
           },
           {

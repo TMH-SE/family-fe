@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { IContext } from '@tools'
 import NotiList from '../../components/noti/notiList'
 import { List } from 'antd'

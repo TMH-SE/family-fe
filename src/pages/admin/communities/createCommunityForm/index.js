@@ -5,7 +5,7 @@ import { uploadImg, beforeUpload, notificationError } from '@shared'
 import { PlusOutlined } from '@ant-design/icons'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 const CREATE_COMMUNITY = gql`
   mutation createCommunity($newCommunity: NewCommunity) {
     createCommunity(newCommunity: $newCommunity)

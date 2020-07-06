@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect } from 'react'
 import ConversationSearch from '../ConversationSearch'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import './index.scss'
 import { List } from 'antd'
 
