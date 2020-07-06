@@ -154,7 +154,7 @@ function InputCustomize(props) {
           {/* </div> */}
         </div>
       )}
-      <div className="input-menu">
+      <div className="input-custome">
         <MentionsInput
           // defaultValue={replyAuthor && replyAuthor }
           style={{ maxWidth: '100%', flex: '1 1 auto' }}
@@ -196,7 +196,7 @@ function InputCustomize(props) {
           />
         </MentionsInput>
         {/* {!isBroken && ( */}
-        <Space>
+        <Space className='menu-input'>
           <Popover
             overlayStyle={{ position: 'fixed' }}
             style={{ position: 'fixed' }}

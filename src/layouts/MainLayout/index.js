@@ -12,7 +12,8 @@ import {
   Modal,
   Drawer,
   Row,
-  Col
+  Col,
+  Badge
 } from 'antd'
 import {
   BellOutlined,
@@ -91,6 +92,7 @@ const index = ({ children }) => {
     IContext
   )
   const [dataCount, setDataCount] = useState([])
+  const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     setLoading(true)
@@ -107,7 +109,25 @@ const index = ({ children }) => {
         setDataCount(temp)
         setLoading(false)
       })
+    isBroken && getNotification()
   }, [])
+  const getNotification = () => {
+    let temp
+    firebase
+      .database()
+      .ref('notifications/' + me?._id)
+      .orderByKey()
+      .on('value', snapshot => {
+        temp = snapshot.val()
+          ? Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key
+            }))
+          : []
+
+        setNotifications(temp.reverse())
+      })
+  }
   // const getCount = () => {
 
   // }
@@ -382,9 +402,13 @@ const index = ({ children }) => {
             onClick={() => history.push('/notify')}
           >
             {location === 'notify' ? (
-              <BellOutlined style={{ color: '#1890ff' }} />
+              <Badge dot={!!notifications} >
+              <BellOutlined style={{ color: '#1890ff', fontSize: 20 }} />
+              </Badge>
             ) : (
-              <BellOutlined />
+              <Badge dot={!!notifications} >
+              <BellOutlined style={{ fontSize: 20 }}/>
+              </Badge>
             )}
           </Col>
           <Col
@@ -490,7 +514,8 @@ const index = ({ children }) => {
               position: 'fixed',
               right: 0,
               border: '#d5edf9 solid 2px !important',
-              backgroundColor: '#e6f4ff'
+              backgroundColor: '#e6f4ff',
+              height: '100vh'
             }}
           >
             <div className="sidebarMess-mainLayout">

@@ -1,5 +1,13 @@
-.post{
-    .ant-card-head-title{
-        white-space: normal;
+@media (max-width: 600px) {
+  .post {
+    .ant-card-head {
+      padding: 0 10px
     }
+    .ant-card-body {
+      padding: 10px
+    }
+    .ant-card-head-title {
+      white-space: normal;
+    }
+  }
 }
