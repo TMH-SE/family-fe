@@ -175,7 +175,7 @@ const CreatePostForm = forwardRef((props, ref) => {
       layout="horizontal"
       onFinish={submitCreatePost}
       initialValues={{
-        communityId: data?._id ? { key: data?._id } : undefined
+        communityId: data?._id ? { key: data?._id, value: data?._id, label: data?.name } : undefined
       }}
     >
       {data !== null && (
