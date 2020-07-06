@@ -17,7 +17,7 @@ import {
   ExclamationCircleOutlined
 } from '@ant-design/icons'
 import gql from 'graphql-tag'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { notificationError } from '@shared'
 const GET_FOLLOWER_BY_USER = gql`

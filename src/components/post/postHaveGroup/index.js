@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { Card, Avatar, Typography } from 'antd'
 import {
   Reaction,

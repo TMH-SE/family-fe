@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useContext } from 'react'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import Message from './Message'
 import moment from 'moment'
 import './index.scss'

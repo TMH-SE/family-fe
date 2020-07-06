@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { GET_USER, replaceToxicWords } from '@shared'
 import moment from 'moment'
 import { IContext } from '@tools'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { CheckCircleTwoTone } from '@ant-design/icons'
 
 // import noAvatar from '@assets/images/noavata.jpg'

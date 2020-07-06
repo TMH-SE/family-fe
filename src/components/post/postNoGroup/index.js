@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { Card, Avatar, Typography } from 'antd'
 import { Reaction, SharePost, CommentPost, SaveAndReport } from '@components'
 import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'
@@ -58,7 +58,6 @@ function PostNoGroup(props) {
             <div
               id="like-post"
               key="like"
-              onDoubleClick={() => console.log('đâsđâsd')}
             >
               <Reaction idPost={item?._id} postItem={item} />
             </div>,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Line } from '@ant-design/charts'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { Card, Button } from 'antd'
 import { RetweetOutlined } from '@ant-design/icons'
 import gql from 'graphql-tag'
@@ -21,7 +21,6 @@ function index() {
       .database()
       .ref('report')
       .on('value', snapshot => {
-        console.log(snapshot.val())
         setData(snapshot.val())
       })
   }, [])

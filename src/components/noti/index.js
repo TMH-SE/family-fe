@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
-// import { brokenContext } from '../../layouts/MainLayout'
 import { IContext } from '@tools'
-import firebase from 'firebase/app'
-import { BellOutlined, HeartTwoTone } from '@ant-design/icons'
-import { Tooltip, Popover, Badge, Button, List, Avatar } from 'antd'
+import * as firebase from 'firebase/app'
+import { BellOutlined } from '@ant-design/icons'
+import { Tooltip, Popover, Badge, Button, List } from 'antd'
 import './index.scss'
 import NotiList from './notiList'
 
 const Noti = props => {
-  // const isBroken = useContext(brokenContext)
   const [notifications, setNotifications] = useState([])
   const [visible, setVisible] = useState(false)
   const { me } = useContext(IContext)

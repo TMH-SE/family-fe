@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useEffect } from 'react'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
 import { CloseCircleFilled } from '@ant-design/icons'

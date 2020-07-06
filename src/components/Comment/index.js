@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext, useLayoutEffect, useEffect } from 'react'
 import { Comment, Avatar, List } from 'antd'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import './index.scss'
 import { InputCustomize } from '@components'
 import { useHistory } from 'react-router-dom'

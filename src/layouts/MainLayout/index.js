@@ -27,15 +27,11 @@ import {
   YoutubeOutlined,
   HomeOutlined,
   TeamOutlined,
-  HomeFilled,
-  YoutubeFilled,
-  BellFilled,
   LoginOutlined,
-  MessageFilled,
   MessageOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { Logo, HighLightGroup, Noti, Login } from '@components'
 import './mainlayout.scss'
 import { IContext } from '@tools'

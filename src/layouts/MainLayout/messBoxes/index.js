@@ -1,28 +1,15 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import React, {
   useState,
   useImperativeHandle,
   forwardRef,
   useEffect,
-  useLayoutEffect,
   useContext
 } from 'react'
-import {
-  Layout
-  // Switch
-} from 'antd'
 import { useHistory } from 'react-router-dom'
 
 import { IContext } from '@tools'
-import ConversationList from '@pages/myMessenger/ConversationList'
 import MessageList from '@pages/messageDetail/MessageList'
-import reactStringReplace from 'react-string-replace'
-import { useQuery } from '@apollo/react-hooks'
-import { GET_CHAT_BY_USER } from '@shared'
-import SignIn from '@pages/signIn'
-import firebase from 'firebase/app'
-const { Header, Content, Sider } = Layout
+import * as firebase from 'firebase/app'
 
 // const MY_USER_ID =
 const Messboxes = forwardRef((props, ref) => {
