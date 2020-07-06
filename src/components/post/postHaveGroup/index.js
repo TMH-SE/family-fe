@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import firebase from 'firebase/app'
-import { Card, Avatar, Typography } from 'antd'
+import { Card, Avatar, Typography, Space, Tooltip } from 'antd'
 import {
   Reaction,
   SharePost,
@@ -10,6 +10,8 @@ import {
 } from '@components'
 import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'
 import { IContext } from '@tools'
+import { Emoji } from 'emoji-mart'
+import ReactionInfo from '../reactionInfo'
 
 function PostHaveGroup(props) {
   const [showText, setShowText] = useState(props.showText || false)
@@ -17,6 +19,9 @@ function PostHaveGroup(props) {
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
   const { item, refetch, history, isBroken } = props
+  const [sumReactions, setSSumReactions] = useState(0)
+  const [currentEmoji, setCurrentEmoji] = useState('')
+  const [reactions, setReactions] = useState([])
   // const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -31,7 +36,37 @@ function PostHaveGroup(props) {
         setSum(sumTemp)
       })
   }
-
+  useEffect(() => {
+    getReactionPost()
+  }, [])
+  const getReactionPost = () => {
+    firebase
+      .database()
+      .ref(`posts/${item?._id}/reactions`)
+      .on('value', snapshot => {
+        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+        const temp =
+          (snapshot.val() &&
+            Object.keys(snapshot.val()).map(key => ({
+              ...snapshot.val()[key],
+              id: key.toString()
+            }))) ||
+          []
+        console.log(temp)
+        temp.sort((a, b) => b.timestamp - a.timestamp)
+        setReactions(temp)
+        let count = 0
+        temp.map(item => {
+          if (!item.users) return
+          const idx = item.users.findIndex(user => user === me?._id)
+          if (idx !== -1) {
+            setCurrentEmoji(item.id)
+          }
+          count += item.count
+        })
+        setSSumReactions(count)
+      })
+  }
   return (
     <>
       <Card
@@ -67,7 +102,7 @@ function PostHaveGroup(props) {
                     {item?.createdBy?.firstname + ' '}{' '}
                     {item?.createdBy?.expert?.isVerify && (
                       <CheckCircleTwoTone />
-                    )}
+                    )}{' '}
                   </a>
                 </span>
                 - {new Date(item?.createdAt).toLocaleString()}
@@ -87,8 +122,22 @@ function PostHaveGroup(props) {
         style={{ maxWidth: '100%', marginBottom: 10 }}
         actions={
           process.env.ADMIN_SERVER === 'false' && [
-            <div id="like-post" key="like">
-              <Reaction idPost={item?._id} postItem={item} />
+            <div
+              id="like-post"
+              key="like"
+              style={{
+                padding: 10,
+                backgroundColor: currentEmoji && 'aliceblue'
+              }}
+            >
+              <Reaction
+                isBroken={isBroken}
+                setCurrentEmoji={setCurrentEmoji}
+                reactions={reactions}
+                currentEmoji={currentEmoji}
+                idPost={item?._id}
+                postItem={item}
+              />
             </div>,
             // <Sum idPost ={item.postId} ></Sum>,
             <div
@@ -96,6 +145,9 @@ function PostHaveGroup(props) {
               onClick={() =>
                 document.getElementById(`input-custom-${item?._id}`).focus()
               }
+              style={{
+                padding: 10
+              }}
             >
               <CommentOutlined
                 onClick={() =>
@@ -104,14 +156,27 @@ function PostHaveGroup(props) {
               />
               <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
             </div>,
-            <SharePost key="share" post={item} />,
-            <SaveAndReport
-              isBroken={isBroken}
-              refetch={refetch}
+            <div
+              key="share"
+              style={{
+                padding: 10
+              }}
+            >
+              <SharePost post={item} />
+            </div>,
+            <div
               key="saveandreport"
-              postId={item?._id}
-              postItem={item}
-            />,
+              style={{
+                padding: 10
+              }}
+            >
+              <SaveAndReport
+                isBroken={isBroken}
+                refetch={refetch}
+                postId={item?._id}
+                postItem={item}
+              />
+            </div>,
             <CommentPost
               hashNoti={props.hashNoti}
               idPost={item?._id}
@@ -130,38 +195,78 @@ function PostHaveGroup(props) {
           }
           description={
             <div>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: `<div>${item?.content}<p>${item?.keywords ? item?.keywords.map(
-                    key => `#${key.replace(/\s/g, '_')}`
-                  ).join(' ') : ''}</p></div>`
-                }}
-                className={`content ${nameEl}${item?._id}`}
-                style={{
-                  height: showText ? 'auto' : '3em',
-                  overflow: 'hidden'
-                }}
-              />
-              {!showText &&
-                (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
-                document
-                  .getElementsByClassName(`collapse${item?._id}`)[0]
-                  .getElementsByTagName('div')[0]?.clientHeight > 900 ? (
-                  <a
-                    href={`${window.location.origin}/post-detail/${item?._id}`}
-                    target="blank"
-                    id={`${nameEl}${item?._id}`}
-                  >
-                    Xem thêm
-                  </a>
-                ) : (
-                  <a onClick={() => setShowText(!showText)}>Xem thêm</a>
-                ))}
-              {/* )} */}
-              <img
-                src={item?.thumbnail}
-                style={{ width: '100%', objectFit: 'cover' }}
-              ></img>
+              <div>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: `<div>${item?.content}<p>${
+                      item?.keywords
+                        ? item?.keywords
+                            .map(key => `#${key.replace(/\s/g, '_')}`)
+                            .join(' ')
+                        : ''
+                    }</p></div>`
+                  }}
+                  className={`content ${nameEl}${item?._id}`}
+                  style={{
+                    height: showText ? 'auto' : '3em',
+                    overflow: 'hidden'
+                  }}
+                />
+                {!showText &&
+                  (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
+                  document
+                    .getElementsByClassName(`collapse${item?._id}`)[0]
+                    .getElementsByTagName('div')[0]?.clientHeight > 900 ? (
+                    <a
+                      href={`${window.location.origin}/post-detail/${item?._id}`}
+                      target="blank"
+                      id={`${nameEl}${item?._id}`}
+                    >
+                      Xem thêm
+                    </a>
+                  ) : (
+                    <a onClick={() => setShowText(!showText)}>Xem thêm</a>
+                  ))}
+                {/* )} */}
+                <img
+                  src={item?.thumbnail}
+                  style={{ width: '100%', objectFit: 'cover' }}
+                ></img>
+              </div>
+              {sumReactions !== 0 && (
+                <div key="react-info" style={{ textAlign: 'left' }}>
+                  <Space>
+                    <div style={{ display: 'flex' }}>
+                      {reactions
+                        ?.filter(reaction => reaction?.count !== 0)
+                        ?.map(emo => (
+                          <Tooltip
+                            key={emo.id}
+                            title={emo?.users?.slice(0, 3)?.map(user => (
+                              <>
+                                <ReactionInfo key={user} userId={user} />
+                                {emo?.users?.length > 10 && (
+                                  <p>{`... ${
+                                    emo?.users?.length - 10
+                                  } người khác`}</p>
+                                )}
+                              </>
+                            ))}
+                          >
+                            <div style={{ width: 18, height: 18 }}>
+                              <Emoji emoji={emo.id} size={18} />
+                            </div>
+                          </Tooltip>
+                        ))}
+                    </div>
+                    <span
+                      style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}
+                    >
+                      {sumReactions === 0 ? '' : sumReactions}
+                    </span>
+                  </Space>
+                </div>
+              )}
             </div>
           }
         />

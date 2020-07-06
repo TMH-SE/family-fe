@@ -100,9 +100,7 @@ function InputCustomize(props) {
   }
 
   const handleSubmit = event => {
-    if (event.shiftKey && event.keyCode === 13) {
-      event.stopImmediatePropagation()
-    } else if (event.keyCode === 13) {
+    if (event.keyCode === 13 && !event.shiftKey) {
       event.preventDefault()
       if (text.trim() || image.srcImg) {
         let newPlain = escapeHtml(plainText)
@@ -113,7 +111,6 @@ function InputCustomize(props) {
           )
         })
         props.onSubmit(newPlain, image.srcImg)
-        // onSubmit(text, image.srcImg)
         setText('')
         setImage({ ...image, srcImg: '' })
       }
@@ -196,7 +193,7 @@ function InputCustomize(props) {
           />
         </MentionsInput>
         {/* {!isBroken && ( */}
-        <Space className='menu-input'>
+        <Space className="menu-input">
           <Popover
             overlayStyle={{ position: 'fixed' }}
             style={{ position: 'fixed' }}
