@@ -1,14 +1,25 @@
 import React, { useMemo } from 'react'
-import { Card, Space, Button, Dropdown, Menu, Avatar } from 'antd'
+import {
+  Card,
+  Space,
+  Button,
+  Dropdown,
+  Menu,
+  Avatar,
+  notification,
+  Modal
+} from 'antd'
 import {
   EditOutlined,
   DeleteOutlined,
   MoreOutlined,
-  UserOutlined
+  UserOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons'
 import gql from 'graphql-tag'
 import firebase from 'firebase/app'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { notificationError } from '@shared'
 const GET_FOLLOWER_BY_USER = gql`
   query getFollowerByUser($userId: String) {
     getFollowerByUser(userId: $userId) {
@@ -23,11 +34,19 @@ const GET_FOLLOWER_BY_USER = gql`
     }
   }
 `
-function SeminarDetail({ me, seminarData, state }) {
+
+const DELETE_SEMINAR = gql`
+  mutation deleteSeminar($_id: ID) {
+    deleteSeminar(_id: $_id)
+  }
+`
+
+function SeminarDetail({ me, seminarData, state, openEditModal, refetch }) {
   const { data: dataFollow } = useQuery(GET_FOLLOWER_BY_USER, {
     variables: { userId: seminarData?.createdBy?._id },
     fetchPolicy: 'no-cache'
   })
+  const [deleteSeminar] = useMutation(DELETE_SEMINAR)
   const notifyToUser = item => {
     try {
       item?._id !== seminarData?.createdBy?._id &&
@@ -45,6 +64,30 @@ function SeminarDetail({ me, seminarData, state }) {
     } catch (err) {
       console.log(err)
     }
+  }
+  const deleteSeminarById = () => {
+    Modal.confirm({
+      icon: <ExclamationCircleOutlined />,
+      title: 'Xóa hội thảo',
+      content: 'Bạn có chắc chắn muốn xóa hội thảo này',
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: () => {
+        deleteSeminar({
+          variables: {
+            _id: seminarData?._id
+          }
+        })
+          .then(() => {
+            refetch()
+            notification.success({
+              message: 'Xóa hội thảo thành công',
+              placement: 'bottomRight'
+            })
+          })
+          .catch(notificationError)
+      }
+    })
   }
   const extra = useMemo(() => {
     switch (state) {
@@ -68,11 +111,11 @@ function SeminarDetail({ me, seminarData, state }) {
                 placement="bottomCenter"
                 overlay={
                   <Menu>
-                    <Menu.Item key="0">
+                    <Menu.Item onClick={openEditModal} key="0">
                       <EditOutlined />
                       <span>Sửa</span>
                     </Menu.Item>
-                    <Menu.Item key="1">
+                    <Menu.Item onClick={deleteSeminarById} key="1">
                       <DeleteOutlined />
                       <span>Xóa</span>
                     </Menu.Item>

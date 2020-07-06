@@ -1,31 +1,54 @@
 import React, { useState, useEffect } from 'react'
 import { Line } from '@ant-design/charts'
 import firebase from 'firebase/app'
+import { Card, Button } from 'antd'
+import { RetweetOutlined } from '@ant-design/icons'
+import gql from 'graphql-tag'
+import { useMutation } from '@apollo/react-hooks'
+
+const REFERSH_REPORT = gql`
+  mutation refreshDataReport {
+    refreshDataReport
+  }
+`
 
 function index() {
-  const [data, setData] = useState([])
+  const [data, setData] = useState(null)
+  const [refreshDataReport] = useMutation(REFERSH_REPORT)
 
   useEffect(() => {
-    firebase.database().ref('report/lastDays').on('value', snapshot => {
-      setData(snapshot.val())
-    })
+    firebase
+      .database()
+      .ref('report')
+      .on('value', snapshot => {
+        console.log(snapshot.val())
+        setData(snapshot.val())
+      })
   }, [])
 
   return (
-    <Line
-      title={{ text: 'Thống kê diễn đàn Family trong 7 ngày gần nhất', visible: true }}
-      description={{ text: 'Cập nhật lần cuối lúc:', visible: true }}
-      padding='auto'
-      forceFit
-      xField='date'
-      yField="count"
-      seriesField='type'
-      responsive
-      legend={{
-        position: 'bottom-left'
-      }}
-      data={data}
-    />
+    <Card
+      title="Thống kê diễn đàn Family trong 14 ngày gần nhất"
+      extra={
+        <Button onClick={() => refreshDataReport()} icon={<RetweetOutlined />}>
+          Refresh
+        </Button>
+      }
+    >
+      <Line
+        description={{ text: `Cập nhật lần cuối lúc: ${data && new Date(data?.updatedAt).toLocaleString()}`, visible: true }}
+        padding="auto"
+        forceFit
+        xField="date"
+        yField="count"
+        seriesField="type"
+        responsive
+        legend={{
+          position: 'top-right'
+        }}
+        data={data?.lastDays || []}
+      />
+    </Card>
   )
 }
 

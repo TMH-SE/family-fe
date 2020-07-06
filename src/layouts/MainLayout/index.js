@@ -53,6 +53,7 @@ const SEARCH_POSTS = gql`
       _id
       title
       thumbnail
+      keywords
       isActive
       content
       community {

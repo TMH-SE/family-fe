@@ -64,7 +64,10 @@ function PostHaveGroup(props) {
                     }
                   >
                     {' '}
-                    {item?.createdBy?.firstname + ' '} {item?.createdBy?.expert?.isVerify && <CheckCircleTwoTone />}
+                    {item?.createdBy?.firstname + ' '}{' '}
+                    {item?.createdBy?.expert?.isVerify && (
+                      <CheckCircleTwoTone />
+                    )}
                   </a>
                 </span>
                 - {new Date(item?.createdAt).toLocaleString()}
@@ -129,14 +132,16 @@ function PostHaveGroup(props) {
             <div>
               <p
                 dangerouslySetInnerHTML={{
-                  __html: item?.content
+                  __html: `<div>${item?.content}<p>${item?.keywords ? item?.keywords.map(
+                    key => `#${key.replace(/\s/g, '_')}`
+                  ).join(' ') : ''}</p></div>`
                 }}
                 className={`content ${nameEl}${item?._id}`}
                 style={{
                   height: showText ? 'auto' : '3em',
                   overflow: 'hidden'
                 }}
-              ></p>
+              />
               {!showText &&
                 (document.getElementsByClassName(`collapse${item?._id}`)[0] &&
                 document

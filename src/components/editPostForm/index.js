@@ -2,15 +2,20 @@ import React, {
   useContext,
   useState,
   forwardRef,
-  useImperativeHandle
+  useImperativeHandle,
+  useRef
 } from 'react'
-import { Form, notification, Input, Upload, Button } from 'antd'
+import { Form, notification, Input, Upload, Button, Row, Col, Tag } from 'antd'
 import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { IContext } from '@tools'
 import { Editor } from '@components'
 import UploadButton from '../uploadButton'
 import { uploadImg, beforeUpload } from '@shared'
+import * as handlebars from 'handlebars'
+import postTemplate from '@assets/templates/post.html'
+import { PlusOutlined } from '@ant-design/icons'
+
 const UPDATE_POST = gql`
   mutation updatePost($postId: String, $updatePost: UpdatePostInput) {
     updatePost(postId: $postId, updatePost: $updatePost)
@@ -19,11 +24,14 @@ const UPDATE_POST = gql`
 const EditPostForm = forwardRef((props, ref) => {
   const { setConfirmLoading, handleCancel, postItem, refetch } = props
   const { me } = useContext(IContext)
+  const keywordRef = useRef()
   const [loading, setLoading] = useState(false)
   const [editor, setEditor] = useState(null)
+  const [keywords, setKeywords] = useState(postItem?.keywords)
   const [form] = Form.useForm()
   const [updatePost] = useMutation(UPDATE_POST)
   const [imageUrl, setImageUrl] = useState(postItem?.thumbnail)
+  const [visibleInputKeyword, setVisibleInputKeyword] = useState(false)
   useImperativeHandle(ref, () => ({
     handleOk: () => {
       form.submit()
@@ -31,12 +39,20 @@ const EditPostForm = forwardRef((props, ref) => {
   }))
   const submitUpdatePost = ({ content, title, thumbnail }) => {
     setConfirmLoading(true)
+    const html = handlebars.compile(postTemplate)
     updatePost({
       variables: {
         postId: postItem?._id,
         updatePost: {
           title,
-          content: `<div>${editor.getData()}</div>`,
+          content: html({
+            title,
+            author: `${me?.firstname} ${me?.lastname}`,
+            community: postItem?.community?.name,
+            content: `<div>${editor.getData()}</div>`,
+            keywords
+          }),
+          keywords,
           thumbnail: imageUrl
         }
       }
@@ -65,6 +81,16 @@ const EditPostForm = forwardRef((props, ref) => {
       setLoading(false)
     })
   }
+
+  const addKeywords = e => {
+    const keyword = e.target.value
+    if (keyword && !keywords.includes(keyword.trim())) {
+      setKeywords([...keywords, keyword.trim()])
+      setVisibleInputKeyword(false)
+      form.resetFields(['keyword'])
+    }
+  }
+
   return (
     <Form
       form={form}
@@ -130,20 +156,64 @@ const EditPostForm = forwardRef((props, ref) => {
           <Editor setEditor={setEditor} initialValue={postItem?.content} />
         </div>
       </Form.Item>
-      {/* <Form.Item
-          name="keyword"
-          label="Từ khóa"
-          rules={[
-            {
-              validator: (_, value) => {
-                if (value && keywords.includes(value.trim())) {
-                  return Promise.reject('Từ khóa này đã có')
-                }
-                return Promise.resolve()
+      <Form.Item
+        name="keyword"
+        label="Từ khóa"
+        required
+        rules={[
+          {
+            validator: (_, value) => {
+              if (!value && keywords.length === 0) {
+                return Promise.reject(
+                  'Thêm từ khóa để giúp bài viết của bạn dễ dàng được mọi người tìm thấy'
+                )
               }
+              if (value && keywords.includes(value.trim())) {
+                return Promise.reject('Từ khóa này đã có')
+              }
+              return Promise.resolve()
             }
-          ]}
-        ></Form.Item> */}
+          }
+        ]}
+      >
+        <Row style={{ width: '100%' }}>
+          <Col span={24}>
+            {keywords.map((keyword, index) => (
+              <Tag
+                key={index}
+                style={{ marginBottom: 5 }}
+                closable
+                onClose={e => {
+                  e.preventDefault()
+                  setKeywords(keywords.filter(key => key !== keyword))
+                }}
+              >
+                {keyword}
+              </Tag>
+            ))}
+          </Col>
+          <Col span={24}>
+            {visibleInputKeyword ? (
+              <Input
+                ref={keywordRef}
+                placeholder="Nhập từ khóa"
+                onPressEnter={addKeywords}
+                onBlur={addKeywords}
+                autoFocus
+              />
+            ) : (
+              <Button
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  setVisibleInputKeyword(true)
+                }}
+              >
+                Thêm từ khóa
+              </Button>
+            )}
+          </Col>
+        </Row>
+      </Form.Item>
     </Form>
   )
 })

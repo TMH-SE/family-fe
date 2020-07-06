@@ -103,6 +103,7 @@ function InputCustomize(props) {
     if (event.shiftKey && event.keyCode === 13) {
       event.stopImmediatePropagation()
     } else if (event.keyCode === 13) {
+      event.preventDefault()
       if (text.trim() || image.srcImg) {
         let newPlain = escapeHtml(plainText)
         arrMentions.map(mention => {

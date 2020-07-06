@@ -18,9 +18,6 @@ const Comments = ({ breakPoint, dataSeminar, me }) => {
         createdAt: +new Date()
       })
     form.resetFields()
-    if (listRef.current) {
-      listRef.current.scrollTop = listRef.current?.scrollHeight
-    }
   }
   return (
     <div
@@ -50,7 +47,14 @@ const Comments = ({ breakPoint, dataSeminar, me }) => {
         </div>
       </div>
       <div ref={listRef} style={{ overflow: 'auto' }}>
-        <ListComments idSeminar={dataSeminar?._id} />
+        <ListComments
+          idSeminar={dataSeminar?._id}
+          onScrollEnd={() => {
+            if (listRef.current) {
+              listRef.current.scrollTop = listRef.current?.scrollHeight
+            }
+          }}
+        />
       </div>
       <Row style={{ padding: 10, borderTop: '1px solid #ccc' }}>
         <Col xs={0} lg={4}>
