@@ -10,7 +10,7 @@ const DescriptionItem = ({ title, content }) => (
   </div>
 )
 function Info(props) {
-  const { userInfo, isMe, dataCountFollow } = props
+  const { userInfo, isMe, dataCountFollow, isBroken } = props
   const [visible, setVisible] = useState(false)
   return (
     <>
@@ -39,18 +39,18 @@ function Info(props) {
         )}
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={isBroken ? 24 : 12}>
           <DescriptionItem
             title="Họ tên"
             content={`${userInfo?.firstname} ${userInfo?.lastname}`}
           />
         </Col>
-        <Col span={12}>
+        <Col span={isBroken ? 24 : 12}>
           <DescriptionItem title="Tài khoản" content={userInfo?.email} />
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={isBroken ? 24 : 12}>
           <DescriptionItem
             title="Ngày sinh"
             content={
@@ -60,7 +60,7 @@ function Info(props) {
             }
           />
         </Col>
-        <Col span={12}>
+        <Col span={isBroken ? 24 : 12}>
           <DescriptionItem
             title="Giới tính"
             content={
@@ -76,10 +76,10 @@ function Info(props) {
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={isBroken ? 24 : 12}>
           <DescriptionItem title="Email" content={userInfo?.email} />
         </Col>
-        <Col span={12}>
+        <Col span={isBroken ? 24 : 12}>
           <DescriptionItem
             title="Số điện thoại"
             content={userInfo?.phoneNumber}

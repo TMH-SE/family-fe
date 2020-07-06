@@ -1,3 +1,8 @@
+@media (max-width: 600px) {
+  .menu-input {
+    visibility: hidden;
+  }
+}
 .delete-img {
   transition: 0.5s ease;
   opacity: 0;
@@ -8,7 +13,7 @@
 .img-upload:hover > .delete-img {
   opacity: 1;
 }
-.textMention__highlighter{
+.textMention__highlighter {
   max-height: 100px;
 }
 .textMention__input {
@@ -28,7 +33,7 @@
     color: #a4b0be;
     font-size: 14px;
   }
-  .textMention--multiLine{
+  .textMention--multiLine {
     line-height: 30px !important;
     width: 80% !important;
   }
@@ -49,13 +54,13 @@
   textarea.ant-input:hover {
     /* border: none !important; */
   }
-  .input-menu{
+  .input-custome {
     display: flex;
     background-color: initial;
     /* border: black solid 1px; */
     /* border-top: none; */
     border-radius: 20px;
-    .ant-menu-horizontal > .ant-menu-item{
+    .ant-menu-horizontal > .ant-menu-item {
       padding-left: 5px;
       padding-right: 0;
     }
@@ -80,7 +85,7 @@
   background-color: #daf4fa;
 }
 
-.input-menu {
+.input-custome {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -88,6 +93,6 @@
   border-radius: 20px;
   // padding: 5px;
 }
-.popover-fix{
+.popover-fix {
   position: fixed;
 }

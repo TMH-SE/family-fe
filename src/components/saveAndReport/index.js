@@ -84,7 +84,6 @@ function SaveAndReport(props) {
             if (data?.deletePost) {
               deleteSavedPostsByPost({ variables: { postId: postId } })
               firebase.database().ref(`posts/${postId}`).remove()
-              console.log(postItem)
               postItem?.community?._id &&
             firebase
               .database()

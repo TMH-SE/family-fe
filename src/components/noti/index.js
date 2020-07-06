@@ -34,22 +34,22 @@ const Noti = props => {
       })
   }
 
-  return props.isBroken ? (
-    <Button
-      onClick={() => history.push('/notify')}
-      className="btn-round"
-      shape="circle"
-      icon={
-        <Badge
-          size={1}
-          overflowCount={9}
-          count={notifications.filter(item => item.seen === false)?.length}
-        >
-          <BellOutlined />
-        </Badge>
-      }
-    />
-  ) : (
+  return !props.isBroken && (
+  //   <Button
+  //     onClick={() => history.push('/notify')}
+  //     className="btn-round"
+  //     shape="circle"
+  //     icon={
+  //       <Badge
+  //         size={1}
+  //         overflowCount={9}
+  //         count={notifications.filter(item => item.seen === false)?.length}
+  //       >
+  //         <BellOutlined />
+  //       </Badge>
+  //     }
+  //   />
+  // ) : (
     <Popover
       placement="bottomLeft"
       id="noti-popover"

@@ -27,7 +27,7 @@ function PostNoGroup(props) {
   return (
     <>
       <Card
-        // key={key}
+        className="post"
         title={
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Avatar

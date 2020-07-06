@@ -3,8 +3,8 @@ import React, { useContext, useEffect } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
-import { CloseCircleFilled } from '@ant-design/icons'
-import { Card, Avatar } from 'antd'
+import { CloseCircleFilled, MinusCircleFilled } from '@ant-design/icons'
+import { Card, Avatar, Space } from 'antd'
 
 import { InputCustomize } from '@components'
 import Message from '../Message'
@@ -15,8 +15,15 @@ moment().format()
 
 export default function MessageList(props) {
   // const [messages, setMessages] = useState([])
-  const { chatBox, onCancelMessbox, showMore, setShowMore, currentId } = props
-  const { idChat, userId, messages } = chatBox
+  const {
+    chatBox,
+    onCancelMessbox,
+    showMore,
+    setShowMore,
+    currentId,
+    // onScaleMessbox
+  } = props
+  const { idChat, userId, messages, isScale } = chatBox
   const { me } = useContext(IContext)
   useEffect(() => {
     // chatBox
@@ -26,8 +33,24 @@ export default function MessageList(props) {
     // fetchPolicy: 'no-cache'
   })
   useEffect(() => {
-    document.getElementById(`input-custom-${currentId}`) &&
+    if (document.getElementById(`input-custom-${currentId}`)) {
+      // document.getElementById(`input-custom-${idChat}`).value = ''
       document.getElementById(`input-custom-${currentId}`).focus()
+      // if (isScale) {
+      //   document
+      //     .getElementsByClassName(`contentMess-box ${idChat}`)[0]
+      //     .getElementsByClassName('ant-mess')[0]
+      //     .classList.add('scale-box')
+      //   document
+      //     .getElementsByClassName(`contentMess-box ${idChat}`)[0]
+      //     .setAttribute('style', 'height: 50px')
+      // } else {
+      //   document
+      //     .getElementsByClassName(`contentMess-box ${idChat}`)[0]
+      //     .getElementsByClassName('ant-mess')[0]
+      //     .classList.remove('scale-box')
+      // }
+    }
   }, [currentId])
   const renderMessages = () => {
     let i = 0
@@ -134,7 +157,7 @@ export default function MessageList(props) {
     <div className={`message-list ${idChat}`}>
       <Card
         title={
-          <>
+          <div>
             <Avatar
               src={data?.getUser?.avatar}
               onClick={() => history.push(`/${data?.getUser?._id}/info`)}
@@ -145,50 +168,52 @@ export default function MessageList(props) {
             >
               {data?.getUser?.firstname}
             </a>
-          </>
+          </div>
         }
         className="ant-mess"
         extra={
-          !isBroken && (
-            // <div className='delete-messbox'>
-            <CloseCircleFilled
-              className="delete-messbox"
-              onClick={onCancelMessbox}
-              style={{ color: '#ccc' }}
-            />
-          )
-        }
-        actions={[
-          <InputCustomize
-            minRows={1}
-            maxRows={4}
-            idElement={idChat}
-            type="chat"
-            onSubmit={handleSubmit}
-            placeholder="Nhập tin nhắn"
-            key="input"
+          <CloseCircleFilled
+            className="delete-messbox"
+            onClick={onCancelMessbox}
+            style={{ color: '#ccc' }}
           />
-        ]}
+          // )
+        }
+        actions={
+          !isScale && [
+            <InputCustomize
+              minRows={1}
+              maxRows={4}
+              idElement={idChat}
+              type="chat"
+              onSubmit={handleSubmit}
+              placeholder="Nhập tin nhắn"
+              key="input"
+            />
+          ]
+        }
       >
-        <div
-          className={`message-list-container ${idChat}`}
-          onScroll={() => {
-            const ele = document.getElementsByClassName(
-              `message-list-container ${idChat}`
-            )[0]
-            props.showMess(idChat)
-            if (showMore <= messages?.length && ele.scrollTop === 0) {
-              setShowMore(showMore + 3)
-              ele.scrollTop = 30
-            }
-            if (showMore > messages.length) {
-              // setLoading(false)
-            }
-          }}
-        >
-          <div className="spin-chat">{/* <Spin spinning={loading} /> */}</div>
-          {renderMessages()}
-        </div>
+        {!isScale && (
+          <div
+            className={`message-list-container ${idChat}`}
+            onScroll={() => {
+              const ele = document.getElementsByClassName(
+                `message-list-container ${idChat}`
+              )[0]
+              props.showMess(idChat)
+              if (showMore <= messages?.length && ele.scrollTop === 0) {
+                setShowMore(showMore + 3)
+                ele.scrollTop = 30
+              }
+              if (showMore > messages.length) {
+                // setLoading(false)
+              }
+            }}
+          >
+            <div className="spin-chat">{/* <Spin spinning={loading} /> */}</div>
+            {renderMessages()}
+          </div>
+        )}
       </Card>
     </div>
   )
