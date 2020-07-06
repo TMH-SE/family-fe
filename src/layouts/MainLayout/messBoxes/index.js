@@ -121,30 +121,6 @@ const Messboxes = forwardRef((props, ref) => {
   const onCancelMessbox = idChat => {
     firebase.database().ref(`messboxes/${me?._id}/${idChat}`).remove()
   }
-  // const onScaleMessbox = idChat => {
-  //   const isScale = messbox.filter(mes => mes?.idChat === idChat)[0].isScale
-  //   console.log(isScale)
-  //   if (isScale) {
-  //     firebase.database().ref(`messboxes/${me?._id}/${idChat}`).update({
-  //       isScale: false
-  //     })
-  //     document
-  //       .getElementsByClassName(`contentMess-box ${idChat}`)[0]
-  //       .getElementsByClassName('ant-mess')[0]
-  //       .classList.remove('scale-box')
-  //   } else {
-  //     firebase.database().ref(`messboxes/${me?._id}/${idChat}`).update({
-  //       isScale: true
-  //     })
-  //     document
-  //       .getElementsByClassName(`contentMess-box ${idChat}`)[0]
-  //       .getElementsByClassName('ant-mess')[0]
-  //       .classList.add('scale-box')
-  //   }
-
-  //   // .setAttribute('style', 'height: 50px !important')
-  // }
-  // contentMess-box 9060abf0-a158-11ea-af70-039490da2a907b3dff90-b07e-11ea-a80b-4320cf846f98
   const history = useHistory()
   useImperativeHandle(ref, () => ({
     chooseConversation: (idChat, userId) => chooseConversation(idChat, userId)

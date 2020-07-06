@@ -3,8 +3,8 @@ import React, { useContext, useEffect } from 'react'
 import firebase from 'firebase/app'
 import moment from 'moment'
 import './MessageList.scss'
-import { CloseCircleFilled, MinusCircleFilled } from '@ant-design/icons'
-import { Card, Avatar, Space } from 'antd'
+import { CloseCircleFilled } from '@ant-design/icons'
+import { Card, Avatar } from 'antd'
 
 import { InputCustomize } from '@components'
 import Message from '../Message'
@@ -20,8 +20,7 @@ export default function MessageList(props) {
     onCancelMessbox,
     showMore,
     setShowMore,
-    currentId,
-    // onScaleMessbox
+    currentId
   } = props
   const { idChat, userId, messages, isScale } = chatBox
   const { me } = useContext(IContext)
@@ -36,20 +35,6 @@ export default function MessageList(props) {
     if (document.getElementById(`input-custom-${currentId}`)) {
       // document.getElementById(`input-custom-${idChat}`).value = ''
       document.getElementById(`input-custom-${currentId}`).focus()
-      // if (isScale) {
-      //   document
-      //     .getElementsByClassName(`contentMess-box ${idChat}`)[0]
-      //     .getElementsByClassName('ant-mess')[0]
-      //     .classList.add('scale-box')
-      //   document
-      //     .getElementsByClassName(`contentMess-box ${idChat}`)[0]
-      //     .setAttribute('style', 'height: 50px')
-      // } else {
-      //   document
-      //     .getElementsByClassName(`contentMess-box ${idChat}`)[0]
-      //     .getElementsByClassName('ant-mess')[0]
-      //     .classList.remove('scale-box')
-      // }
     }
   }, [currentId])
   const renderMessages = () => {
@@ -151,7 +136,7 @@ export default function MessageList(props) {
     ele.scrollTop = ele.scrollHeight
   }
 
-  const { isBroken, history } = props
+  const { history } = props
 
   return (
     <div className={`message-list ${idChat}`}>

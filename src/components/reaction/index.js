@@ -25,51 +25,44 @@ const emojiData = [
   },
   {
     emoji: 'joy',
-    text: 'Hehe',
+    text: 'Hihi',
     count: 43
   }
 ]
 // const me._id = 'tuikyne'
 function Reaction(props) {
-  const [chosenmoji, setChosenEnmoji] = useState('')
-  const [reactions, setReactions] = useState([])
-  const [sumReactions, setSSumReactions] = useState(0)
+  const { idPost, postItem, currentEmoji, setCurrentEmoji, reactions, isBroken } = props
 
-  const { idPost, postItem } = props
   const { me, isAuth, openLoginModal } = useContext(IContext)
-
-  useLayoutEffect(() => {
-    getReactionPost()
-  }, [idPost])
-  const getReactionPost = () => {
-    firebase
-      .database()
-      .ref(`posts/${idPost}/reactions`)
-      .on('value', snapshot => {
-        // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-        const temp =
-          (snapshot.val() &&
-            Object.keys(snapshot.val()).map(key => ({
-              ...snapshot.val()[key],
-              id: key.toString()
-            }))) ||
-          []
-        // temp.sort((a, b) => b.timestamp - a.timestamp)
-        setReactions(temp)
-        let count = 0
-        temp.map(item => {
-          if (!item.users) return
-          const idx = item.users.findIndex(user => user === me?._id)
-          if (idx !== -1) {
-            setChosenEnmoji(item.id)
-          }
-          count += item.count
-        })
-        setSSumReactions(count)
-      })
-  }
+  // const getReactionPost = () => {
+  //   firebase
+  //     .database()
+  //     .ref(`posts/${idPost}/reactions`)
+  //     .on('value', snapshot => {
+  //       // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
+  //       const temp =
+  //         (snapshot.val() &&
+  //           Object.keys(snapshot.val()).map(key => ({
+  //             ...snapshot.val()[key],
+  //             id: key.toString()
+  //           }))) ||
+  //         []
+  //       // temp.sort((a, b) => b.timestamp - a.timestamp)
+  //       setReactions(temp)
+  //     //   let count = 0
+  //     //   temp.map(item => {
+  //     //     if (!item.users) return
+  //     //     const idx = item.users.findIndex(user => user === me?._id)
+  //     //     if (idx !== -1) {
+  //     //       setCurrentEmoji(item.id)
+  //     //     }
+  //     //     count += item.count
+  //     //   })
+  //     //   setSSumReactions(count)
+  //     })
+  // }
   const updateOrSet = (e, emo) => {
-    const vt = reactions.findIndex(reaction => reaction.id === e.id)
+    const vt = reactions?.findIndex(reaction => reaction.id === e.id)
     reactions[vt]
       ? firebase
           .database()
@@ -101,19 +94,22 @@ function Reaction(props) {
         })
   }
   const onClickEmoji = (e, emo) => {
-    if (chosenmoji !== '') {
-      if (chosenmoji !== e.id) {
+    console.log(currentEmoji, e)
+    if (currentEmoji !== '') {
+      if (currentEmoji !== e.id) {
         // ko trùng icon cũ
-        const idx = reactions.findIndex(reaction => reaction.id === chosenmoji)
-        const arr = reactions[idx].users
-        arr.splice(
+        const idx = reactions.findIndex(
+          reaction => reaction.id === currentEmoji
+        )
+        const arr = reactions[idx]?.users
+        arr?.splice(
           reactions[idx].users.findIndex(user => user === me._id),
           1
         )
         try {
           firebase
             .database()
-            .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
+            .ref(`posts/${props.idPost}/reactions/` + currentEmoji)
             .update({
               count: reactions[idx].count - 1,
               users: arr
@@ -124,7 +120,7 @@ function Reaction(props) {
         }
       }
     } else {
-      setChosenEnmoji(e.id)
+      setCurrentEmoji(e.id)
       updateOrSet(e, emo)
     }
     document
@@ -133,67 +129,74 @@ function Reaction(props) {
   }
   return (
     <Popover
-      // className="reaction-popover"
       overlayClassName="reaction-popover"
       content={
         <Space>
           {emojiData.map(emo => (
             <Tooltip key={emo.emoji} title={emo.text}>
-              <Emoji
-                emoji={emo.emoji}
-                size={24}
-                onClick={e =>
-                  isAuth ? onClickEmoji(e, emo) : openLoginModal()
-                }
-              />
+              <div style={{ height: 18, width: 18 }}>
+                <Emoji
+                  emoji={emo.emoji}
+                  size={24}
+                  onClick={e =>
+                    isAuth ? onClickEmoji(e, emo) : openLoginModal()
+                  }
+                />
+              </div>
             </Tooltip>
           ))}
         </Space>
       }
     >
-      {/* <Space> */}
-      {chosenmoji ? (
-        <Emoji
-          onClick={async () => {
-            const idx = reactions.findIndex(
-              reaction => reaction.id === chosenmoji
-            )
-            const arr = reactions[idx].users
-            arr.splice(
-              reactions[idx].users.findIndex(user => user === me._id),
-              1
-            )
-            try {
-              await firebase
-                .database()
-                .ref(`posts/${props.idPost}/reactions/` + chosenmoji)
-                .update({
-                  count: reactions[idx].count - 1,
-                  users: arr
-                })
-            } catch (e) {
-              console.log(e)
-            }
-            setChosenEnmoji('')
-            document
-              .getElementById('like-post')
-              .setAttribute('style', 'background-color: initial')
-          }}
-          emoji={chosenmoji}
-          size={19}
-        />
+      {currentEmoji ? (
+        <Space>
+          <Emoji
+            onClick={async () => {
+              const idx = reactions.findIndex(
+                reaction => reaction.id === currentEmoji
+              )
+              const arr = reactions[idx].users
+              arr.splice(
+                reactions[idx].users.findIndex(user => user === me._id),
+                1
+              )
+              try {
+                await firebase
+                  .database()
+                  .ref(`posts/${props.idPost}/reactions/` + currentEmoji)
+                  .update({
+                    count: reactions[idx].count - 1,
+                    users: arr
+                  })
+              } catch (e) {
+                console.log(e)
+              }
+              setCurrentEmoji('')
+              document
+                .getElementById('like-post')
+                .setAttribute('style', 'background-color: initial')
+            }}
+            emoji={currentEmoji}
+            size={19}
+          />
+          {!isBroken && (
+            <span style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}>
+              {emojiData.filter(e => e.emoji === currentEmoji)[0].text}
+            </span>
+          )}
+        </Space>
       ) : (
         <LikeOutlined />
       )}
-      <span
+      {/* <span
         style={{
           marginLeft: 5,
           fontWeight: 'bold',
-          color: chosenmoji && '#1890ff'
+          color: currentEmoji && '#1890ff'
         }}
       >
         {sumReactions}
-      </span>
+      </span> */}
       {/* </Space> */}
     </Popover>
   )
