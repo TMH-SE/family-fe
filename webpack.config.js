@@ -97,7 +97,8 @@ module.exports = () => {
                 ecma: 5,
                 warnings: false,
                 comparisons: false,
-                inline: 2
+                inline: 2,
+                drop_console: true
               },
               mangle: {
                 safari10: true
