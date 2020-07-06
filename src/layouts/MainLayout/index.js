@@ -28,11 +28,7 @@ import {
   YoutubeOutlined,
   HomeOutlined,
   TeamOutlined,
-  HomeFilled,
-  YoutubeFilled,
-  BellFilled,
   LoginOutlined,
-  MessageFilled,
   MessageOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
@@ -127,6 +123,7 @@ const index = ({ children }) => {
       .database()
       .ref('notifications/' + me?._id)
       .orderByKey()
+      .limitToLast(50)
       .on('value', snapshot => {
         temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({

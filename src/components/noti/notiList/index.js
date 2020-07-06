@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-
+import moment from 'moment'
 import firebase from 'firebase/app'
 import {
   HeartTwoTone,
@@ -89,9 +89,7 @@ const NotiList = props => {
         }
         description={
           <p style={{ fontSize: 10 }}>
-            {noti?.createdAt
-              ? new Date(noti?.createdAt).toLocaleString()
-              : new Date().toLocaleString()}
+            {noti?.createdAt && moment(noti?.createdAt).fromNow()}
           </p>
         }
       />
