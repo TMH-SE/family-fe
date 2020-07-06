@@ -109,8 +109,18 @@ const index = ({ children }) => {
         setDataCount(temp)
         setLoading(false)
       })
-    isBroken && getNotification()
   }, [])
+
+  // const getCount = () => {
+  console.log(notifications)
+  // }
+  const [isBroken, setIsBroken] = useState(false)
+  const [showCommunities, setShowCommunities] = useState(false)
+  const messBoxesRef = useRef()
+  const history = useHistory()
+  useEffect(() => {
+    isBroken && getNotification()
+  }, [isBroken])
   const getNotification = () => {
     let temp
     firebase
@@ -128,13 +138,6 @@ const index = ({ children }) => {
         setNotifications(temp.reverse())
       })
   }
-  // const getCount = () => {
-
-  // }
-  const [isBroken, setIsBroken] = useState(false)
-  const [showCommunities, setShowCommunities] = useState(false)
-  const messBoxesRef = useRef()
-  const history = useHistory()
   const location = useMemo(() => {
     return history.location.pathname.split('/')[1]
   }, [history.location.pathname])
@@ -402,12 +405,22 @@ const index = ({ children }) => {
             onClick={() => history.push('/notify')}
           >
             {location === 'notify' ? (
-              <Badge dot={!!notifications} >
-              <BellOutlined style={{ color: '#1890ff', fontSize: 20 }} />
+              <Badge
+                dot={
+                  notifications?.length === 0 ||
+                  notifications?.filter(item => item.seen === false)?.length > 0
+                }
+              >
+                <BellOutlined style={{ color: '#1890ff', fontSize: 20 }} />
               </Badge>
             ) : (
-              <Badge dot={!!notifications} >
-              <BellOutlined style={{ fontSize: 20 }}/>
+              <Badge
+                dot={
+                  notifications?.length === 0 ||
+                  notifications?.filter(item => item.seen === false)?.length > 0
+                }
+              >
+                <BellOutlined style={{ fontSize: 20 }} />
               </Badge>
             )}
           </Col>
