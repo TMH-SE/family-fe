@@ -16,6 +16,12 @@ export default function ConversationList(props) {
   const [dataChatConver, setdataChatConver] = useState([])
   const { chooseConversation, isBroken } = props
   useEffect(() => {
+    getMess()
+  }, [])
+  useEffect(() => {
+    getMess()
+  }, [me])
+  const getMess = () => {
     firebase
       .database()
       .ref(`messenger/`)
@@ -33,8 +39,7 @@ export default function ConversationList(props) {
         setDataChat(arr)
         setdataChatConver(arr)
       })
-  }, [me])
-
+  }
   const onSearch = data => {
     const arrResult = [...dataChatConver]
     const res = arrResult.filter(item => {
@@ -63,7 +68,7 @@ export default function ConversationList(props) {
         dataSource={searchdataChat || dataChat}
         renderItem={(dataChat, idx) => (
           <ConversationListItem
-          isBroken={isBroken}
+            isBroken={isBroken}
             chooseConversation={(idChat, userId) =>
               chooseConversation(idChat, userId)
             }
