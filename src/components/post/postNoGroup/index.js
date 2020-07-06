@@ -94,9 +94,10 @@ function PostNoGroup(props) {
         actions={
           process.env.ADMIN_SERVER === 'false' && [
             <div
-              id="like-post"
-              key="like"
-              onDoubleClick={() => console.log('đâsđâsd')}
+              key="reaction"
+              style={{
+                padding: 10
+              }}
             >
               <Reaction
                 isBroken={isBroken}
@@ -107,7 +108,15 @@ function PostNoGroup(props) {
                 currentEmoji={currentEmoji}
               />
             </div>,
-            <div key="comment">
+            <div
+              key="comment"
+              onClick={() =>
+                document.getElementById(`input-custom-${item?._id}`).focus()
+              }
+              style={{
+                padding: 10
+              }}
+            >
               <CommentOutlined
                 onClick={() =>
                   document.getElementById(`input-custom-${item?._id}`).focus()
@@ -115,14 +124,30 @@ function PostNoGroup(props) {
               />
               <span style={{ marginLeft: 5, fontWeight: 'bold' }}>{sum}</span>
             </div>,
-            <SharePost key="share" post={item} />,
-            <SaveAndReport
-              isBroken={isBroken}
-              refetch={refetch}
+            <div
+              key="share"
+              style={{
+                padding: 10
+              }}
+            >
+              <SharePost key="share" post={item} />
+            </div>,
+            <div
               key="saveandreport"
-              postId={item?._id}
-              postItem={item}
-            />,
+              onClick={() =>
+                document.getElementById(`input-custom-${item?._id}`).focus()
+              }
+              style={{
+                padding: 10
+              }}
+            >
+              <SaveAndReport
+                isBroken={isBroken}
+                refetch={refetch}
+                postId={item?._id}
+                postItem={item}
+              />
+            </div>,
             <CommentPost
               hashNoti={props.hashNoti}
               idPost={item?._id}
@@ -174,7 +199,7 @@ function PostNoGroup(props) {
                   ))}
                 <img
                   src={item?.thumbnail}
-                  style={{ width: '100%', objectFit: 'cover' }}
+                  style={{ width: '100%', objectFit: 'cover', marginBottom: 10 }}
                 ></img>
               </div>
               {sumReactions !== 0 && (

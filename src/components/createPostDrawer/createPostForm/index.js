@@ -137,6 +137,16 @@ const CreatePostForm = forwardRef((props, ref) => {
             .set({
               createdAt: +new Date()
             })
+          communityId?.value &&
+            firebase
+              .database()
+              .ref(`communities/${communityId?.value}/postsCount`)
+              .once('value', snapshot => {
+                firebase
+                  .database()
+                  .ref(`communities/${communityId?.value}`)
+                  .update({ postsCount: snapshot.val() + 1 })
+              })
           notification.success({ message: 'Tạo bài viết thành công' })
           dataCountFollow?.getFollowerByUser?.map(item => {
             notifyToUser(item.follower, data?.createPost?._id)
@@ -174,7 +184,9 @@ const CreatePostForm = forwardRef((props, ref) => {
       layout="horizontal"
       onFinish={submitCreatePost}
       initialValues={{
-        communityId: data?._id ? { key: data?._id, value: data?._id, label: data?.name } : undefined
+        communityId: data?._id
+          ? { key: data?._id, value: data?._id, label: data?.name }
+          : undefined
       }}
     >
       {data !== null && (

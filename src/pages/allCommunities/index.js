@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { List, Skeleton } from 'antd'
 import { CommunityItem, HighLightPost } from '@components'
 import { MainContext } from '../../layouts/MainLayout'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 
 function AllCommunities(props) {
   // const { data, loading } = useQuery(GET_COMMUNITIES)

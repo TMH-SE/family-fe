@@ -1,4 +1,3 @@
-
 const toxicWords = [
   'dm',
   'cl',
@@ -21,19 +20,23 @@ const replaceWord = word => {
 }
 export const replaceToxicWords = value => {
   let b = value
+  const arr = value.toLowerCase().split(' ')
   toxicWords.map(word => {
     const regex = new RegExp(`${word}`, 'gi')
-    b = b.replace(regex, replaceWord(word))
+    if (arr?.findIndex(item => item === word) !== -1) {
+      b = b.replace(regex, replaceWord(word))
+    }
   })
-  // onClick={() => {
-  // }}
   return b
 }
 export const HighLightToxicWords = value => {
   let b = value
+  const arr = value.toLowerCase().split(' ')
   toxicWords.map(word => {
     const regex = new RegExp(`${word}`, 'gi')
-    b = b.replace(regex, `<span style="background-color:rgb(255, 10, 9, 0.7)">${word}</span>`)
+    if (arr?.findIndex(item => item === word) !== -1) {
+      b = b.replace(regex, `<span style="background-color:rgb(255, 10, 9, 0.7)">${word}</span>`)
+    }
   })
   return b
 }
