@@ -15,8 +15,14 @@ moment().format()
 
 export default function MessageList(props) {
   // const [messages, setMessages] = useState([])
-  const { chatBox, onCancelMessbox, showMore, setShowMore, currentId } = props
-  const { idChat, userId, messages } = chatBox
+  const {
+    chatBox,
+    onCancelMessbox,
+    showMore,
+    setShowMore,
+    currentId
+  } = props
+  const { idChat, userId, messages, isScale } = chatBox
   const { me } = useContext(IContext)
   useEffect(() => {
     // chatBox
@@ -26,8 +32,10 @@ export default function MessageList(props) {
     // fetchPolicy: 'no-cache'
   })
   useEffect(() => {
-    document.getElementById(`input-custom-${currentId}`) &&
+    if (document.getElementById(`input-custom-${currentId}`)) {
+      // document.getElementById(`input-custom-${idChat}`).value = ''
       document.getElementById(`input-custom-${currentId}`).focus()
+    }
   }, [currentId])
   const renderMessages = () => {
     let i = 0
@@ -128,13 +136,13 @@ export default function MessageList(props) {
     ele.scrollTop = ele.scrollHeight
   }
 
-  const { isBroken, history } = props
+  const { history } = props
 
   return (
     <div className={`message-list ${idChat}`}>
       <Card
         title={
-          <>
+          <div>
             <Avatar
               src={data?.getUser?.avatar}
               onClick={() => history.push(`/${data?.getUser?._id}/info`)}
@@ -145,50 +153,52 @@ export default function MessageList(props) {
             >
               {data?.getUser?.firstname}
             </a>
-          </>
+          </div>
         }
         className="ant-mess"
         extra={
-          !isBroken && (
-            // <div className='delete-messbox'>
-            <CloseCircleFilled
-              className="delete-messbox"
-              onClick={onCancelMessbox}
-              style={{ color: '#ccc' }}
-            />
-          )
-        }
-        actions={[
-          <InputCustomize
-            minRows={1}
-            maxRows={4}
-            idElement={idChat}
-            type="chat"
-            onSubmit={handleSubmit}
-            placeholder="Nhập tin nhắn"
-            key="input"
+          <CloseCircleFilled
+            className="delete-messbox"
+            onClick={onCancelMessbox}
+            style={{ color: '#ccc' }}
           />
-        ]}
+          // )
+        }
+        actions={
+          !isScale && [
+            <InputCustomize
+              minRows={1}
+              maxRows={4}
+              idElement={idChat}
+              type="chat"
+              onSubmit={handleSubmit}
+              placeholder="Nhập tin nhắn"
+              key="input"
+            />
+          ]
+        }
       >
-        <div
-          className={`message-list-container ${idChat}`}
-          onScroll={() => {
-            const ele = document.getElementsByClassName(
-              `message-list-container ${idChat}`
-            )[0]
-            props.showMess(idChat)
-            if (showMore <= messages?.length && ele.scrollTop === 0) {
-              setShowMore(showMore + 3)
-              ele.scrollTop = 30
-            }
-            if (showMore > messages.length) {
-              // setLoading(false)
-            }
-          }}
-        >
-          <div className="spin-chat">{/* <Spin spinning={loading} /> */}</div>
-          {renderMessages()}
-        </div>
+        {!isScale && (
+          <div
+            className={`message-list-container ${idChat}`}
+            onScroll={() => {
+              const ele = document.getElementsByClassName(
+                `message-list-container ${idChat}`
+              )[0]
+              props.showMess(idChat)
+              if (showMore <= messages?.length && ele.scrollTop === 0) {
+                setShowMore(showMore + 3)
+                ele.scrollTop = 30
+              }
+              if (showMore > messages.length) {
+                // setLoading(false)
+              }
+            }}
+          >
+            <div className="spin-chat">{/* <Spin spinning={loading} /> */}</div>
+            {renderMessages()}
+          </div>
+        )}
       </Card>
     </div>
   )

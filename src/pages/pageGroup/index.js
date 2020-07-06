@@ -27,8 +27,6 @@ export const GET_COMMUNITY_BY_ID = gql`
       name
       avatar
       coverPhoto
-      countMember
-      countPost
     }
   }
 `

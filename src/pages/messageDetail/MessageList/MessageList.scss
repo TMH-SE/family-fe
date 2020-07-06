@@ -5,18 +5,25 @@
   overflow-y: auto;
   // padding-bottom: 10px;
 }
+.ant-mess {
+  display: flex;
+  flex-direction: column;
+  height: 45vh;
+
+}
+
 .message-list {
   .ant-card-body {
     padding: 0 !important;
-    // height: 30vh;
-    // overflow: auto;
+    height: 40vh;
+    overflow: hidden;
   }
   .ant-card-head {
     padding: 0 10px !important;
-    // background-color: #e6f4ff
+    min-height: 55px;
   }
 }
- .spin-chat{
+.spin-chat {
   display: flex;
-    justify-content: center;
+  justify-content: center;
 }

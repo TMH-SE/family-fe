@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 
 import * as firebase from 'firebase/app'
+import moment from 'moment'
 import {
   HeartTwoTone,
   MessageTwoTone,
@@ -51,7 +52,7 @@ const arrType = [
 
 const NotiList = props => {
   const { me } = useContext(IContext)
-  const { noti, history } = props
+  const { noti, history, setVisible } = props
   return (
     <List.Item
       className="noti-item"
@@ -69,7 +70,7 @@ const NotiList = props => {
         noti?.action === 'seminar'
           ? window.open(`${noti.link}`)
           : history.push(`${noti.link}`)
-        // setVisible(false)
+        setVisible(false)
       }}
     >
       {/* <Skeleton avatar title={false} loading={item.loading} active> */}
@@ -89,9 +90,7 @@ const NotiList = props => {
         }
         description={
           <p style={{ fontSize: 10 }}>
-            {noti?.createdAt
-              ? new Date(noti?.createdAt).toLocaleString()
-              : new Date().toLocaleString()}
+            {noti?.createdAt && moment(noti?.createdAt).fromNow()}
           </p>
         }
       />

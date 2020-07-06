@@ -102,12 +102,16 @@ ul {
 
 .ant-card-actions {
   // padding-left: 16px !important;
+  // > li:first-child {
+  //   width: 100% !important;
+  //   border-bottom: 1px solid rgb(240, 240, 240) ;
+  // }
   > li:not(:last-child) {
     width: 20% !important;
     border: none;
+    margin: 0 !important;
   }
   > li:last-child {
-    padding-left: 24px !important;
     display: flex;
     flex-direction: column;
     width: 95% !important;
@@ -131,14 +135,14 @@ ul {
     right: 17%;
     bottom: 0;
     .contentMess-box {
-      width: 17rem;
+      width: 18rem;
       margin-right: 10px;
       // border: #e6f4ff solid 5px;
       background-color: #fff;
 
       .message-list-container {
         // flex: '1 1 auto';
-        height: 35vh;
+        height: 100%;
         background-color: initial;
       }
       border-radius: 10px;
@@ -161,7 +165,6 @@ ul {
     color: #0b0b0c9d !important;
   }
 }
-
 .sidebarMess-mainLayout {
   // border: #d5edf9 solid 2px !important;
   // background-color: #e6f4ff;

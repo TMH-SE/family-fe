@@ -17,6 +17,8 @@ const Notify = props => {
     firebase
       .database()
       .ref('notifications/' + me?._id)
+      .orderByKey()
+      .limitToLast(50)
       .on('value', snapshot => {
         temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({
@@ -25,7 +27,7 @@ const Notify = props => {
             }))
           : []
 
-        setNotifications(temp)
+        setNotifications(temp.reverse())
       })
   }
   return notifications?.length === 0 ? (

@@ -20,6 +20,7 @@ const Noti = props => {
       .database()
       .ref('notifications/' + me?._id)
       .orderByKey()
+      .limitToLast(50)
       .on('value', snapshot => {
         temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({
@@ -32,62 +33,73 @@ const Noti = props => {
       })
   }
 
-  return props.isBroken ? (
-    <Button
-      onClick={() => history.push('/notify')}
-      className="btn-round"
-      shape="circle"
-      icon={
-        <Badge
-          size={1}
-          overflowCount={9}
-          count={notifications.filter(item => item.seen === false)?.length}
-        >
-          <BellOutlined />
-        </Badge>
-      }
-    />
-  ) : (
-    <Popover
-      placement="bottomLeft"
-      id="noti-popover"
-      overlayStyle={{ position: 'fixed' }}
-      content={
-        notifications?.length === 0 ? (
-          <p>Chưa có thông báo nào</p>
-        ) : (
-          <List
-            className="demo-loadmore-list"
-            // loading={initLoading}
-            itemLayout="horizontal"
-            // loadMore={loadMore}
-            dataSource={notifications}
-            renderItem={noti => (
-              <NotiList noti={noti} history={history}></NotiList>
-            )}
+  return (
+    !props.isBroken && (
+      //   <Button
+      //     onClick={() => history.push('/notify')}
+      //     className="btn-round"
+      //     shape="circle"
+      //     icon={
+      //       <Badge
+      //         size={1}
+      //         overflowCount={9}
+      //         count={notifications.filter(item => item.seen === false)?.length}
+      //       >
+      //         <BellOutlined />
+      //       </Badge>
+      //     }
+      //   />
+      // ) : (
+      <Popover
+      destroyTooltipOnHide
+      popupVisible
+      onVisibleChange={() => setVisible(!visible)}
+        placement="bottomLeft"
+        id="noti-popover"
+        overlayStyle={{ position: 'fixed' }}
+        content={
+          notifications?.length === 0 ? (
+            <p>Chưa có thông báo nào</p>
+          ) : (
+            <List
+              className="demo-loadmore-list"
+              // loading={initLoading}
+              itemLayout="horizontal"
+              dataSource={notifications}
+              renderItem={noti => (
+                <NotiList
+                  setVisible={setVisible}
+                  noti={noti}
+                  history={history}
+                ></NotiList>
+              )}
+            />
+          )
+        }
+        visible={visible}
+        title="Thông Báo"
+        trigger="click"
+      >
+        <Tooltip title="Thông báo" placement="bottomRight">
+          <Button
+            onClick={() => setVisible(!visible)}
+            className="btn-round"
+            shape="circle"
+            icon={
+              <Badge
+                size={1}
+                overflowCount={9}
+                count={
+                  notifications.filter(item => item.seen === false)?.length
+                }
+              >
+                <BellOutlined />
+              </Badge>
+            }
           />
-        )
-      }
-      title="Thông Báo"
-      trigger="click"
-    >
-      <Tooltip title="Thông báo" placement="bottomRight">
-        <Button
-          onClick={() => setVisible(!visible)}
-          className="btn-round"
-          shape="circle"
-          icon={
-            <Badge
-              size={1}
-              overflowCount={9}
-              count={notifications.filter(item => item.seen === false)?.length}
-            >
-              <BellOutlined />
-            </Badge>
-          }
-        />
-      </Tooltip>
-    </Popover>
+        </Tooltip>
+      </Popover>
+    )
   )
 }
 export default Noti

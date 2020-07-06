@@ -9,7 +9,8 @@ import { useHistory } from 'react-router-dom'
 
 import { IContext } from '@tools'
 import MessageList from '@pages/messageDetail/MessageList'
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
+import './index.scss'
 
 // const MY_USER_ID =
 const Messboxes = forwardRef((props, ref) => {
@@ -74,6 +75,7 @@ const Messboxes = forwardRef((props, ref) => {
         const a = [...messbox].sort((a, b) => a.createdAt - b.createdAt)
         firebase.database().ref(`messboxes/${me?._id}/${a[0]?.idChat}`).remove()
       }
+
       firebase
         .database()
         .ref(`messenger/${idChat}/listmessages`)
@@ -87,19 +89,21 @@ const Messboxes = forwardRef((props, ref) => {
                 id: key
               }))
             : []
-          // if (temp !== []) {
-            firebase
-              .database()
-              .ref(`messboxes/${me?._id}/${idChat}`)
-              .set({
-                messages: temp,
-                userId: userId,
-                createdAt: +new Date()
-              })
+          if (temp !== []) {
+          firebase
+            .database()
+            .ref(`messboxes/${me?._id}/${idChat}`)
+            .set({
+              messages: temp,
+              userId: userId,
+              createdAt: +new Date(),
+              isScale: false
+            })
+          }
+          // onScaleMessbox(idChat)
         })
+      setCurrentIdChat(idChat)
     }
-
-    setCurrentIdChat(idChat)
   }
   const onCancelMessbox = idChat => {
     firebase.database().ref(`messboxes/${me?._id}/${idChat}`).remove()
@@ -129,6 +133,7 @@ const Messboxes = forwardRef((props, ref) => {
               currentId={currentId}
               history={history}
               idx={idx}
+              // onScaleMessbox={() => onScaleMessbox(mess.idChat)}
               onCancelMessbox={() => onCancelMessbox(mess.idChat)}
               chatBox={mess}
             />
