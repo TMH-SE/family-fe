@@ -51,7 +51,7 @@ const arrType = [
 
 const NotiList = props => {
   const { me } = useContext(IContext)
-  const { noti, history } = props
+  const { noti, history, setVisible } = props
   return (
     <List.Item
       className="noti-item"
@@ -69,7 +69,7 @@ const NotiList = props => {
         noti?.action === 'seminar'
           ? window.open(`${noti.link}`)
           : history.push(`${noti.link}`)
-        // setVisible(false)
+        setVisible(false)
       }}
     >
       {/* <Skeleton avatar title={false} loading={item.loading} active> */}
