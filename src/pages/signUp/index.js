@@ -39,7 +39,7 @@ const index = () => {
       variables: {
         newUser: {
           ...values,
-          birthday: values.birthday.valueOf() || null,
+          birthday: values?.birthday?.valueOf() || null,
           expert
         }
       }

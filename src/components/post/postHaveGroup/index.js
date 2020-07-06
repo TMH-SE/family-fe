@@ -52,7 +52,6 @@ function PostHaveGroup(props) {
               id: key.toString()
             }))) ||
           []
-        console.log(temp)
         temp.sort((a, b) => b.timestamp - a.timestamp)
         setReactions(temp)
         let count = 0
@@ -230,7 +229,7 @@ function PostHaveGroup(props) {
                 {/* )} */}
                 <img
                   src={item?.thumbnail}
-                  style={{ width: '100%', objectFit: 'cover' }}
+                  style={{ width: '100%', objectFit: 'cover', marginBottom: 10 }}
                 ></img>
               </div>
               {sumReactions !== 0 && (

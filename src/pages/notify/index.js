@@ -18,6 +18,7 @@ const Notify = props => {
       .database()
       .ref('notifications/' + me?._id)
       .orderByKey()
+      .limitToLast(50)
       .on('value', snapshot => {
         temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({
