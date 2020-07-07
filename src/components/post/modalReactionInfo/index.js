@@ -24,10 +24,17 @@ const emojiData = [
   }
 ]
 const ModalReactionInfo = props => {
-  const { reactions, visible, setVisible } = props
+  const { reactions, visible, setVisible, isBroken } = props
   const [currenTab, setCurentTab] = useState()
   return (
-    <Modal visible={visible} onCancel={() => setVisible(false)}>
+    <Modal
+      centered
+      title="Người dùng tương tác"
+      visible={visible}
+      onCancel={() => setVisible(false)}
+      footer={null}
+      closable
+    >
       <Tabs defaultActiveKey={currenTab} onChange={key => setCurentTab(key)}>
         {reactions
           .filter(reaction => reaction?.count !== 0)
@@ -38,7 +45,7 @@ const ModalReactionInfo = props => {
             >
               {reaction?.users.map(item => (
                 <List key={item}>
-                  <ReactionInfo userId={item} />
+                  <ReactionInfo userId={item} isBroken={isBroken} />
                 </List>
               ))}
             </Tabs.TabPane>

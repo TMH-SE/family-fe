@@ -70,3 +70,7 @@ background: rgba(94, 144, 202, 0.657);
 .ant-list-item-meta-content{
   max-width: 100%;
 }
+.ant-modal-body{
+  max-height: 60vh;
+  overflow-y: auto;
+}

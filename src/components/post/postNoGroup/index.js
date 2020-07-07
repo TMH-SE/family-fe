@@ -35,6 +35,7 @@ function PostNoGroup(props) {
   }
   useEffect(() => {
     setCurrentEmoji('')
+    setReactions([])
     getReactionPost()
   }, [item])
   const getReactionPost = () => {
@@ -221,7 +222,7 @@ function PostNoGroup(props) {
                             title={
                               <div>
                                 {emo?.users?.slice(0, 3)?.map(user => (
-                                  <ReactionInfo key={user} userId={user} />
+                                  <ReactionInfo type="tooltip" key={user} userId={user} isBroken={isBroken} />
                                 ))}
                                 {emo?.users?.length > 10 && (
                                   <p>{`... ${
@@ -250,6 +251,7 @@ function PostNoGroup(props) {
         />
       </Card>
       <ModalReactionInfo
+        isBroken={isBroken}
         reactions={reactions}
         visible={visible}
         setVisible={setVisible}

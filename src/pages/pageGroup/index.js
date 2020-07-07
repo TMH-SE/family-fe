@@ -23,6 +23,7 @@ import { MainContext } from '../../layouts/MainLayout'
 import ReactionInfo from '../../components/post/reactionInfo'
 import { LoadingOutlined } from '@ant-design/icons'
 import * as firebase from 'firebase/app'
+import ModalMemberInfo from './modalMemberInfo'
 export const GET_COMMUNITY_BY_ID = gql`
   query communityById($id: String) {
     communityById(id: $id) {
@@ -40,6 +41,8 @@ function PageGroup(props) {
   const { me } = useContext(IContext)
   const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
+  const [visible, setVisible] = useState(false)
+  
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
@@ -89,7 +92,6 @@ function PageGroup(props) {
         setDataCount(temp)
       })
   }, [])
-  console.log(dataMems, 'ppppp')
   return loading ? (
     <Skeleton active />
   ) : (
@@ -161,6 +163,8 @@ function PageGroup(props) {
                     {dataMems?.getMembersByCommunity?.slice(0, 5).map(data => {
                       return (
                         <ReactionInfo
+                          type='tooltip'
+                          isBroken={isBroken}
                           key={data?.user?._id}
                           userId={data?.user?._id}
                         />
@@ -174,7 +178,7 @@ function PageGroup(props) {
                   </div>
                 }
               >
-                <p>{dataCount?.membersCount} thành viên </p>
+                <p onClick={() => setVisible(true)}>{dataCount?.membersCount} thành viên </p>
               </Tooltip>
               <p>- {dataCount?.postsCount} bài viết</p>
             </Space>
@@ -234,6 +238,7 @@ function PageGroup(props) {
         handleCancel={handleCancel}
         visible={visibleModalCreate}
       />
+      <ModalMemberInfo isBroken={isBroken} visible={visible} setVisible={setVisible} members={dataMems?.getMembersByCommunity} />
     </>
   )
 }

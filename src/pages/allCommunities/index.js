@@ -35,7 +35,7 @@ function AllCommunities(props) {
         }}
         itemLayout="horizontal"
         dataSource={dataCount}
-        renderItem={item => <CommunityItem isActionJoin={true} item={item} />}
+        renderItem={item => <CommunityItem isBroken={isBroken} isActionJoin={true} item={item} />}
       />
     </>
   )
