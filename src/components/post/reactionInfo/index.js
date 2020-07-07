@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from '@shared'
 import './index.scss'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Avatar, List } from 'antd'
-const ReactionInfo = ({ userId, type }) => {
+import { Follow } from '@components'
+import { IContext } from '@tools'
+const ReactionInfo = ({ userId, type, isBroken }) => {
   const { data, loading } = useQuery(GET_USER, {
     variables: { userId },
     fetchPolicy: 'no-cache'
   })
+  const { me } = useContext(IContext)
 
   return loading ? (
     <LoadingOutlined />
@@ -19,22 +22,20 @@ const ReactionInfo = ({ userId, type }) => {
       </a>
     </div>
   ) : (
-    // <Card style={{ width: 300, marginTop: 16 }} loading={loading}>
-    //   <Meta
-    //     avatar={<Avatar src={data?.getUser?.avatar} />}
-    //     title={
-    //       <a href={`${window.location.origin}/${userId}/info`}>
-    //         {data?.getUser?.firstname}
-    //       </a>
-    //     }
-    //   />
-    // </Card>
-    <List.Item>
+    <List.Item
+      actions={[
+        me?._id !== data?.getUser?._id && <Follow
+          key={data?.getUser?._id}
+          isBroken={isBroken}
+          follower={{ userId: userId, followerId: me?._id }}
+        />
+      ]}
+    >
       <List.Item.Meta
         avatar={<Avatar src={data?.getUser?.avatar} />}
         title={
           <a href={`${window.location.origin}/${userId}/info`}>
-            {data?.getUser?.firstname}
+            {data?.getUser?.firstname || 'Người dùng không còn tồn tại'}
           </a>
         }
       />

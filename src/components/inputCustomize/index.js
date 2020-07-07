@@ -195,8 +195,7 @@ function InputCustomize(props) {
         {/* {!isBroken && ( */}
         <Space className="menu-input">
           <Popover
-            overlayStyle={{ position: 'fixed' }}
-            style={{ position: 'fixed' }}
+            overlayStyle={{ position: 'absolute' }}
             placement="topRight"
             title={
               <Picker
@@ -208,8 +207,10 @@ function InputCustomize(props) {
             }
             trigger="click"
             visible={emoji.showEmoji}
+            destroyTooltipOnHide
+            popupVisible
             onVisibleChange={() =>
-              setEmoji({ ...setEmoji, showEmoji: !emoji.showEmoji })
+              setEmoji({ ...emoji, showEmoji: !emoji.showEmoji })
             }
           >
             <SmileOutlined
