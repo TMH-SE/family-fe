@@ -34,6 +34,7 @@ function Reaction(props) {
   const { idPost, postItem, currentEmoji, setCurrentEmoji, reactions, isBroken } = props
 
   const { me, isAuth, openLoginModal } = useContext(IContext)
+  console.log(currentEmoji)
   // const getReactionPost = () => {
   //   firebase
   //     .database()
