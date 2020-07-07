@@ -34,34 +34,6 @@ function Reaction(props) {
   const { idPost, postItem, currentEmoji, setCurrentEmoji, reactions, isBroken } = props
 
   const { me, isAuth, openLoginModal } = useContext(IContext)
-  console.log(currentEmoji)
-  // const getReactionPost = () => {
-  //   firebase
-  //     .database()
-  //     .ref(`posts/${idPost}/reactions`)
-  //     .on('value', snapshot => {
-  //       // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
-  //       const temp =
-  //         (snapshot.val() &&
-  //           Object.keys(snapshot.val()).map(key => ({
-  //             ...snapshot.val()[key],
-  //             id: key.toString()
-  //           }))) ||
-  //         []
-  //       // temp.sort((a, b) => b.timestamp - a.timestamp)
-  //       setReactions(temp)
-  //     //   let count = 0
-  //     //   temp.map(item => {
-  //     //     if (!item.users) return
-  //     //     const idx = item.users.findIndex(user => user === me?._id)
-  //     //     if (idx !== -1) {
-  //     //       setCurrentEmoji(item.id)
-  //     //     }
-  //     //     count += item.count
-  //     //   })
-  //     //   setSSumReactions(count)
-  //     })
-  // }
   const updateOrSet = (e, emo) => {
     const vt = reactions?.findIndex(reaction => reaction.id === e.id)
     reactions[vt]

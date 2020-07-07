@@ -40,8 +40,9 @@ function PostHaveGroup(props) {
   }
   useEffect(() => {
     setCurrentEmoji('')
+    setReactions([])
     getReactionPost()
-  }, [])
+  }, [item?._id])
   const getReactionPost = () => {
     firebase
       .database()
@@ -290,6 +291,7 @@ function PostHaveGroup(props) {
         />
       </Card>
       <ModalReactionInfo
+        isBroken={isBroken}
         reactions={reactions}
         visible={visible}
         setVisible={setVisible}

@@ -470,6 +470,7 @@ function Profile(props) {
               dataSource={dataCount}
               renderItem={item => (
                 <CommunityItem
+                  isBroken={isBroken}
                   item={item}
                   // data={dataCommunity?.getCommunitiesByUser}
                 />

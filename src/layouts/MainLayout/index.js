@@ -576,6 +576,7 @@ const index = ({ children }) => {
         footer={null}
       >
         <HighLightGroup
+          isBroken={window.innerWidth < 600 }
           history={history}
           setShowCommunities={setShowCommunities}
         />
