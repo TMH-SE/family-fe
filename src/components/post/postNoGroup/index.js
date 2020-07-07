@@ -47,7 +47,6 @@ function PostNoGroup(props) {
               id: key.toString()
             }))) ||
           []
-        console.log(temp)
         temp.sort((a, b) => b.timestamp - a.timestamp)
         setReactions(temp)
         let count = 0

@@ -94,7 +94,6 @@ function Reaction(props) {
         })
   }
   const onClickEmoji = (e, emo) => {
-    console.log(currentEmoji, e)
     if (currentEmoji !== '') {
       if (currentEmoji !== e.id) {
         // ko trùng icon cũ

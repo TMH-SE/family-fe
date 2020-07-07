@@ -107,9 +107,6 @@ const index = ({ children }) => {
       })
   }, [])
 
-  // const getCount = () => {
-  console.log(notifications)
-  // }
   const [isBroken, setIsBroken] = useState(false)
   const [showCommunities, setShowCommunities] = useState(false)
   const messBoxesRef = useRef()
