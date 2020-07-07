@@ -4,7 +4,7 @@ import { Button, Popconfirm } from 'antd'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { CHECK_IS_MEMBER, CREATE_AND_DELETE_MEMBER } from '@shared'
 import { IContext } from '@tools'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 function JoinBtn(props) {
   const { data, refetch } = useQuery(CHECK_IS_MEMBER, {
     variables: { id: props.id },
@@ -47,7 +47,6 @@ function JoinBtn(props) {
     <Popconfirm
       title="Bạn muốn bỏ tham gia nhóm"
       onConfirm={async () => (isAuth ? onHandleClick('huy') : openLoginModal())}
-      // onCancel={cancel}
       okText="Đồng ý"
       cancelText="Hủy"
     >

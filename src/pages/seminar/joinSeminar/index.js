@@ -2,7 +2,7 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Button, Tooltip } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
 import Video from '../video'
 import { IContext } from '@tools'

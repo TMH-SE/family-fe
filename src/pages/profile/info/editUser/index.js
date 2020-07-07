@@ -15,7 +15,7 @@ import { IContext } from '@tools'
 import moment from 'moment'
 import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_USER_INFO } from '@shared'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 17 }

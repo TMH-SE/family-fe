@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Space, Drawer, Row, Col, notification } from 'antd'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { GET_USER, VERIFY_OR_REJECT_EXPERT, notificationError } from '@shared'
 import { VerifiedOutlined, CloseSquareOutlined } from '@ant-design/icons'
 const DescriptionItem = ({ title, content }) => (

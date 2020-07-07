@@ -6,7 +6,6 @@ import 'firebase/database'
 import { SdkUtils } from '@utils'
 import { Client, ContextWrapper } from '@tools'
 import Routers from '@routers'
-import './app.scss'
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY || 'AIzaSyAzni8DvqLlDB_rnt1nxtCpIEeHocXHaZA',

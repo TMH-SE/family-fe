@@ -6,7 +6,7 @@ import { Result, Button, Typography, Form, Modal, Input } from 'antd'
 import { LoadingOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import ModalResend from './modalResend'
 import { IContext } from '@tools'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 const { Paragraph, Text } = Typography
 
 const VERIFY_ACCOUNT = gql`

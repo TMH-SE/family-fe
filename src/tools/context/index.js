@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { notification } from 'antd'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 export const IContext = React.createContext()
 
 const GET_ME = gql`

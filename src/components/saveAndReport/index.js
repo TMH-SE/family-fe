@@ -24,10 +24,9 @@ import {
   CREATE_AND_DELETE_SAVEDPOST,
   notificationError
 } from '@shared'
-// import { brokenContext } from '../../../layouts/MainLayout'
 import gql from 'graphql-tag'
 import EditPostForm from '../editPostForm'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 export const DELETE_POST = gql`
   mutation deletePost($postId: String) {
     deletePost(postId: $postId)

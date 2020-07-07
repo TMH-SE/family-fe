@@ -1,9 +1,6 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
 import { Modal, Button, Radio, notification, Input } from 'antd'
-// import 'antd/dist/antd.css'
-// import Editor from '../editor'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { IContext } from '@tools'
 import './index.scss'
 const data = [

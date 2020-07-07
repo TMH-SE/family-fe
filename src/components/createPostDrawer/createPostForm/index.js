@@ -24,7 +24,7 @@ import { IContext } from '@tools'
 import { uploadImg, beforeUpload, GET_COMMUNITIES_BY_USER } from '@shared'
 import postTemplate from '@assets/templates/post.html'
 import { Editor, UploadButton } from '@components'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 const CREATE_POST = gql`
   mutation createPost($newPost: NewPost) {
     createPost(newPost: $newPost) {

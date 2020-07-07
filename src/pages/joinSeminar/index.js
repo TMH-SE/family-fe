@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useContext } from 'react'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
 import { IContext } from '@tools'
 

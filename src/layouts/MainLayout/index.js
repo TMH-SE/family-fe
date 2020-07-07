@@ -32,7 +32,7 @@ import {
   MessageOutlined
 } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import { Logo, HighLightGroup, Noti, Login } from '@components'
 import './mainlayout.scss'
 import { IContext } from '@tools'
@@ -106,7 +106,6 @@ const index = ({ children }) => {
         setLoading(false)
       })
   }, [])
-  // }
   const [isBroken, setIsBroken] = useState(false)
   const [showCommunities, setShowCommunities] = useState(false)
   const messBoxesRef = useRef()

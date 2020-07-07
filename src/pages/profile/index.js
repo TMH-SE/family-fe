@@ -32,7 +32,7 @@ import {
 } from '@shared'
 import './index.scss'
 import { IContext } from '@tools'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import ImgCrop from 'antd-img-crop'
 import gql from 'graphql-tag'
 import MenuInfo from './menuInfo'

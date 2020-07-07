@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { Row, Col, Avatar, Input, Form } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import ListComments from './listComments'
 
 const Comments = ({ breakPoint, dataSeminar, me }) => {

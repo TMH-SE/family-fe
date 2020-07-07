@@ -3,7 +3,7 @@ import React, { useState, useContext, useLayoutEffect } from 'react'
 import { Popover, Tooltip, Space } from 'antd'
 import { Emoji } from 'emoji-mart'
 import { LikeOutlined } from '@ant-design/icons'
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app'
 import './index.css'
 import { IContext } from '@tools'
 
@@ -95,7 +95,6 @@ function Reaction(props) {
         })
   }
   const onClickEmoji = (e, emo) => {
-    console.log(currentEmoji, e)
     if (currentEmoji !== '') {
       if (currentEmoji !== e.id) {
         // ko trùng icon cũ
