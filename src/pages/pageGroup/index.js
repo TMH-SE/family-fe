@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useContext, useEffect } from 'react'
-import { Avatar, Input, Skeleton } from 'antd'
+import { Avatar, Input, Skeleton, Tooltip, Space } from 'antd'
 
 import { withRouter } from 'react-router-dom'
 import {
@@ -16,10 +16,14 @@ import { useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 import {
   GET_POST_BY_COMMUNITY,
-  CHECK_IS_MEMBER
+  CHECK_IS_MEMBER,
+  GET_MEMBERS_BY_COMMUNITY
 } from '@shared'
 import { MainContext } from '../../layouts/MainLayout'
+import ReactionInfo from '../../components/post/reactionInfo'
+import { LoadingOutlined } from '@ant-design/icons'
 import * as firebase from 'firebase/app'
+import ModalMemberInfo from './modalMemberInfo'
 export const GET_COMMUNITY_BY_ID = gql`
   query communityById($id: String) {
     communityById(id: $id) {
@@ -34,17 +38,25 @@ export const GET_COMMUNITY_BY_ID = gql`
 function PageGroup(props) {
   const [visibleModalReport, setVisibleModalReport] = useState(false)
   const { communityId } = props.match.params
-  const { me } = useContext(
-    IContext
-  )
+  const { me } = useContext(IContext)
   const { isBroken } = useContext(MainContext)
   const [visibleModalCreate, setVisibleModalCreate] = useState(false)
+  const [visible, setVisible] = useState(false)
+  
   const [previewImg, setPreviewImg] = useState({
     isShow: false,
     imgSrc: ''
   })
   const { data, refetch: refetchPostsByCom, loading: loađingPost } = useQuery(
     GET_POST_BY_COMMUNITY,
+    {
+      variables: { communityId },
+      fetchPolicy: 'no-cache',
+      skip: !communityId
+    }
+  )
+  const { data: dataMems, loading: loadingMems } = useQuery(
+    GET_MEMBERS_BY_COMMUNITY,
     {
       variables: { communityId },
       fetchPolicy: 'no-cache',
@@ -72,12 +84,14 @@ function PageGroup(props) {
   }
   const [dataCount, setDataCount] = useState([])
   useEffect(() => {
-    firebase.database().ref(`communities/${communityId}`).on('value', snapshot => {
-      const temp = snapshot.val()
-      setDataCount(temp)
-    })
+    firebase
+      .database()
+      .ref(`communities/${communityId}`)
+      .on('value', snapshot => {
+        const temp = snapshot.val()
+        setDataCount(temp)
+      })
   }, [])
-
   return loading ? (
     <Skeleton active />
   ) : (
@@ -110,12 +124,12 @@ function PageGroup(props) {
         }}
       >
         <Avatar
-         onClick={() => {
-          setPreviewImg({
-            isShow: true,
-            imgSrc: dataCommunity?.communityById?.avatar
-          })
-        }}
+          onClick={() => {
+            setPreviewImg({
+              isShow: true,
+              imgSrc: dataCommunity?.communityById?.avatar
+            })
+          }}
           style={{ border: '2px solid rgba(0,0,0,0.5)', marginLeft: 10 }}
           shape="square"
           size={120}
@@ -132,7 +146,7 @@ function PageGroup(props) {
           >
             {dataCommunity?.communityById?.name}
           </p>
-          <p
+          <div
             style={{
               marginTop: -15,
               fontWeight: 'bolder',
@@ -142,18 +156,44 @@ function PageGroup(props) {
             }}
           >
             {' '}
-            {dataCount?.membersCount} thành viên -{' '}
-            {dataCount?.postsCount} bài viết
-          </p>
-          <JoinBtn id={{ userId: me?._id, communityId: communityId }} history={props.history} refetchDataMemberCount={refetch}></JoinBtn>
+            <Space>
+              <Tooltip
+                title={loadingMems ? <LoadingOutlined /> :
+                  <div>
+                    {dataMems?.getMembersByCommunity?.slice(0, 5).map(data => {
+                      return (
+                        <ReactionInfo
+                          type='tooltip'
+                          isBroken={isBroken}
+                          key={data?.user?._id}
+                          userId={data?.user?._id}
+                        />
+                      )
+                    })}
+                    {dataMems?.getMembersByCommunity?.length > 5 && (
+                      <p>{`...và ${
+                        dataMems?.getMembersByCommunity?.length - 5
+                      } nguời khác`}</p>
+                    )}
+                  </div>
+                }
+              >
+                <p onClick={() => setVisible(true)}>{dataCount?.membersCount} thành viên </p>
+              </Tooltip>
+              <p>- {dataCount?.postsCount} bài viết</p>
+            </Space>
+          </div>
+          <JoinBtn
+            id={{ userId: me?._id, communityId: communityId }}
+            history={props.history}
+            refetchDataMemberCount={refetch}
+          ></JoinBtn>
         </div>
       </div>
       <br />
       {dataIsMember?.checkIsMember && (
         <Input.TextArea
-          onClick={() =>
-            setVisibleModalCreate(!visibleModalCreate)
-          }
+          onClick={() => setVisibleModalCreate(!visibleModalCreate)}
           style={{
             margin: '0 auto',
             marginBottom: 15,
@@ -171,7 +211,14 @@ function PageGroup(props) {
       ) : (
         data &&
         data?.postsByCommunity.map((item, idx) => {
-          return <PostNoGroup refetch={refetchPostsByCom} key={idx} item={item} idx={idx}></PostNoGroup>
+          return (
+            <PostNoGroup
+              refetch={refetchPostsByCom}
+              key={idx}
+              item={item}
+              idx={idx}
+            ></PostNoGroup>
+          )
         })
       )}
       <ModalPreviewImg
@@ -191,6 +238,7 @@ function PageGroup(props) {
         handleCancel={handleCancel}
         visible={visibleModalCreate}
       />
+      <ModalMemberInfo isBroken={isBroken} visible={visible} setVisible={setVisible} members={dataMems?.getMembersByCommunity} />
     </>
   )
 }

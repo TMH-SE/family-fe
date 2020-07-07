@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom'
 import { Emoji } from 'emoji-mart'
 import ReactionInfo from '../reactionInfo'
 import { IContext } from '@tools'
+import ModalReactionInfo from '../modalReactionInfo'
 function PostNoGroup(props) {
   const { me } = useContext(IContext)
   const [showText, setShowText] = useState(props.showText || false)
@@ -17,6 +18,7 @@ function PostNoGroup(props) {
   const [reactions, setReactions] = useState([])
   const nameEl = showText ? 'expand' : 'collapse'
   const { item, refetch, isBroken } = props
+  const [visible, setVisible] = useState(false)
   const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -32,8 +34,10 @@ function PostNoGroup(props) {
       })
   }
   useEffect(() => {
+    setCurrentEmoji('')
+    setReactions([])
     getReactionPost()
-  }, [])
+  }, [item])
   const getReactionPost = () => {
     firebase
       .database()
@@ -93,9 +97,10 @@ function PostNoGroup(props) {
         actions={
           process.env.ADMIN_SERVER === 'false' && [
             <div
-              key="reaction"
+              key="like"
               style={{
-                padding: 10
+                padding: 10,
+                backgroundColor: currentEmoji && 'aliceblue'
               }}
             >
               <Reaction
@@ -198,7 +203,11 @@ function PostNoGroup(props) {
                   ))}
                 <img
                   src={item?.thumbnail}
-                  style={{ width: '100%', objectFit: 'cover', marginBottom: 10 }}
+                  style={{
+                    width: '100%',
+                    objectFit: 'cover',
+                    marginBottom: 10
+                  }}
                 ></img>
               </div>
               {sumReactions !== 0 && (
@@ -210,19 +219,21 @@ function PostNoGroup(props) {
                         ?.map(emo => (
                           <Tooltip
                             key={emo.id}
-                            title={emo?.users?.slice(0, 3)?.map(user => (
-                              <>
-                                <ReactionInfo key={user} userId={user} />
+                            title={
+                              <div>
+                                {emo?.users?.slice(0, 3)?.map(user => (
+                                  <ReactionInfo type="tooltip" key={user} userId={user} isBroken={isBroken} />
+                                ))}
                                 {emo?.users?.length > 10 && (
                                   <p>{`... ${
                                     emo?.users?.length - 10
                                   } người khác`}</p>
                                 )}
-                              </>
-                            ))}
+                              </div>
+                            }
                           >
                             <div style={{ width: 18, height: 18 }}>
-                              <Emoji emoji={emo.id} size={18} />
+                              <Emoji emoji={emo.id} size={18} onClick={() => setVisible(true)}/>
                             </div>
                           </Tooltip>
                         ))}
@@ -239,6 +250,12 @@ function PostNoGroup(props) {
           }
         />
       </Card>
+      <ModalReactionInfo
+        isBroken={isBroken}
+        reactions={reactions}
+        visible={visible}
+        setVisible={setVisible}
+      />
     </>
   )
 }

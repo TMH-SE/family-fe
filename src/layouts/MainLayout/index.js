@@ -106,7 +106,6 @@ const index = ({ children }) => {
         setLoading(false)
       })
   }, [])
-
   const [isBroken, setIsBroken] = useState(false)
   const [showCommunities, setShowCommunities] = useState(false)
   const messBoxesRef = useRef()
@@ -577,6 +576,7 @@ const index = ({ children }) => {
         footer={null}
       >
         <HighLightGroup
+          isBroken={window.innerWidth < 600 }
           history={history}
           setShowCommunities={setShowCommunities}
         />
