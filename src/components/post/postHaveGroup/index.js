@@ -12,6 +12,7 @@ import { CommentOutlined, CheckCircleTwoTone } from '@ant-design/icons'
 import { IContext } from '@tools'
 import { Emoji } from 'emoji-mart'
 import ReactionInfo from '../reactionInfo'
+import ModalReactionInfo from '../modalReactionInfo'
 
 function PostHaveGroup(props) {
   const [showText, setShowText] = useState(props.showText || false)
@@ -22,6 +23,7 @@ function PostHaveGroup(props) {
   const [sumReactions, setSSumReactions] = useState(0)
   const [currentEmoji, setCurrentEmoji] = useState('')
   const [reactions, setReactions] = useState([])
+  const [visible, setVisible] = useState(false)
   // const history = useHistory()
   useEffect(() => {
     getSum(item?._id)
@@ -37,6 +39,7 @@ function PostHaveGroup(props) {
       })
   }
   useEffect(() => {
+    setCurrentEmoji('')
     getReactionPost()
   }, [])
   const getReactionPost = () => {
@@ -176,12 +179,12 @@ function PostHaveGroup(props) {
                 postItem={item}
               />
             </div>,
-            <CommentPost
-              hashNoti={props.hashNoti}
-              idPost={item?._id}
-              postItem={item}
-              key="commet"
-            ></CommentPost>
+              <CommentPost
+                hashNoti={props.hashNoti}
+                idPost={item?._id}
+                postItem={item}
+                key="commet"
+              ></CommentPost>
           ]
         }
       >
@@ -229,7 +232,11 @@ function PostHaveGroup(props) {
                 {/* )} */}
                 <img
                   src={item?.thumbnail}
-                  style={{ width: '100%', objectFit: 'cover', marginBottom: 10 }}
+                  style={{
+                    width: '100%',
+                    objectFit: 'cover',
+                    marginBottom: 10
+                  }}
                 ></img>
               </div>
               {sumReactions !== 0 && (
@@ -241,19 +248,31 @@ function PostHaveGroup(props) {
                         ?.map(emo => (
                           <Tooltip
                             key={emo.id}
-                            title={emo?.users?.slice(0, 3)?.map(user => (
-                              <>
-                                <ReactionInfo key={user} userId={user} />
+                            title={
+                              <div>
+                                {emo?.users?.slice(0, 10)?.map(user => (
+                                  <ReactionInfo
+                                    key={user}
+                                    userId={user}
+                                    type="tooltip"
+                                  />
+                                ))}
                                 {emo?.users?.length > 10 && (
                                   <p>{`... ${
                                     emo?.users?.length - 10
                                   } người khác`}</p>
                                 )}
-                              </>
-                            ))}
+                              </div>
+                            }
                           >
                             <div style={{ width: 18, height: 18 }}>
-                              <Emoji emoji={emo.id} size={18} />
+                              <Emoji
+                                emoji={emo.id}
+                                size={18}
+                                onClick={() => {
+                                  setVisible(true)
+                                }}
+                              />
                             </div>
                           </Tooltip>
                         ))}
@@ -270,6 +289,11 @@ function PostHaveGroup(props) {
           }
         />
       </Card>
+      <ModalReactionInfo
+        reactions={reactions}
+        visible={visible}
+        setVisible={setVisible}
+      />
     </>
   )
 }

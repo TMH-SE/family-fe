@@ -106,9 +106,6 @@ const index = ({ children }) => {
         setLoading(false)
       })
   }, [])
-
-  // const getCount = () => {
-  console.log(notifications)
   // }
   const [isBroken, setIsBroken] = useState(false)
   const [showCommunities, setShowCommunities] = useState(false)

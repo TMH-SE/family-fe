@@ -147,11 +147,11 @@ const CreatePostForm = forwardRef((props, ref) => {
                   .ref(`communities/${communityId?.value}`)
                   .update({ postsCount: snapshot.val() + 1 })
               })
+          await refetch()
           notification.success({ message: 'Tạo bài viết thành công' })
           dataCountFollow?.getFollowerByUser?.map(item => {
             notifyToUser(item.follower, data?.createPost?._id)
           })
-          await refetch()
           setConfirmLoading(false)
           handleCancel()
         }
