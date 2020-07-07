@@ -106,7 +106,6 @@ const index = ({ children }) => {
         setLoading(false)
       })
   }, [])
-
   const [isBroken, setIsBroken] = useState(false)
   const [showCommunities, setShowCommunities] = useState(false)
   const messBoxesRef = useRef()

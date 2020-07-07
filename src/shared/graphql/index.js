@@ -231,6 +231,15 @@ export const GET_POST_BY_COMMUNITY = gql`
 `
 export const GET_MEMBERS_BY_COMMUNITY = gql`
   query getMembersByCommunity($communityId: String) {
-    getMembersByCommunity(communityId: $communityId)
+    getMembersByCommunity(communityId: $communityId){
+      community{
+        _id
+        name
+      }
+      user{
+        _id
+        firstname
+      }
+    }
   }
 `
