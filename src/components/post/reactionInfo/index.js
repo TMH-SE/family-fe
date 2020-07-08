@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { Avatar, List } from 'antd'
 import { Follow } from '@components'
 import { IContext } from '@tools'
-const ReactionInfo = ({ userId, type, isBroken }) => {
+const ReactionInfo = ({ userId, type }) => {
   const { data, loading } = useQuery(GET_USER, {
     variables: { userId },
     fetchPolicy: 'no-cache'
@@ -26,7 +26,6 @@ const ReactionInfo = ({ userId, type, isBroken }) => {
       actions={[
         me?._id !== data?.getUser?._id && <Follow
           key={data?.getUser?._id}
-          isBroken={isBroken}
           follower={{ userId: userId, followerId: me?._id }}
         />
       ]}

@@ -2,11 +2,7 @@ import React, { useContext } from 'react'
 import * as firebase from 'firebase/app'
 import { Button, Popconfirm } from 'antd'
 import { HeartTwoTone, HeartFilled } from '@ant-design/icons'
-import {
-  CREATE_FOLLOWER,
-  DELETE_FOLLOWER,
-  CHECK_FOLLOW
-} from '@shared'
+import { CREATE_FOLLOWER, DELETE_FOLLOWER, CHECK_FOLLOW } from '@shared'
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import { IContext } from '@tools'
 
@@ -47,7 +43,7 @@ function Follow(props) {
         })
   }
   return data?.checkFollow ? (
-    props.isBroken ? (
+    window.innerWidth <= 600 ? (
       <HeartFilled
         style={{ marginLeft: 10, color: 'red', fontSize: 20 }}
         onClick={() => sendNotifollow('unfollow')}
@@ -67,7 +63,7 @@ function Follow(props) {
         </Button>
       </Popconfirm>
     )
-  ) : props.isBroken ? (
+  ) : window.innerWidth <= 600 ? (
     <HeartTwoTone
       style={{ marginLeft: 10, fontSize: 20 }}
       onClick={() => (isAuth ? sendNotifollow('follow') : openLoginModal())}

@@ -1,5 +1,5 @@
 .message-list-container {
-  height: 30vh;
+  height: 33vh;
   width: 100%;
   padding: 0 10px;
   overflow-y: auto;
@@ -14,7 +14,7 @@
 .message-list {
   .ant-card-body {
     padding: 0 !important;
-    height: 40vh;
+    // height: 40vh;
     overflow: hidden;
   }
   .ant-card-head {
