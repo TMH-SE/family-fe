@@ -36,18 +36,7 @@ function HighlightPost(props) {
           )
           ?.slice(0, 6)
         setData(data)
-        data?.map(item =>
-          firebase
-            .database()
-            .ref(`highlightPosts/${item.id}`)
-            .set({
-              createdAt: +new Date(),
-              countComment: item?.countComment || 0,
-              countReaction: item?.countReaction || 0
-            })
-        )
       })
-    // })
   }, [])
   return (
     <Carousel
