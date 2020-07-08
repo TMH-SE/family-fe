@@ -69,7 +69,6 @@ function Reaction(props) {
   const onClickEmoji = (e, emo) => {
     if (currentEmoji !== '') {
       if (currentEmoji !== e.id) {
-        // ko trùng icon cũ
         const idx = reactions.findIndex(
           reaction => reaction.id === currentEmoji
         )
