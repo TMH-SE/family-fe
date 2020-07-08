@@ -10,7 +10,8 @@ const toxicWords = [
   'má mày',
   'lồn',
   'wtf',
-  'đụ'
+  'đụ',
+  'cc'
 ]
 const replaceWord = word => {
   return word
