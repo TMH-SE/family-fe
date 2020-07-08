@@ -21,8 +21,11 @@ function HighlightPost(props) {
                 : 0,
               countReaction: snapshot.val()[key].reactions
                 ? Object.keys(snapshot.val()[key].reactions)
-                    .map(keyA => ({ ...snapshot.val()[key].reactions[keyA] }))
-                    .reduce((a, b) => a.count + b.count).count
+                    .map(keyA => {
+                      console.log( { ...snapshot.val()[key].reactions[keyA] }, ' keyA', key)
+                      return { ...snapshot.val()[key].reactions[keyA] }
+                    })
+                    .reduce((a, b) => a.count + b.count)
                 : 0,
               id: key
             }))
@@ -36,15 +39,14 @@ function HighlightPost(props) {
           )
           ?.slice(0, 6)
         setData(data)
-        console.log(data)
         data?.map(item =>
           firebase
             .database()
             .ref(`highlightPosts/${item.id}`)
             .set({
               createdAt: +new Date(),
-              countComment: item?.countComment || 0,
-              countReaction: item?.countReaction || 0
+              countComment: item?.countComment,
+              countReaction: item?.countReaction
             })
         )
       })
