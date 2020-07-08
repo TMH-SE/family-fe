@@ -17,7 +17,7 @@ function PostNoGroup(props) {
   const [currentEmoji, setCurrentEmoji] = useState('')
   const [reactions, setReactions] = useState([])
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, refetch, isBroken } = props
+  const { item, refetch } = props
   const [visible, setVisible] = useState(false)
   const history = useHistory()
   useEffect(() => {
@@ -97,6 +97,7 @@ function PostNoGroup(props) {
         actions={
           process.env.ADMIN_SERVER === 'false' && [
             <div
+              id="like-post"
               key="like"
               style={{
                 padding: 10,
@@ -104,7 +105,6 @@ function PostNoGroup(props) {
               }}
             >
               <Reaction
-                isBroken={isBroken}
                 setCurrentEmoji={setCurrentEmoji}
                 idPost={item?._id}
                 postItem={item}
@@ -146,7 +146,6 @@ function PostNoGroup(props) {
               }}
             >
               <SaveAndReport
-                isBroken={isBroken}
                 refetch={refetch}
                 postId={item?._id}
                 postItem={item}
@@ -212,38 +211,69 @@ function PostNoGroup(props) {
               </div>
               {sumReactions !== 0 && (
                 <div key="react-info" style={{ textAlign: 'left' }}>
-                  <Space>
-                    <div style={{ display: 'flex' }}>
-                      {reactions
-                        ?.filter(reaction => reaction?.count !== 0)
-                        ?.map(emo => (
-                          <Tooltip
-                            key={emo.id}
-                            title={
-                              <div>
-                                {emo?.users?.slice(0, 3)?.map(user => (
-                                  <ReactionInfo type="tooltip" key={user} userId={user} isBroken={isBroken} />
-                                ))}
-                                {emo?.users?.length > 10 && (
-                                  <p>{`... ${
-                                    emo?.users?.length - 10
-                                  } người khác`}</p>
-                                )}
-                              </div>
-                            }
-                          >
-                            <div style={{ width: 18, height: 18 }}>
-                              <Emoji emoji={emo.id} size={18} onClick={() => setVisible(true)}/>
+                  {window.innerWidth <= 600 ? (
+                    <Space>
+                      <div style={{ display: 'flex' }}>
+                        {reactions
+                          ?.filter(reaction => reaction?.count !== 0)
+                          ?.map(emo => (
+                            <div key={emo.id} style={{ width: 18, height: 18 }}>
+                              <Emoji
+                                emoji={emo.id}
+                                size={18}
+                                onClick={() => setVisible(true)}
+                              />
                             </div>
-                          </Tooltip>
-                        ))}
-                    </div>
-                    <span
-                      style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}
-                    >
-                      {sumReactions === 0 ? '' : sumReactions}
-                    </span>
-                  </Space>
+                          ))}
+                      </div>
+                      <span
+                        style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}
+                      >
+                        {sumReactions === 0 ? '' : sumReactions}
+                      </span>
+                    </Space>
+                  ) : (
+                    <Space>
+                      <div style={{ display: 'flex' }}>
+                        {reactions
+                          ?.filter(reaction => reaction?.count !== 0)
+                          ?.map(emo => (
+                            <Tooltip
+                              key={emo.id}
+                              title={
+                                <div>
+                                  {emo?.users?.slice(0, 3)?.map(user => (
+                                    <ReactionInfo
+                                      type="tooltip"
+                                      key={user}
+                                      userId={user}
+                                    />
+                                  ))}
+                                  {emo?.users?.length > 10 && (
+                                    <p>{`... ${
+                                      emo?.users?.length - 10
+                                    } người khác`}</p>
+                                  )}
+                                </div>
+                              }
+                            >
+                              <div style={{ width: 18, height: 18 }}>
+                                <Emoji
+                                  emoji={emo.id}
+                                  size={18}
+                                  onClick={() => setVisible(true)}
+                                />
+                              </div>
+                            </Tooltip>
+                          ))}
+                      </div>
+                      <span
+                        style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}
+                      >
+                        {sumReactions === 0 ? '' : sumReactions}
+                      </span>
+                    </Space>
+                  )}
                 </div>
               )}
             </div>
@@ -251,7 +281,6 @@ function PostNoGroup(props) {
         />
       </Card>
       <ModalReactionInfo
-        isBroken={isBroken}
         reactions={reactions}
         visible={visible}
         setVisible={setVisible}

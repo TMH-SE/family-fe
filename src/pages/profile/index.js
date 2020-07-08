@@ -410,7 +410,6 @@ function Profile(props) {
                     <div>
                       <Follow
                         refetchDataCountFollow={refetchDataCountFollow}
-                        isBroken={isBroken}
                         follower={{ userId: userId, followerId: me?._id }}
                       />
                       <Chat
@@ -470,7 +469,6 @@ function Profile(props) {
               dataSource={dataCount}
               renderItem={item => (
                 <CommunityItem
-                  isBroken={isBroken}
                   item={item}
                   // data={dataCommunity?.getCommunitiesByUser}
                 />

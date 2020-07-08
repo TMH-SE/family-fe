@@ -103,9 +103,9 @@ const EditPostForm = forwardRef((props, ref) => {
         community: postItem?.community?.name
       }}
     >
-      <Form.Item name="community" label="Cộng đồng">
+      {/* <Form.Item name="community" label="Cộng đồng">
         <Input disabled />
-      </Form.Item>
+      </Form.Item> */}
       <Form.Item
         label="Tiêu đề"
         name="title"

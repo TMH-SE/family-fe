@@ -4,7 +4,7 @@ import CommunityItem from '../community'
 import { ArrowRightOutlined } from '@ant-design/icons'
 
 function HighlightGroup(props) {
-  const { dataCount, loading, isBroken } = props
+  const { dataCount, loading } = props
   return loading ? (
     <Skeleton active avatar />
   ) : (
@@ -19,7 +19,6 @@ function HighlightGroup(props) {
           .slice(0, 3)}
         renderItem={item => (
           <CommunityItem
-            isBroken={isBroken}
             item={item}
             setShowCommunities={props?.setShowCommunities}
           />

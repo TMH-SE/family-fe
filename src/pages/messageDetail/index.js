@@ -166,7 +166,7 @@ function MessageDetail(props) {
           />
         ]}
       >
-        <div className={`message-list-container ${idChat}`}>
+        <div className={`message-list-container-phone ${idChat}`}>
           {renderMessages()}
         </div>
       </Card>

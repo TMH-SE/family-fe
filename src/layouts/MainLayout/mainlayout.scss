@@ -101,7 +101,7 @@ ul {
 // }
 
 .ant-card-actions {
-  // padding-left: 16px !important;
+  // padding-left: 10px !important;
   // > li:first-child {
   //   width: 100% !important;
   //   border-bottom: 1px solid rgb(240, 240, 240) ;
@@ -141,8 +141,8 @@ ul {
       background-color: #fff;
 
       .message-list-container {
-        // flex: '1 1 auto';
-        height: 100%;
+        flex: '1 1 auto';
+        // height: 100%;
         background-color: initial;
       }
       border-radius: 10px;

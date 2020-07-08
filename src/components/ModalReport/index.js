@@ -53,7 +53,7 @@ function ModalReport(props) {
   return (
     <Modal
       centered
-      width={props.isBroken ? '80%' : '50%'}
+      width={window.innerWidth <= 600 ? '80%' : '50%'}
       wrapClassName="radio-wrap"
       className="modal"
       destroyOnClose
