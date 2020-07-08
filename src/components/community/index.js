@@ -10,7 +10,7 @@ import { GET_MEMBERS_BY_COMMUNITY } from '@shared'
 import ReactionInfo from '../post/reactionInfo'
 import { LoadingOutlined } from '@ant-design/icons'
 function CommunityItem(props) {
-  const { item, isBroken } = props
+  const { item } = props
   const { me } = useContext(IContext)
   const history = useHistory()
   const [visible, setVisible] = useState(false)
@@ -51,38 +51,48 @@ function CommunityItem(props) {
           </a>
         }
         description={
-          <Space>
-            <Tooltip
-              title={
-                loadingMems ? (
-                  <LoadingOutlined />
-                ) : (
-                  <div>
-                    {dataMems?.getMembersByCommunity?.slice(0, 5).map(data => {
-                      return (
-                        <ReactionInfo
-                          type="tooltip"
-                          isBroken={isBroken}
-                          key={data?.user?._id}
-                          userId={data?.user?._id}
-                        />
-                      )
-                    })}
-                    {dataMems?.getMembersByCommunity?.length > 5 && (
-                      <p>{`...và ${
-                        dataMems?.getMembersByCommunity?.length - 5
-                      } nguời khác`}</p>
-                    )}
-                  </div>
-                )
-              }
-            >
+          window.innerWidth <= 600 ? (
+            <Space>
               <p onClick={() => setVisible(true)}>
                 {item?.membersCount} thành viên{' '}
               </p>
-            </Tooltip>
-            <p>- {item?.postsCount} bài viết</p>
-          </Space>
+              <p>- {item?.postsCount} bài viết</p>
+            </Space>
+          ) : (
+            <Space>
+              <Tooltip
+                title={
+                  loadingMems ? (
+                    <LoadingOutlined />
+                  ) : (
+                    <div>
+                      {dataMems?.getMembersByCommunity
+                        ?.slice(0, 5)
+                        .map(data => {
+                          return (
+                            <ReactionInfo
+                              type="tooltip"
+                              key={data?.user?._id}
+                              userId={data?.user?._id}
+                            />
+                          )
+                        })}
+                      {dataMems?.getMembersByCommunity?.length > 5 && (
+                        <p>{`...và ${
+                          dataMems?.getMembersByCommunity?.length - 5
+                        } nguời khác`}</p>
+                      )}
+                    </div>
+                  )
+                }
+              >
+                <p onClick={() => setVisible(true)}>
+                  {item?.membersCount} thành viên{' '}
+                </p>
+              </Tooltip>
+              <p>- {item?.postsCount} bài viết</p>
+            </Space>
+          )
         }
       />
       {props.isActionJoin && (
@@ -93,7 +103,6 @@ function CommunityItem(props) {
         />
       )}
       <ModalMemberInfo
-        isBroken={isBroken}
         visible={visible}
         setVisible={setVisible}
         members={dataMems?.getMembersByCommunity}

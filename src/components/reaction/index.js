@@ -31,7 +31,7 @@ const emojiData = [
 ]
 // const me._id = 'tuikyne'
 function Reaction(props) {
-  const { idPost, postItem, currentEmoji, setCurrentEmoji, reactions, isBroken } = props
+  const { idPost, postItem, currentEmoji, setCurrentEmoji, reactions } = props
 
   const { me, isAuth, openLoginModal } = useContext(IContext)
   const updateOrSet = (e, emo) => {
@@ -151,7 +151,7 @@ function Reaction(props) {
             emoji={currentEmoji}
             size={19}
           />
-          {!isBroken && (
+          {window.innerWidth > 6000 && (
             <span style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}>
               {emojiData.filter(e => e.emoji === currentEmoji)[0].text}
             </span>

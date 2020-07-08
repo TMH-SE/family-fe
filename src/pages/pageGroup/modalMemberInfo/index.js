@@ -14,7 +14,7 @@ const ModalMemberInfo = props => {
     >
       {members?.map(data => (
         <List key={data?.user?._id}>
-          <ReactionInfo userId={data?.user?._id} isBroken={isBroken} />
+          <ReactionInfo userId={data?.user?._id} />
         </List>
       ))}
     </Modal>

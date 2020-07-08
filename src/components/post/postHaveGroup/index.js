@@ -19,7 +19,7 @@ function PostHaveGroup(props) {
   const { me } = useContext(IContext)
   const [sum, setSum] = useState(0)
   const nameEl = showText ? 'expand' : 'collapse'
-  const { item, refetch, history, isBroken } = props
+  const { item, refetch, history } = props
   const [sumReactions, setSSumReactions] = useState(0)
   const [currentEmoji, setCurrentEmoji] = useState('')
   const [reactions, setReactions] = useState([])
@@ -114,7 +114,7 @@ function PostHaveGroup(props) {
           </div>
         }
         extra={
-          !isBroken &&
+          window.innerWidth > 600 &&
           process.env.ADMIN_SERVER === 'false' && (
             <JoinBtn
               id={{ userId: me?._id, communityId: item?.community?._id }}
@@ -134,7 +134,6 @@ function PostHaveGroup(props) {
               }}
             >
               <Reaction
-                isBroken={isBroken}
                 setCurrentEmoji={setCurrentEmoji}
                 reactions={reactions}
                 currentEmoji={currentEmoji}
@@ -174,18 +173,17 @@ function PostHaveGroup(props) {
               }}
             >
               <SaveAndReport
-                isBroken={isBroken}
                 refetch={refetch}
                 postId={item?._id}
                 postItem={item}
               />
             </div>,
-              <CommentPost
-                hashNoti={props.hashNoti}
-                idPost={item?._id}
-                postItem={item}
-                key="commet"
-              ></CommentPost>
+            <CommentPost
+              hashNoti={props.hashNoti}
+              idPost={item?._id}
+              postItem={item}
+              key="commet"
+            ></CommentPost>
           ]
         }
       >
@@ -242,31 +240,13 @@ function PostHaveGroup(props) {
               </div>
               {sumReactions !== 0 && (
                 <div key="react-info" style={{ textAlign: 'left' }}>
-                  <Space>
-                    <div style={{ display: 'flex' }}>
-                      {reactions
-                        ?.filter(reaction => reaction?.count !== 0)
-                        ?.map(emo => (
-                          <Tooltip
-                            key={emo.id}
-                            title={
-                              <div>
-                                {emo?.users?.slice(0, 10)?.map(user => (
-                                  <ReactionInfo
-                                    key={user}
-                                    userId={user}
-                                    type="tooltip"
-                                  />
-                                ))}
-                                {emo?.users?.length > 10 && (
-                                  <p>{`... ${
-                                    emo?.users?.length - 10
-                                  } người khác`}</p>
-                                )}
-                              </div>
-                            }
-                          >
-                            <div style={{ width: 18, height: 18 }}>
+                  {window.innerWidth <= 600 ? (
+                    <Space>
+                      <div style={{ display: 'flex' }}>
+                        {reactions
+                          ?.filter(reaction => reaction?.count !== 0)
+                          ?.map(emo => (
+                            <div key={emo.id} style={{ width: 18, height: 18 }}>
                               <Emoji
                                 emoji={emo.id}
                                 size={18}
@@ -275,15 +255,58 @@ function PostHaveGroup(props) {
                                 }}
                               />
                             </div>
-                          </Tooltip>
-                        ))}
-                    </div>
-                    <span
-                      style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}
-                    >
-                      {sumReactions === 0 ? '' : sumReactions}
-                    </span>
-                  </Space>
+                          ))}
+                      </div>
+                      <span
+                        style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}
+                      >
+                        {sumReactions === 0 ? '' : sumReactions}
+                      </span>
+                    </Space>
+                  ) : (
+                    <Space>
+                      <div style={{ display: 'flex' }}>
+                        {reactions
+                          ?.filter(reaction => reaction?.count !== 0)
+                          ?.map(emo => (
+                            <Tooltip
+                              key={emo.id}
+                              title={
+                                <div>
+                                  {emo?.users?.slice(0, 10)?.map(user => (
+                                    <ReactionInfo
+                                      key={user}
+                                      userId={user}
+                                      type="tooltip"
+                                    />
+                                  ))}
+                                  {emo?.users?.length > 10 && (
+                                    <p>{`... ${
+                                      emo?.users?.length - 10
+                                    } người khác`}</p>
+                                  )}
+                                </div>
+                              }
+                            >
+                              <div style={{ width: 18, height: 18 }}>
+                                <Emoji
+                                  emoji={emo.id}
+                                  size={18}
+                                  onClick={() => {
+                                    setVisible(true)
+                                  }}
+                                />
+                              </div>
+                            </Tooltip>
+                          ))}
+                      </div>
+                      <span
+                        style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}
+                      >
+                        {sumReactions === 0 ? '' : sumReactions}
+                      </span>
+                    </Space>
+                  )}
                 </div>
               )}
             </div>
@@ -291,7 +314,6 @@ function PostHaveGroup(props) {
         />
       </Card>
       <ModalReactionInfo
-        isBroken={isBroken}
         reactions={reactions}
         visible={visible}
         setVisible={setVisible}
