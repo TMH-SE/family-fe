@@ -10,38 +10,13 @@
   }
   .ant-list-item-meta-description {
     white-space: nowrap;
-    width: 60%;
+    width: 8rem;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 }
-// .ant-card-head {
-//   padding: 0 5px 0 10px !important;
-// }
-.ant-card-head-title {
-  padding: 10px;
-}
+
 .ant-list-item:hover {
   cursor: pointer;
   background-color: rgba(182, 191, 200, 0.5);
-}
-.conversation-list-phone {
-  width: 100%;
-  height: calc(100vh - 100px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-top: 10px;  
-  .ant-list-item{
-    padding: 0 12px !important
-  }
-  .ant-list-item-meta {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  .ant-list-item-meta-description {
-    white-space: nowrap;
-    // width: 70%;
-    // overflow: hidden;
-    // text-overflow: ellipsis;
-  }
 }

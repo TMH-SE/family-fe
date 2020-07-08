@@ -24,7 +24,7 @@ const emojiData = [
   }
 ]
 const ModalReactionInfo = props => {
-  const { reactions, visible, setVisible, isBroken } = props
+  const { reactions, visible, setVisible } = props
   const [currenTab, setCurentTab] = useState()
   return (
     <Modal
@@ -45,7 +45,7 @@ const ModalReactionInfo = props => {
             >
               {reaction?.users.map(item => (
                 <List key={item}>
-                  <ReactionInfo userId={item} isBroken={isBroken} />
+                  <ReactionInfo userId={item} />
                 </List>
               ))}
             </Tabs.TabPane>

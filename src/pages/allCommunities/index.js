@@ -1,13 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { List, Skeleton } from 'antd'
+import { List, Skeleton, Typography } from 'antd'
 import { CommunityItem, HighLightPost } from '@components'
-import { MainContext } from '../../layouts/MainLayout'
 import * as firebase from 'firebase/app'
 
 function AllCommunities(props) {
   // const { data, loading } = useQuery(GET_COMMUNITIES)
   const [loading, setLoading] = useState(false)
-  const { isBroken } = useContext(MainContext)
   const [dataCount, setDataCount] = useState([])
   useEffect(() => {
     getCount()
@@ -27,15 +25,15 @@ function AllCommunities(props) {
     <Skeleton active avatar />
   ) : (
     <>
-    <HighLightPost history={props.history} isBroken={isBroken}></HighLightPost>
-      <p>Tất cả cộng đồng </p>
+    {/* <HighLightPost history={props.history} ></HighLightPost> */}
+      <Typography.Title level={4}>Tất cả cộng đồng </Typography.Title>
       <List
         pagination={{
-          pageSize: 4
+          pageSize: 7
         }}
         itemLayout="horizontal"
         dataSource={dataCount}
-        renderItem={item => <CommunityItem isBroken={isBroken} isActionJoin={true} item={item} />}
+        renderItem={item => <CommunityItem isActionJoin={true} item={item} />}
       />
     </>
   )

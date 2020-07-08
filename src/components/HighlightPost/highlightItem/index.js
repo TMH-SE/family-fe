@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { Card, Skeleton } from 'antd'
+import { Card, Skeleton, Tooltip } from 'antd'
 import { useQuery } from '@apollo/react-hooks'
 import { GET_POST_BY_ID } from '@pages/postDetail'
 import { ArrowRightOutlined } from '@ant-design/icons'
@@ -34,18 +34,21 @@ function HighlightItem(props) {
       }
       actions={[
         <a
-          // onClick={() => history.push(`/post-detail/${item}`)}
           key="detail"
-          style={{ color: '#1890ff' }}
+          style={{ color: '#1890ff', textAlign: 'center' }}
         >
           Xem chi tiết <ArrowRightOutlined />
         </a>
       ]}
     >
       <Meta
-        className='high-light-meta'
+        className="high-light-meta"
         //   avatar={<Avatar size={64} shape='square' src='https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png' />}
-        title={data?.postById?.title}
+        title={
+          <Tooltip placement='topLeft' title={data?.postById?.title}>
+            <span>{data?.postById?.title}</span>
+          </Tooltip>
+        }
       />
     </Card>
   )
