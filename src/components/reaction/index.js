@@ -151,7 +151,7 @@ function Reaction(props) {
             emoji={currentEmoji}
             size={19}
           />
-          {window.innerWidth > 6000 && (
+          {window.innerWidth > 600 && (
             <span style={{ fontWeight: 'bold', color: 'rgba(0,0,0,0.7)' }}>
               {emojiData.filter(e => e.emoji === currentEmoji)[0].text}
             </span>
