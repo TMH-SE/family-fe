@@ -12,8 +12,6 @@ function HighlightPost(props) {
     firebase
       .database()
       .ref(`posts`)
-      .orderByValue()
-      .limitToLast(6)
       .once('value', snapshot => {
         const temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({
@@ -29,15 +27,27 @@ function HighlightPost(props) {
               id: key
             }))
           : []
-        setData(
-          temp.sort(
+        const data = temp
+          .sort(
             (a, b) =>
               b.countComment +
               b.countReaction -
               (a.countComment + a.countReaction)
           )
+          ?.slice(0, 6)
+        setData(data)
+        data?.map(item =>
+          firebase
+            .database()
+            .ref(`highlightPosts/${item.id}`)
+            .set({
+              createdAt: +new Date(),
+              countComment: item.countComment,
+              countReaction: item.countReaction
+            })
         )
       })
+    // })
   }, [])
   return (
     <Carousel
