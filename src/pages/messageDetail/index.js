@@ -14,20 +14,28 @@ import { GET_USER } from '@shared'
 moment().format()
 // const MY_USER_ID = 'tuinhune'
 function MessageDetail(props) {
+  const [showMore, setShowMore] = useState(15)
   const [messages, setMessages] = useState([])
   const { idChat, userId } = props.match.params
   const { me } = useContext(IContext)
+  const ele = document.getElementsByClassName(
+    `message-list-container-phone ${idChat}`
+  )[0]
   useEffect(() => {
     getMessages()
+    if (ele) ele.scrollTop = ele.scrollHeight
     document.getElementById(`input-custom-${idChat}`).focus()
-  }, [])
+  }, [ele])
+  useEffect(() => {
+    getMessages()
+  }, [showMore])
   const { data } = useQuery(GET_USER, { variables: { userId } })
   const getMessages = () => {
     firebase
       .database()
       .ref(`messenger/${idChat}/listmessages`)
       .orderByKey()
-      // .limitToLast(100)
+      .limitToLast(showMore)
       .on('value', snapshot => {
         // var mess = (snapshot.val() && snapshot.val().mess1) || 'Anonymous';
         const temp = snapshot.val()
@@ -132,7 +140,7 @@ function MessageDetail(props) {
       console.log(error)
     }
     const ele = document.getElementsByClassName(
-      `message-list-container ${idChat}`
+      `message-list-container-phone ${idChat}`
     )[0]
     ele.scrollTop = ele.scrollHeight
   }
@@ -142,17 +150,25 @@ function MessageDetail(props) {
       <Card
         title={
           <>
-            <Avatar onClick={() => props.history.push(`/${userId}/info`)} src={data?.getUser?.avatar}></Avatar>
-            <a onClick={() => props.history.push(`/${userId}/info`)} style={{ marginLeft: 5 }}>{data?.getUser?.firstname}</a>
+            <Avatar
+              onClick={() => props.history.push(`/${userId}/info`)}
+              src={data?.getUser?.avatar}
+            ></Avatar>
+            <a
+              onClick={() => props.history.push(`/${userId}/info`)}
+              style={{ marginLeft: 5 }}
+            >
+              {data?.getUser?.firstname}
+            </a>
           </>
         }
         className="ant-mess-phone"
         extra={
-            <ArrowLeftOutlined
-              className="delete-messbox"
-              onClick={() => props.history.goBack()}
-              style={{ color: '#ccc', fontSize: 20 }}
-            />
+          <ArrowLeftOutlined
+            className="delete-messbox"
+            onClick={() => props.history.goBack()}
+            style={{ color: '#ccc', fontSize: 20 }}
+          />
         }
         actions={[
           <InputCustomize
@@ -166,7 +182,18 @@ function MessageDetail(props) {
           />
         ]}
       >
-        <div className={`message-list-container-phone ${idChat}`}>
+        <div
+          className={`message-list-container-phone ${idChat}`}
+          onScroll={() => {
+            const ele = document.getElementsByClassName(
+              `message-list-container-phone ${idChat}`
+            )[0]
+            if (showMore <= messages?.length && ele.scrollTop === 0) {
+              setShowMore(showMore + 3)
+              ele.scrollTop = 100
+            }
+          }}
+        >
           {renderMessages()}
         </div>
       </Card>

@@ -190,9 +190,6 @@ export default function MessageList(props) {
                 setShowMore(showMore + 3)
                 ele.scrollTop = 30
               }
-              if (showMore > messages.length) {
-                // setLoading(false)
-              }
             }}
           >
             <div className="spin-chat">{/* <Spin spinning={loading} /> */}</div>
