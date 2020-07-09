@@ -40,9 +40,7 @@ const CommentItem = props => {
             Trả lời
           </span>,
           comment?.author === me?._id && (
-            <span
-              key="comment-basic-del"
-            >
+            <span key="comment-basic-del">
               <Popconfirm
                 title="Bạn muốn xóa bình luận này?"
                 onConfirm={() =>
@@ -53,7 +51,9 @@ const CommentItem = props => {
                         .remove()
                     : firebase
                         .database()
-                        .ref(`posts/${idPost}/comments/${idParent}/replies/${comment.id}`)
+                        .ref(
+                          `posts/${idPost}/comments/${idParent}/replies/${comment.id}`
+                        )
                         .remove()
                 }
                 // onCancel={cancel}
@@ -70,10 +70,14 @@ const CommentItem = props => {
             onClick={() => history.push(`/${comment?.author}/info`)}
             style={{ color: 'black', fontSize: 14 }}
           >
-            {data?.getUser?.firstname || 'Người dùng không còn tồn tại'} {' '} {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone /> }
+            {data?.getUser?.firstname || 'Người dùng không còn tồn tại'}{' '}
+            {data?.getUser?.expert?.isVerify && <CheckCircleTwoTone />}
           </a>
         }
-        avatar={data?.getUser?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
+        avatar={
+          data?.getUser?.avatar ||
+          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+        }
         content={
           <>
             <div style={{ display: 'flex', overflowX: 'auto' }}>

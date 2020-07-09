@@ -12,8 +12,6 @@ function HighlightPost(props) {
     firebase
       .database()
       .ref(`posts`)
-      .orderByValue()
-      .limitToLast(6)
       .once('value', snapshot => {
         const temp = snapshot.val()
           ? Object.keys(snapshot.val()).map(key => ({
@@ -23,20 +21,21 @@ function HighlightPost(props) {
                 : 0,
               countReaction: snapshot.val()[key].reactions
                 ? Object.keys(snapshot.val()[key].reactions)
-                    .map(keyA => ({ ...snapshot.val()[key].reactions[keyA] }))
-                    .reduce((a, b) => a.count + b.count).count
+                    .map(keyA => snapshot.val()[key].reactions[keyA].count)
+                    .reduce((a, b) => a + b)
                 : 0,
               id: key
             }))
           : []
-        setData(
-          temp.sort(
+        const data = temp
+          .sort(
             (a, b) =>
               b.countComment +
               b.countReaction -
               (a.countComment + a.countReaction)
           )
-        )
+          ?.slice(0, 6)
+        setData(data)
       })
   }, [])
   return (
