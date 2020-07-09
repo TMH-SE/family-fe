@@ -1,6 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 import React, { useState, useEffect, useRef } from 'react'
-import { Button, Space, Tooltip, message } from 'antd'
+import { Button, Space, Tooltip, message, Modal } from 'antd'
 import {
   AudioOutlined,
   ShareAltOutlined,
@@ -9,7 +9,8 @@ import {
   StopOutlined,
   LogoutOutlined,
   PlayCircleOutlined,
-  PauseCircleOutlined
+  PauseCircleOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons'
 import * as firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
@@ -32,8 +33,6 @@ const OwnSeminar = ({ idSeminar, seminarTitle }) => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(stream => {
-        // videoTrack = pc.addTrack(stream.getVideoTracks()[0], stream)
-        // pc.addTrack(stream.getAudioTracks()[0], stream)
         setLocalStream(stream)
         setCurrentStream(stream)
         firebase
@@ -214,7 +213,13 @@ const OwnSeminar = ({ idSeminar, seminarTitle }) => {
   }
 
   return (
-    <div style={{ height: '100%', position: 'relative' }}>
+    <div
+      style={{
+        height: '100%',
+        position: 'relative',
+        border: mediaRecorder ? '2px solid red' : 'none'
+      }}
+    >
       <Video ref={videoRef} videoStream={currentStream} />
       <Space
         size="large"
@@ -258,7 +263,7 @@ const OwnSeminar = ({ idSeminar, seminarTitle }) => {
             onClick={handleShareScreen}
           />
         </Tooltip>
-        <Tooltip title="Ghi màn hình">
+        <Tooltip title={mediaRecorder ? 'Dừng ghi màn hình' : 'Ghi màn hình'}>
           <Button
             icon={
               mediaRecorder ? <PauseCircleOutlined /> : <PlayCircleOutlined />
@@ -272,7 +277,34 @@ const OwnSeminar = ({ idSeminar, seminarTitle }) => {
         </Tooltip>
         <Tooltip title="Thoát">
           <Button
-            onClick={() => window.close()}
+            onClick={() => {
+              if (mediaRecorder) {
+                Modal.confirm({
+                  icon: <ExclamationCircleOutlined />,
+                  title: 'Thoát',
+                  centered: true,
+                  content:
+                    'Bạn chưa dừng ghi màn hình. Nếu bạn thoát sẽ không lưu video của hội thảo. Bạn có chắc chắn muốn thoát?',
+                  okText: 'Có',
+                  cancelText: 'Không',
+                  onOk: () => {
+                    window.close()
+                  }
+                })
+              } else {
+                Modal.confirm({
+                  icon: <ExclamationCircleOutlined />,
+                  title: 'Thoát',
+                  centered: true,
+                  content: 'Bạn có chắc chắn muốn thoát?',
+                  okText: 'Có',
+                  cancelText: 'Không',
+                  onOk: () => {
+                    window.close()
+                  }
+                })
+              }
+            }}
             icon={<LogoutOutlined />}
             shape="circle-outline"
             ghost

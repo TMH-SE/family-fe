@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 import React, { useEffect, useContext, useState, useRef } from 'react'
-import { Button, Tooltip } from 'antd'
-import { LogoutOutlined } from '@ant-design/icons'
+import { Button, Tooltip, Modal } from 'antd'
+import { LogoutOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import * as firebase from 'firebase/app'
 import { configRTCPeerConnection } from '@constants'
 import Video from '../video'
@@ -93,7 +93,19 @@ const JoinSenimar = ({ idSeminar }) => {
       <Video ref={videoRef} videoStream={remoteStream} />
       <Tooltip title="Thoát">
         <Button
-          onClick={() => window.close()}
+          onClick={() => {
+            Modal.confirm({
+              icon: <ExclamationCircleOutlined />,
+              title: 'Thoát',
+              centered: true,
+              content: 'Bạn có chắc chắn muốn thoát?',
+              okText: 'Có',
+              cancelText: 'Không',
+              onOk: () => {
+                window.close()
+              }
+            })
+          }}
           style={{ position: 'absolute', top: '5%', right: '5%' }}
           icon={<LogoutOutlined />}
           shape="circle-outline"
