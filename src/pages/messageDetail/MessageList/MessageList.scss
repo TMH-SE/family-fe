@@ -1,10 +1,3 @@
-.message-list-container {
-  height: 33vh;
-  width: 100%;
-  padding: 0 10px;
-  overflow-y: auto;
-  // padding-bottom: 10px;
-}
 .ant-mess {
   display: flex;
   flex-direction: column;
@@ -14,8 +7,15 @@
 .message-list {
   .ant-card-body {
     padding: 0 !important;
-    // height: 40vh;
+    height: 40vh;
     overflow: hidden;
+    .message-list-container {
+      height: 100%;
+      width: 100%;
+      padding: 0 10px;
+      overflow-y: auto;
+      // padding-bottom: 10px;
+    }
   }
   .ant-card-head {
     padding: 0 10px !important;
